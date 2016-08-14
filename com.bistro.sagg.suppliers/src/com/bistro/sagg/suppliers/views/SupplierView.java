@@ -1,15 +1,39 @@
 package com.bistro.sagg.suppliers.views;
 
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.part.*;
-import org.eclipse.jface.viewers.*;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.jface.action.*;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.*;
-import org.eclipse.swt.widgets.Menu;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Scale;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.ViewPart;
 
 
 /**
@@ -37,10 +61,10 @@ public class SupplierView extends ViewPart {
 	 */
 	public static final String ID = "com.bistro.sagg.suppliers.views.SupplierView";
 
-	private TableViewer viewer;
 	private Action action1;
 	private Action action2;
-	private Action doubleClickAction;
+	private Table table;
+	private Text text;
 
 	/*
 	 * The content provider class is responsible for
@@ -51,7 +75,6 @@ public class SupplierView extends ViewPart {
 	 * it and always show the same content 
 	 * (like Task List, for example).
 	 */
-	 
 	class ViewContentProvider implements IStructuredContentProvider {
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
 		}
@@ -87,15 +110,100 @@ public class SupplierView extends ViewPart {
 	 * to create the viewer and initialize it.
 	 */
 	public void createPartControl(Composite parent) {
-		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		viewer.setContentProvider(new ViewContentProvider());
-		viewer.setLabelProvider(new ViewLabelProvider());
-		viewer.setSorter(new NameSorter());
-		viewer.setInput(getViewSite());
-
-		// Create the help context id for the viewer's control
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "com.bistro.sagg.suppliers.viewer");
-		getSite().setSelectionProvider(viewer);
+		parent.setLayout(new RowLayout(SWT.HORIZONTAL));
+		
+		Group grpBsquedaDeProductos = new Group(parent, SWT.NONE);
+		grpBsquedaDeProductos.setLayout(new FillLayout(SWT.HORIZONTAL));
+		grpBsquedaDeProductos.setLayoutData(new RowData(1262, 152));
+		grpBsquedaDeProductos.setText("Filtro de Proveedores");
+		
+		Composite composite_4 = new Composite(grpBsquedaDeProductos, SWT.NONE);
+		composite_4.setLayout(new GridLayout(1, false));
+		
+		Composite composite_5 = new Composite(composite_4, SWT.NONE);
+		composite_5.setLayout(new GridLayout(2, false));
+		GridData gd_composite_5 = new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1);
+		gd_composite_5.heightHint = 96;
+		gd_composite_5.widthHint = 1248;
+		composite_5.setLayoutData(gd_composite_5);
+		
+		Composite composite = new Composite(composite_5, SWT.NONE);
+		GridLayout gl_composite = new GridLayout(4, false);
+		gl_composite.marginHeight = 0;
+		composite.setLayout(gl_composite);
+		GridData gd_composite = new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1);
+		gd_composite.widthHint = 801;
+		composite.setLayoutData(gd_composite);
+		
+		Label lblRaznSocial = new Label(composite, SWT.NONE);
+		lblRaznSocial.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblRaznSocial.setText("Raz\u00F3n Social");
+		
+		text = new Text(composite, SWT.BORDER);
+		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		Label lblInsumos = new Label(composite, SWT.NONE);
+		lblInsumos.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblInsumos.setText("Insumos");
+		
+		Combo combo = new Combo(composite, SWT.NONE);
+		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		List list = new List(composite_5, SWT.BORDER);
+		GridData gd_list = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
+		gd_list.heightHint = 87;
+		gd_list.widthHint = 425;
+		list.setLayoutData(gd_list);
+		
+		Composite composite_3 = new Composite(composite_4, SWT.NONE);
+		composite_3.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		composite_3.setLayout(new GridLayout(2, false));
+		
+		Button btnFiltrar = new Button(composite_3, SWT.NONE);
+		GridData gd_btnFiltrar = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnFiltrar.widthHint = 80;
+		btnFiltrar.setLayoutData(gd_btnFiltrar);
+		btnFiltrar.setText("Filtrar");
+		
+		Button btnLimpiar = new Button(composite_3, SWT.NONE);
+		GridData gd_btnLimpiar = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnLimpiar.widthHint = 80;
+		btnLimpiar.setLayoutData(gd_btnLimpiar);
+		btnLimpiar.setText("Limpiar");
+		
+		Group grpListadoDeProductos = new Group(parent, SWT.NONE);
+		grpListadoDeProductos.setLayout(null);
+		grpListadoDeProductos.setLayoutData(new RowData(1262, 530));
+		grpListadoDeProductos.setText("Listado de Proveedores");
+		
+		table = new Table(grpListadoDeProductos, SWT.BORDER | SWT.FULL_SELECTION);
+		table.setBounds(10, 33, 1248, 510);
+		table.setLinesVisible(true);
+		table.setHeaderVisible(true);
+		
+		TableColumn tblclmnNombre = new TableColumn(table, SWT.NONE);
+		tblclmnNombre.setWidth(230);
+		tblclmnNombre.setText("Raz\u00F3n Social");
+		
+		TableColumn tblclmnNewColumn = new TableColumn(table, SWT.NONE);
+		tblclmnNewColumn.setWidth(394);
+		tblclmnNewColumn.setText("Insumos");
+		
+		TableColumn tblclmnUnidadDeMedida = new TableColumn(table, SWT.NONE);
+		tblclmnUnidadDeMedida.setWidth(190);
+		tblclmnUnidadDeMedida.setText("Datos de Contacto");
+		
+		TableColumn tblclmnNewColumn_1 = new TableColumn(table, SWT.NONE);
+		tblclmnNewColumn_1.setWidth(120);
+		tblclmnNewColumn_1.setText("Tel\u00E9fono");
+		
+		TableColumn tblclmnStockLocal = new TableColumn(table, SWT.NONE);
+		tblclmnStockLocal.setWidth(120);
+		tblclmnStockLocal.setText("Celular");
+		
+		TableColumn tblclmnStockBodega = new TableColumn(table, SWT.NONE);
+		tblclmnStockBodega.setWidth(190);
+		tblclmnStockBodega.setText("Correo Electr\u00F3nico");
 		makeActions();
 		hookContextMenu();
 		hookDoubleClickAction();
@@ -110,9 +218,6 @@ public class SupplierView extends ViewPart {
 				SupplierView.this.fillContextMenu(manager);
 			}
 		});
-		Menu menu = menuMgr.createContextMenu(viewer.getControl());
-		viewer.getControl().setMenu(menu);
-		getSite().registerContextMenu(menuMgr, viewer);
 	}
 
 	private void contributeToActionBars() {
@@ -159,33 +264,28 @@ public class SupplierView extends ViewPart {
 		action2.setToolTipText("Action 2 tooltip");
 		action2.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
-		doubleClickAction = new Action() {
-			public void run() {
-				ISelection selection = viewer.getSelection();
-				Object obj = ((IStructuredSelection)selection).getFirstElement();
-				showMessage("Double-click detected on "+obj.toString());
-			}
-		};
+//		doubleClickAction = new Action() {
+//			public void run() {
+//				ISelection selection = viewer.getSelection();
+//				Object obj = ((IStructuredSelection)selection).getFirstElement();
+//				showMessage("Double-click detected on "+obj.toString());
+//			}
+//		};
 	}
 
 	private void hookDoubleClickAction() {
-		viewer.addDoubleClickListener(new IDoubleClickListener() {
-			public void doubleClick(DoubleClickEvent event) {
-				doubleClickAction.run();
-			}
-		});
 	}
 	private void showMessage(String message) {
-		MessageDialog.openInformation(
-			viewer.getControl().getShell(),
-			"Proveedores",
-			message);
+//		MessageDialog.openInformation(
+//			viewer.getControl().getShell(),
+//			"Product View",
+//			message);
 	}
 
 	/**
 	 * Passing the focus request to the viewer's control.
 	 */
 	public void setFocus() {
-		viewer.getControl().setFocus();
+		//viewer.getControl().setFocus();
 	}
 }
