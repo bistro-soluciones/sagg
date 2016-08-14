@@ -60,6 +60,7 @@ public class ProductStockView extends ViewPart {
 	 * The ID of the view as specified by the extension.
 	 */
 	public static final String ID = "com.bistro.sagg.stock.views.ProductStockView";
+	
 	private Action action1;
 	private Action action2;
 	private Table table;
@@ -74,7 +75,6 @@ public class ProductStockView extends ViewPart {
 	 * it and always show the same content 
 	 * (like Task List, for example).
 	 */
-	 
 	class ViewContentProvider implements IStructuredContentProvider {
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
 		}
