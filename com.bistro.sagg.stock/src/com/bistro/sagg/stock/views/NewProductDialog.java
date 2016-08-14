@@ -37,6 +37,8 @@ public class NewProductDialog extends Dialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
+		GridLayout gridLayout = (GridLayout) container.getLayout();
+		gridLayout.marginHeight = 14;
 		
 		Group grpInformacinBsica = new Group(container, SWT.NONE);
 		GridLayout gl_grpInformacinBsica = new GridLayout(2, false);
@@ -171,8 +173,8 @@ public class NewProductDialog extends Dialog {
 	 */
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
-		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
-		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
+		createButton(parent, IDialogConstants.OK_ID, "Guardar", true);
+		createButton(parent, IDialogConstants.CANCEL_ID, "Cancelar", false);
 	}
 
 	/**
