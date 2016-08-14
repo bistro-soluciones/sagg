@@ -3,7 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Suppliers
 Bundle-SymbolicName: com.bistro.sagg.suppliers;singleton:=true
 Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: com.bistro.sagg.suppliers.Activator
 Bundle-Vendor: BISTRO
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.ui
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy

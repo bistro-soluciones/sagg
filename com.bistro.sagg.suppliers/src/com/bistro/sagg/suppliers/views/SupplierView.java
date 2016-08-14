@@ -178,7 +178,7 @@ public class SupplierView extends ViewPart {
 	private void showMessage(String message) {
 		MessageDialog.openInformation(
 			viewer.getControl().getShell(),
-			"Supplie View",
+			"Proveedores",
 			message);
 	}
 
