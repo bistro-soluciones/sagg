@@ -27,6 +27,11 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.widgets.Scale;
+import org.eclipse.swt.widgets.Slider;
+import swing2swt.layout.FlowLayout;
 
 
 /**
@@ -108,10 +113,24 @@ public class ProductStockView extends ViewPart {
 		
 		Group grpBsquedaDeProductos = new Group(parent, SWT.NONE);
 		grpBsquedaDeProductos.setLayout(new FillLayout(SWT.HORIZONTAL));
-		grpBsquedaDeProductos.setLayoutData(new RowData(1262, 180));
+		grpBsquedaDeProductos.setLayoutData(new RowData(1262, 177));
 		grpBsquedaDeProductos.setText("Filtro de Productos");
 		
-		Composite composite = new Composite(grpBsquedaDeProductos, SWT.NONE);
+		Composite composite_4 = new Composite(grpBsquedaDeProductos, SWT.NONE);
+		composite_4.setLayout(new GridLayout(1, false));
+		
+		Composite composite_5 = new Composite(composite_4, SWT.NONE);
+		GridData gd_composite_5 = new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1);
+		gd_composite_5.heightHint = 120;
+		gd_composite_5.widthHint = 1248;
+		composite_5.setLayoutData(gd_composite_5);
+		composite_5.setLayout(new GridLayout(2, false));
+		
+		Composite composite = new Composite(composite_5, SWT.NONE);
+		GridData gd_composite = new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1);
+		gd_composite.widthHint = 463;
+		gd_composite.heightHint = 115;
+		composite.setLayoutData(gd_composite);
 		composite.setLayout(new GridLayout(2, false));
 		
 		Label lblNombre = new Label(composite, SWT.NONE);
@@ -120,7 +139,7 @@ public class ProductStockView extends ViewPart {
 		
 		text = new Text(composite, SWT.BORDER);
 		GridData gd_text = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-		gd_text.widthHint = 535;
+		gd_text.widthHint = 343;
 		text.setLayoutData(gd_text);
 		
 		Label lblCtegora = new Label(composite, SWT.NONE);
@@ -129,34 +148,93 @@ public class ProductStockView extends ViewPart {
 		
 		List list = new List(composite, SWT.BORDER | SWT.V_SCROLL | SWT.MULTI);
 		GridData gd_list = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
-		gd_list.heightHint = 136;
+		gd_list.widthHint = 352;
+		gd_list.heightHint = 75;
 		list.setLayoutData(gd_list);
 		
-		Composite composite_1 = new Composite(grpBsquedaDeProductos, SWT.NONE);
-		composite_1.setLayout(new GridLayout(2, false));
+		Group grpStock = new Group(composite_5, SWT.NONE);
+		GridData gd_grpStock = new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1);
+		gd_grpStock.widthHint = 764;
+		grpStock.setLayoutData(gd_grpStock);
+		grpStock.setLayout(new GridLayout(6, false));
+		grpStock.setText("Stock");
 		
-		Label lblUnidadDeMedida = new Label(composite_1, SWT.NONE);
-		lblUnidadDeMedida.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		Label lblConStock = new Label(grpStock, SWT.NONE);
+		lblConStock.setText("Con Stock");
+		
+		Composite composite_2 = new Composite(grpStock, SWT.NONE);
+		composite_2.setLayout(new GridLayout(2, false));
+		GridData gd_composite_2 = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_composite_2.widthHint = 133;
+		gd_composite_2.heightHint = 30;
+		composite_2.setLayoutData(gd_composite_2);
+		
+		Button btnSi = new Button(composite_2, SWT.RADIO);
+		GridData gd_btnSi = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnSi.widthHint = 47;
+		btnSi.setLayoutData(gd_btnSi);
+		btnSi.setText("Si");
+		
+		Button btnNo = new Button(composite_2, SWT.RADIO);
+		btnNo.setText("No");
+		
+		Button btnConStockLocal = new Button(grpStock, SWT.CHECK);
+		GridData gd_btnConStockLocal = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnConStockLocal.widthHint = 75;
+		btnConStockLocal.setLayoutData(gd_btnConStockLocal);
+		btnConStockLocal.setText("Local");
+		
+		Button btnCheckButton = new Button(grpStock, SWT.CHECK);
+		GridData gd_btnCheckButton = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnCheckButton.widthHint = 100;
+		btnCheckButton.setLayoutData(gd_btnCheckButton);
+		btnCheckButton.setText("Bodega");
+		
+		Label lblCantidadMxima = new Label(grpStock, SWT.NONE);
+		lblCantidadMxima.setText("Cantidad m\u00E1xima");
+		
+		Scale scale = new Scale(grpStock, SWT.NONE);
+		GridData gd_scale = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_scale.widthHint = 180;
+		scale.setLayoutData(gd_scale);
+		
+		Label lblUnidadDeMedida = new Label(grpStock, SWT.NONE);
+		lblUnidadDeMedida.setSize(124, 20);
 		lblUnidadDeMedida.setText("Unidad de Medida");
 		
-		Combo combo = new Combo(composite_1, SWT.NONE);
-		GridData gd_combo = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
-		gd_combo.widthHint = 191;
+		Combo combo = new Combo(grpStock, SWT.NONE);
+		GridData gd_combo = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_combo.widthHint = 87;
 		combo.setLayoutData(gd_combo);
+		combo.setSize(97, 28);
+		new Label(grpStock, SWT.NONE);
+		new Label(grpStock, SWT.NONE);
+		new Label(grpStock, SWT.NONE);
+		new Label(grpStock, SWT.NONE);
 		
-		Label lblStock = new Label(composite_1, SWT.NONE);
-		lblStock.setText("Stock");
+		Composite composite_3 = new Composite(composite_4, SWT.NONE);
+		composite_3.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		composite_3.setLayout(new GridLayout(2, false));
 		
-		Button btnConStockLocal = new Button(composite_1, SWT.CHECK);
-		btnConStockLocal.setText("Con Stock Local");
+		Button btnFiltrar = new Button(composite_3, SWT.NONE);
+		GridData gd_btnFiltrar = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnFiltrar.widthHint = 80;
+		btnFiltrar.setLayoutData(gd_btnFiltrar);
+		btnFiltrar.setText("Filtrar");
+		
+		Button btnLimpiar = new Button(composite_3, SWT.NONE);
+		GridData gd_btnLimpiar = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnLimpiar.widthHint = 80;
+		btnLimpiar.setLayoutData(gd_btnLimpiar);
+		btnLimpiar.setText("Limpiar");
 		
 		Group grpListadoDeProductos = new Group(parent, SWT.NONE);
 		grpListadoDeProductos.setLayout(null);
-		grpListadoDeProductos.setLayoutData(new RowData(1262, 569));
+		grpListadoDeProductos.setLayoutData(new RowData(1262, 505));
 		grpListadoDeProductos.setText("Listado de Productos");
 		
 		table = new Table(grpListadoDeProductos, SWT.BORDER | SWT.FULL_SELECTION);
-		table.setBounds(10, 67, 1248, 516);
+		table.setBounds(10, 33, 1248, 484);
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
 		

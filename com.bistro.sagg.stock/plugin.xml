@@ -9,7 +9,7 @@
             id="com.bistro.sagg.stock">
       </category>
       <view
-            name="Product View"
+            name="Productos"
             icon="icons/sample.gif"
             category="com.bistro.sagg.stock"
             class="com.bistro.sagg.stock.views.ProductStockView"
