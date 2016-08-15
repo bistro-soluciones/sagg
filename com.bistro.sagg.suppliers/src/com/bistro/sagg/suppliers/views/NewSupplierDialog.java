@@ -50,7 +50,7 @@ public class NewSupplierDialog extends Dialog {
 		gl_grpInformacinBsica.marginWidth = 0;
 		grpInformacinBsica.setLayout(gl_grpInformacinBsica);
 		GridData gd_grpInformacinBsica = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-		gd_grpInformacinBsica.heightHint = 195;
+		gd_grpInformacinBsica.heightHint = 75;
 		gd_grpInformacinBsica.widthHint = 604;
 		grpInformacinBsica.setLayoutData(gd_grpInformacinBsica);
 		grpInformacinBsica.setText("Informaci\u00F3n B\u00E1sica");
@@ -73,16 +73,6 @@ public class NewSupplierDialog extends Dialog {
 		GridData gd_text_5 = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
 		gd_text_5.widthHint = 145;
 		text_5.setLayoutData(gd_text_5);
-		
-		Label lblCategora = new Label(grpInformacinBsica, SWT.RIGHT);
-		lblCategora.setAlignment(SWT.RIGHT);
-		lblCategora.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false, 1, 1));
-		lblCategora.setText("Categor\u00EDa");
-		
-		List list = new List(grpInformacinBsica, SWT.BORDER);
-		GridData gd_list = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
-		gd_list.heightHint = 112;
-		list.setLayoutData(gd_list);
 		
 		Group grpInformacinDeStock = new Group(container, SWT.NONE);
 		grpInformacinDeStock.setLayout(new GridLayout(2, false));
@@ -130,7 +120,7 @@ public class NewSupplierDialog extends Dialog {
 		Group grpInformacinDeInsumos = new Group(container, SWT.NONE);
 		grpInformacinDeInsumos.setLayout(new GridLayout(2, false));
 		GridData gd_grpInformacinDeInsumos = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-		gd_grpInformacinDeInsumos.heightHint = 133;
+		gd_grpInformacinDeInsumos.heightHint = 205;
 		grpInformacinDeInsumos.setLayoutData(gd_grpInformacinDeInsumos);
 		grpInformacinDeInsumos.setText("Informaci\u00F3n de Insumos");
 		
@@ -146,7 +136,7 @@ public class NewSupplierDialog extends Dialog {
 		
 		List list_1 = new List(grpInformacinDeInsumos, SWT.BORDER);
 		GridData gd_list_1 = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-		gd_list_1.heightHint = 84;
+		gd_list_1.heightHint = 155;
 		list_1.setLayoutData(gd_list_1);
 
 		return container;
@@ -167,6 +157,6 @@ public class NewSupplierDialog extends Dialog {
 	 */
 	@Override
 	protected Point getInitialSize() {
-		return new Point(645, 645);
+		return new Point(645, 598);
 	}
 }
