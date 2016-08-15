@@ -65,6 +65,7 @@ public class SupplierView extends ViewPart {
 	private Action action2;
 	private Table table;
 	private Text text;
+	private Text text_1;
 
 	/*
 	 * The content provider class is responsible for
@@ -114,46 +115,53 @@ public class SupplierView extends ViewPart {
 		
 		Group grpBsquedaDeProductos = new Group(parent, SWT.NONE);
 		grpBsquedaDeProductos.setLayout(new FillLayout(SWT.HORIZONTAL));
-		grpBsquedaDeProductos.setLayoutData(new RowData(1262, 152));
+		grpBsquedaDeProductos.setLayoutData(new RowData(1262, 168));
 		grpBsquedaDeProductos.setText("Filtro de Proveedores");
 		
 		Composite composite_4 = new Composite(grpBsquedaDeProductos, SWT.NONE);
 		composite_4.setLayout(new GridLayout(1, false));
 		
 		Composite composite_5 = new Composite(composite_4, SWT.NONE);
-		composite_5.setLayout(new GridLayout(2, false));
+		composite_5.setLayout(new GridLayout(6, false));
 		GridData gd_composite_5 = new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1);
-		gd_composite_5.heightHint = 96;
+		gd_composite_5.heightHint = 110;
 		gd_composite_5.widthHint = 1248;
 		composite_5.setLayoutData(gd_composite_5);
 		
-		Composite composite = new Composite(composite_5, SWT.NONE);
-		GridLayout gl_composite = new GridLayout(4, false);
-		gl_composite.marginHeight = 0;
-		composite.setLayout(gl_composite);
-		GridData gd_composite = new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1);
-		gd_composite.widthHint = 801;
-		composite.setLayoutData(gd_composite);
-		
-		Label lblRaznSocial = new Label(composite, SWT.NONE);
+		Label lblRaznSocial = new Label(composite_5, SWT.NONE);
 		lblRaznSocial.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblRaznSocial.setText("Raz\u00F3n Social");
 		
-		text = new Text(composite, SWT.BORDER);
-		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		text = new Text(composite_5, SWT.BORDER);
+		GridData gd_text = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		gd_text.widthHint = 364;
+		text.setLayoutData(gd_text);
 		
-		Label lblInsumos = new Label(composite, SWT.NONE);
+		Label lblRut = new Label(composite_5, SWT.NONE);
+		lblRut.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblRut.setText("RUT");
+		
+		text_1 = new Text(composite_5, SWT.BORDER);
+		GridData gd_text_1 = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
+		gd_text_1.widthHint = 145;
+		text_1.setLayoutData(gd_text_1);
+		
+		Label lblInsumos = new Label(composite_5, SWT.NONE);
 		lblInsumos.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblInsumos.setText("Insumos");
 		
-		Combo combo = new Combo(composite, SWT.NONE);
-		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		Combo combo = new Combo(composite_5, SWT.NONE);
+		GridData gd_combo = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		gd_combo.widthHint = 425;
+		combo.setLayoutData(gd_combo);
+		new Label(composite_5, SWT.NONE);
+		new Label(composite_5, SWT.NONE);
+		new Label(composite_5, SWT.NONE);
+		new Label(composite_5, SWT.NONE);
+		new Label(composite_5, SWT.NONE);
 		
 		List list = new List(composite_5, SWT.BORDER);
-		GridData gd_list = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
-		gd_list.heightHint = 87;
-		gd_list.widthHint = 425;
-		list.setLayoutData(gd_list);
+		list.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		
 		Composite composite_3 = new Composite(composite_4, SWT.NONE);
 		composite_3.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -173,17 +181,21 @@ public class SupplierView extends ViewPart {
 		
 		Group grpListadoDeProductos = new Group(parent, SWT.NONE);
 		grpListadoDeProductos.setLayout(null);
-		grpListadoDeProductos.setLayoutData(new RowData(1262, 530));
+		grpListadoDeProductos.setLayoutData(new RowData(1262, 515));
 		grpListadoDeProductos.setText("Listado de Proveedores");
 		
 		table = new Table(grpListadoDeProductos, SWT.BORDER | SWT.FULL_SELECTION);
-		table.setBounds(10, 33, 1248, 510);
+		table.setBounds(10, 33, 1248, 495);
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
 		
 		TableColumn tblclmnNombre = new TableColumn(table, SWT.NONE);
-		tblclmnNombre.setWidth(230);
+		tblclmnNombre.setWidth(182);
 		tblclmnNombre.setText("Raz\u00F3n Social");
+		
+		TableColumn tblclmnRut = new TableColumn(table, SWT.NONE);
+		tblclmnRut.setWidth(88);
+		tblclmnRut.setText("RUT");
 		
 		TableColumn tblclmnNewColumn = new TableColumn(table, SWT.NONE);
 		tblclmnNewColumn.setWidth(394);
@@ -194,11 +206,11 @@ public class SupplierView extends ViewPart {
 		tblclmnUnidadDeMedida.setText("Datos de Contacto");
 		
 		TableColumn tblclmnNewColumn_1 = new TableColumn(table, SWT.NONE);
-		tblclmnNewColumn_1.setWidth(120);
+		tblclmnNewColumn_1.setWidth(100);
 		tblclmnNewColumn_1.setText("Tel\u00E9fono");
 		
 		TableColumn tblclmnStockLocal = new TableColumn(table, SWT.NONE);
-		tblclmnStockLocal.setWidth(120);
+		tblclmnStockLocal.setWidth(100);
 		tblclmnStockLocal.setText("Celular");
 		
 		TableColumn tblclmnStockBodega = new TableColumn(table, SWT.NONE);
