@@ -122,10 +122,10 @@ public class ProductStockView extends ViewPart {
 		
 		Composite composite_5 = new Composite(composite_4, SWT.NONE);
 		GridData gd_composite_5 = new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1);
-		gd_composite_5.heightHint = 120;
+		gd_composite_5.heightHint = 123;
 		gd_composite_5.widthHint = 1248;
 		composite_5.setLayoutData(gd_composite_5);
-		composite_5.setLayout(new GridLayout(2, false));
+		composite_5.setLayout(new GridLayout(3, false));
 		
 		Composite composite = new Composite(composite_5, SWT.NONE);
 		GridData gd_composite = new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1);
@@ -154,64 +154,47 @@ public class ProductStockView extends ViewPart {
 		list.setLayoutData(gd_list);
 		
 		Group grpStock = new Group(composite_5, SWT.NONE);
+		grpStock.setLayout(new GridLayout(2, false));
 		GridData gd_grpStock = new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1);
-		gd_grpStock.widthHint = 764;
+		gd_grpStock.widthHint = 295;
 		grpStock.setLayoutData(gd_grpStock);
-		grpStock.setLayout(new GridLayout(6, false));
 		grpStock.setText("Stock");
 		
-		Label lblConStock = new Label(grpStock, SWT.NONE);
-		lblConStock.setText("Con Stock");
+		Button btnEnStock = new Button(grpStock, SWT.CHECK);
+		GridData gd_btnEnStock = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnEnStock.widthHint = 160;
+		btnEnStock.setLayoutData(gd_btnEnStock);
+		btnEnStock.setText("En Stock");
 		
-		Composite composite_2 = new Composite(grpStock, SWT.NONE);
-		composite_2.setLayout(new GridLayout(2, false));
-		GridData gd_composite_2 = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-		gd_composite_2.widthHint = 133;
-		gd_composite_2.heightHint = 30;
-		composite_2.setLayoutData(gd_composite_2);
+		Button btnBodega = new Button(grpStock, SWT.CHECK);
+		GridData gd_btnBodega = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnBodega.widthHint = 160;
+		btnBodega.setLayoutData(gd_btnBodega);
+		btnBodega.setText("Bodega");
 		
-		Button btnSi = new Button(composite_2, SWT.RADIO);
-		GridData gd_btnSi = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		gd_btnSi.widthHint = 47;
-		btnSi.setLayoutData(gd_btnSi);
-		btnSi.setText("Si");
+		Button btnBajoStockMnimo = new Button(grpStock, SWT.CHECK);
+		btnBajoStockMnimo.setText("Sin Stock");
 		
-		Button btnNo = new Button(composite_2, SWT.RADIO);
-		btnNo.setText("No");
+		Button btnTienda = new Button(grpStock, SWT.CHECK);
+		btnTienda.setText("Tienda");
 		
-		Button btnConStockLocal = new Button(grpStock, SWT.CHECK);
-		GridData gd_btnConStockLocal = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		gd_btnConStockLocal.widthHint = 75;
-		btnConStockLocal.setLayoutData(gd_btnConStockLocal);
-		btnConStockLocal.setText("Local");
+		Button btnSinStock = new Button(grpStock, SWT.CHECK);
+		btnSinStock.setText("Bajo Stock M\u00EDnimo");
+		new Label(grpStock, SWT.NONE);
 		
-		Button btnCheckButton = new Button(grpStock, SWT.CHECK);
-		GridData gd_btnCheckButton = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		gd_btnCheckButton.widthHint = 100;
-		btnCheckButton.setLayoutData(gd_btnCheckButton);
-		btnCheckButton.setText("Bodega");
+		Composite composite_1 = new Composite(composite_5, SWT.NONE);
+		composite_1.setLayout(new GridLayout(2, false));
+		GridData gd_composite_1 = new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1);
+		gd_composite_1.widthHint = 467;
+		composite_1.setLayoutData(gd_composite_1);
 		
-		Label lblCantidadMxima = new Label(grpStock, SWT.NONE);
-		lblCantidadMxima.setText("Cantidad m\u00E1xima");
-		
-		Scale scale = new Scale(grpStock, SWT.NONE);
-		GridData gd_scale = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		gd_scale.widthHint = 180;
-		scale.setLayoutData(gd_scale);
-		
-		Label lblUnidadDeMedida = new Label(grpStock, SWT.NONE);
+		Label lblUnidadDeMedida = new Label(composite_1, SWT.NONE);
+		lblUnidadDeMedida.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblUnidadDeMedida.setSize(124, 20);
 		lblUnidadDeMedida.setText("Unidad de Medida");
 		
-		Combo combo = new Combo(grpStock, SWT.NONE);
-		GridData gd_combo = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-		gd_combo.widthHint = 87;
-		combo.setLayoutData(gd_combo);
-		combo.setSize(97, 28);
-		new Label(grpStock, SWT.NONE);
-		new Label(grpStock, SWT.NONE);
-		new Label(grpStock, SWT.NONE);
-		new Label(grpStock, SWT.NONE);
+		Combo combo = new Combo(composite_1, SWT.NONE);
+		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Composite composite_3 = new Composite(composite_4, SWT.NONE);
 		composite_3.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
