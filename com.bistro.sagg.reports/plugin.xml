@@ -20,6 +20,11 @@
             id="com.bistro.sagg.reports.views.SalesReportView"
             name="Reporte de Ventas">
       </view>
+      <view
+            class="com.bistro.sagg.reports.views.InventoryPurchasesReportView"
+            id="com.bistro.sagg.reports.views.StockReportView"
+            name="Reporte de Compras de Inventario">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
