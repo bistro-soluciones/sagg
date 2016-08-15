@@ -95,7 +95,10 @@ public class NewSupplierDialog extends Dialog {
 		lblTelfono.setText("Tel\u00E9fono");
 		
 		Composite composite = new Composite(grpInformacinDeStock, SWT.NONE);
-		composite.setLayout(new GridLayout(3, false));
+		GridLayout gl_composite = new GridLayout(3, false);
+		gl_composite.marginWidth = 0;
+		gl_composite.marginHeight = 0;
+		composite.setLayout(gl_composite);
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		
 		text_3 = new Text(composite, SWT.BORDER);
