@@ -9,11 +9,16 @@
             id="com.bistro.sagg.reports">
       </category>
       <view
-            name="Reports View"
+            name="Reporte de Utilidad de Ventas"
             icon="icons/sample.gif"
             category="com.bistro.sagg.reports"
-            class="com.bistro.sagg.reports.views.BistroReportsView"
+            class="com.bistro.sagg.reports.views.UtilitySalesReportView"
             id="com.bistro.sagg.reports.views.BistroReportsView">
+      </view>
+      <view
+            class="com.bistro.sagg.reports.views.SalesReportView"
+            id="com.bistro.sagg.reports.views.SalesReportView"
+            name="Reporte de Ventas">
       </view>
    </extension>
    <extension
