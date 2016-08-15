@@ -147,20 +147,17 @@ public class EmployeeView extends ViewPart {
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label lblFechaDeIngreso = new Label(composite_5, SWT.NONE);
-		lblFechaDeIngreso.setText("Fecha de Ingreso");
+		lblFechaDeIngreso.setText("Fecha de Ingreso desde");
 		
 		Composite composite = new Composite(composite_5, SWT.NONE);
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		GridLayout gl_composite = new GridLayout(4, false);
+		GridLayout gl_composite = new GridLayout(3, false);
 		composite.setLayout(gl_composite);
-		
-		Label lblDesde = new Label(composite, SWT.NONE);
-		lblDesde.setText("Desde");
 		
 		DateTime dateTime = new DateTime(composite, SWT.BORDER);
 		
 		Label lblHasta = new Label(composite, SWT.NONE);
-		lblHasta.setText("Hasta");
+		lblHasta.setText("hasta");
 		
 		DateTime dateTime_1 = new DateTime(composite, SWT.BORDER);
 		new Label(composite_5, SWT.NONE);

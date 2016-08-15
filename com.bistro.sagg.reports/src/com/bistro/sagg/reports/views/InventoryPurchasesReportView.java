@@ -126,20 +126,17 @@ public class InventoryPurchasesReportView extends ViewPart {
 		
 		Label lblFecha = new Label(composite_5, SWT.NONE);
 		lblFecha.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblFecha.setText("Fecha");
+		lblFecha.setText("Fecha desde");
 		
 		Composite composite = new Composite(composite_5, SWT.NONE);
-		GridLayout gl_composite = new GridLayout(4, false);
+		GridLayout gl_composite = new GridLayout(3, false);
 		composite.setLayout(gl_composite);
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		
-		Label lblDesde = new Label(composite, SWT.NONE);
-		lblDesde.setText("Desde");
 		
 		DateTime dateTime = new DateTime(composite, SWT.BORDER);
 		
 		Label lblHasta = new Label(composite, SWT.NONE);
-		lblHasta.setText("Hasta");
+		lblHasta.setText("hasta");
 		
 		DateTime dateTime_1 = new DateTime(composite, SWT.BORDER);
 		new Label(composite_5, SWT.NONE);
