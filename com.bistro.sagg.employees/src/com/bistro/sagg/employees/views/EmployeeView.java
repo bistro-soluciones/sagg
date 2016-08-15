@@ -1,6 +1,5 @@
 package com.bistro.sagg.employees.views;
 
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -22,9 +21,9 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
@@ -33,7 +32,6 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.swt.widgets.DateTime;
 
 /**
  * This sample class demonstrates how to plug-in a new
@@ -114,7 +112,7 @@ public class EmployeeView extends ViewPart {
 		
 		Group grpBsquedaDeProductos = new Group(parent, SWT.NONE);
 		grpBsquedaDeProductos.setLayout(new FillLayout(SWT.HORIZONTAL));
-		grpBsquedaDeProductos.setLayoutData(new RowData(1262, 139));
+		grpBsquedaDeProductos.setLayoutData(new RowData(1262, 140));
 		grpBsquedaDeProductos.setText("Filtro de Empleados");
 		
 		Composite composite_4 = new Composite(grpBsquedaDeProductos, SWT.NONE);
@@ -123,7 +121,7 @@ public class EmployeeView extends ViewPart {
 		Composite composite_5 = new Composite(composite_4, SWT.NONE);
 		composite_5.setLayout(new GridLayout(6, false));
 		GridData gd_composite_5 = new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1);
-		gd_composite_5.heightHint = 81;
+		gd_composite_5.heightHint = 80;
 		gd_composite_5.widthHint = 1248;
 		composite_5.setLayoutData(gd_composite_5);
 		
@@ -153,7 +151,8 @@ public class EmployeeView extends ViewPart {
 		
 		Composite composite = new Composite(composite_5, SWT.NONE);
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		composite.setLayout(new GridLayout(4, false));
+		GridLayout gl_composite = new GridLayout(4, false);
+		composite.setLayout(gl_composite);
 		
 		Label lblDesde = new Label(composite, SWT.NONE);
 		lblDesde.setText("Desde");
