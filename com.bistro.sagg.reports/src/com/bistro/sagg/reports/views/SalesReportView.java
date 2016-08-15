@@ -32,6 +32,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.swt.widgets.DateTime;
 
 public class SalesReportView extends ViewPart {
 
@@ -88,53 +89,71 @@ public class SalesReportView extends ViewPart {
 		
 		Group grpBsquedaDeProductos = new Group(parent, SWT.NONE);
 		grpBsquedaDeProductos.setLayout(new FillLayout(SWT.HORIZONTAL));
-		grpBsquedaDeProductos.setLayoutData(new RowData(1262, 168));
+		grpBsquedaDeProductos.setLayoutData(new RowData(1262, 138));
 		grpBsquedaDeProductos.setText("Filtrar Reporte");
 		
 		Composite composite_4 = new Composite(grpBsquedaDeProductos, SWT.NONE);
 		composite_4.setLayout(new GridLayout(1, false));
 		
 		Composite composite_5 = new Composite(composite_4, SWT.NONE);
-		composite_5.setLayout(new GridLayout(6, false));
+		composite_5.setLayout(new GridLayout(4, false));
 		GridData gd_composite_5 = new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1);
-		gd_composite_5.heightHint = 110;
+		gd_composite_5.heightHint = 79;
 		gd_composite_5.widthHint = 1248;
 		composite_5.setLayoutData(gd_composite_5);
 		
 		Label lblRaznSocial = new Label(composite_5, SWT.NONE);
 		lblRaznSocial.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblRaznSocial.setText("Raz\u00F3n Social");
-		
-		text = new Text(composite_5, SWT.BORDER);
-		GridData gd_text = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		gd_text.widthHint = 364;
-		text.setLayoutData(gd_text);
-		
-		Label lblRut = new Label(composite_5, SWT.NONE);
-		lblRut.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblRut.setText("RUT");
-		
-		text_1 = new Text(composite_5, SWT.BORDER);
-		GridData gd_text_1 = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
-		gd_text_1.widthHint = 145;
-		text_1.setLayoutData(gd_text_1);
-		
-		Label lblInsumos = new Label(composite_5, SWT.NONE);
-		lblInsumos.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblInsumos.setText("Insumos");
+		lblRaznSocial.setText("Empleado");
 		
 		Combo combo = new Combo(composite_5, SWT.NONE);
 		GridData gd_combo = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		gd_combo.widthHint = 425;
+		gd_combo.widthHint = 300;
 		combo.setLayoutData(gd_combo);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
 		
-		List list = new List(composite_5, SWT.BORDER);
-		list.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		Label lblEstado = new Label(composite_5, SWT.NONE);
+		lblEstado.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblEstado.setText("Estado");
+		
+		Combo combo_1 = new Combo(composite_5, SWT.NONE);
+		GridData gd_combo_1 = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
+		gd_combo_1.widthHint = 174;
+		combo_1.setLayoutData(gd_combo_1);
+		
+		Label lblFecha = new Label(composite_5, SWT.NONE);
+		lblFecha.setText("Fecha desde");
+		
+		Composite composite_1 = new Composite(composite_5, SWT.NONE);
+		GridLayout gl_composite_1 = new GridLayout(3, false);
+		gl_composite_1.marginWidth = 0;
+		composite_1.setLayout(gl_composite_1);
+		composite_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		
+		DateTime dateTime = new DateTime(composite_1, SWT.BORDER);
+		
+		Label lblHasta = new Label(composite_1, SWT.NONE);
+		lblHasta.setText("hasta");
+		
+		DateTime dateTime_1 = new DateTime(composite_1, SWT.BORDER);
+		
+		Label lblMonto = new Label(composite_5, SWT.NONE);
+		lblMonto.setText("Monto desde");
+		
+		Composite composite_2 = new Composite(composite_5, SWT.NONE);
+		GridLayout gl_composite_2 = new GridLayout(3, false);
+		gl_composite_2.marginWidth = 0;
+		composite_2.setLayout(gl_composite_2);
+		composite_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		
+		text_1 = new Text(composite_2, SWT.BORDER);
+		text_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		Label lblHasta_1 = new Label(composite_2, SWT.NONE);
+		lblHasta_1.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblHasta_1.setText("hasta");
+		
+		text = new Text(composite_2, SWT.BORDER);
+		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Composite composite_3 = new Composite(composite_4, SWT.NONE);
 		composite_3.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -154,12 +173,12 @@ public class SalesReportView extends ViewPart {
 		
 		Group grpListadoDeProductos = new Group(parent, SWT.NONE);
 		grpListadoDeProductos.setLayout(new GridLayout(1, false));
-		grpListadoDeProductos.setLayoutData(new RowData(1262, 515));
+		grpListadoDeProductos.setLayoutData(new RowData(1262, 545));
 		grpListadoDeProductos.setText("Listado de Ventas");
 		
 		table = new Table(grpListadoDeProductos, SWT.BORDER | SWT.FULL_SELECTION);
 		GridData gd_table = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-		gd_table.heightHint = 395;
+		gd_table.heightHint = 425;
 		gd_table.widthHint = 1225;
 		table.setLayoutData(gd_table);
 		table.setLinesVisible(true);
