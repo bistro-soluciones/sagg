@@ -222,28 +222,30 @@ public class InventoryLoadingDialog extends Dialog {
 		grpResumen.setLayout(new GridLayout(1, false));
 		
 		table = new Table(grpResumen, SWT.BORDER | SWT.FULL_SELECTION);
-		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		GridData gd_table = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		gd_table.widthHint = 572;
+		table.setLayoutData(gd_table);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		
 		TableColumn tblclmnNombre = new TableColumn(table, SWT.NONE);
-		tblclmnNombre.setWidth(100);
+		tblclmnNombre.setWidth(170);
 		tblclmnNombre.setText("Nombre");
 		
 		TableColumn tblclmnCategora = new TableColumn(table, SWT.NONE);
-		tblclmnCategora.setWidth(100);
+		tblclmnCategora.setWidth(170);
 		tblclmnCategora.setText("Categor\u00EDa");
 		
 		TableColumn tblclmnCantidad = new TableColumn(table, SWT.NONE);
-		tblclmnCantidad.setWidth(100);
+		tblclmnCantidad.setWidth(80);
 		tblclmnCantidad.setText("Cantidad");
 		
 		TableColumn tblclmnPrecioUnitario = new TableColumn(table, SWT.NONE);
-		tblclmnPrecioUnitario.setWidth(100);
+		tblclmnPrecioUnitario.setWidth(115);
 		tblclmnPrecioUnitario.setText("Precio Unitario");
 		
 		TableColumn tblclmnTotal = new TableColumn(table, SWT.NONE);
-		tblclmnTotal.setWidth(100);
+		tblclmnTotal.setWidth(58);
 		tblclmnTotal.setText("Total");
 		
 		Composite composite_5 = new Composite(grpResumen, SWT.NONE);
