@@ -14,10 +14,19 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            name="RCP Perspective"
-            class="com.bistro.sagg.Perspective"
-            id="com.bistro.sagg.perspective">
+            name="Administration Perspective"
+            class="com.bistro.sagg.rcp.perspectives.AdministrationPerspective"
+            id="com.bistro.sagg.rcp.perspectives.administration">
       </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="com.bistro.sagg.employees.views.EmployeeView"
+            id="com.bistro.sagg.employees.rcp.views.employees"
+            name="Employee View"
+            restorable="true">
+      </view>
    </extension>
 
 </plugin>
