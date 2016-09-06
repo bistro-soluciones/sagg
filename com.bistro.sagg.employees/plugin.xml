@@ -9,7 +9,7 @@
             id="com.bistro.sagg.employees">
       </category>
       <view
-            name="Empleados"
+            name="Empleados project"
             icon="icons/sample.gif"
             category="com.bistro.sagg.employees"
             class="com.bistro.sagg.employees.views.EmployeeView"

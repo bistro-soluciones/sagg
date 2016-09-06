@@ -17,6 +17,12 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.DateTime;
 
 public class NewEmployeeDialog extends Dialog {
+	
+	/**
+	 * The ID of the view as specified by the extension.
+	 */
+	public static final String ID = "com.bistro.sagg.employees.views.NewEmployeeDialog";
+	
 	private Text text;
 	private Text text_5;
 	private Text text_2;
