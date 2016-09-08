@@ -23,5 +23,17 @@
          id="product"
          point="org.eclipse.core.runtime.products">
    </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            id="com.bistro.sagg.category.employees"
+            name="Employees">
+      </category>
+      <command
+            categoryId="com.bistro.sagg.category.employees"
+            id="com.bistro.sagg.ui.actions.OpenEmployeesViewAction"
+            name="Open Employees">
+      </command>
+   </extension>
 
 </plugin>

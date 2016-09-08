@@ -12,4 +12,7 @@ public interface ICommandIds {
     public static final String CMD_OPEN = "com.bistro.test.mail.open";
     public static final String CMD_OPEN_MESSAGE = "com.bistro.test.mail.openMessage";
     
+    // Bistro Commands
+    public static final String CMD_OPEN_EMPLOYEES = "com.bistro.sagg.ui.actions.OpenEmployeesViewAction";
+    
 }

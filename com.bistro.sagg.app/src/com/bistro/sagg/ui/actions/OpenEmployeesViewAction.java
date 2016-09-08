@@ -9,20 +9,20 @@ import org.eclipse.ui.PartInitException;
 import com.bistro.sagg.Activator;
 
 
-public class OpenViewAction extends Action {
+public class OpenEmployeesViewAction extends Action {
 	
 	private final IWorkbenchWindow window;
 	private int instanceNum = 0;
 	private final String viewId;
 	
-	public OpenViewAction(IWorkbenchWindow window, String label, String viewId) {
+	public OpenEmployeesViewAction(IWorkbenchWindow window, String label, String viewId) {
 		this.window = window;
 		this.viewId = viewId;
         setText(label);
         // The id is used to refer to the action in a menu or toolbar
-		setId(ICommandIds.CMD_OPEN);
+		setId(ICommandIds.CMD_OPEN_EMPLOYEES);
         // Associate the action with a pre-defined command, to allow key bindings.
-		setActionDefinitionId(ICommandIds.CMD_OPEN);
+		setActionDefinitionId(ICommandIds.CMD_OPEN_EMPLOYEES);
 		setImageDescriptor(Activator.getImageDescriptor("/icons/sample2.gif"));
 	}
 	

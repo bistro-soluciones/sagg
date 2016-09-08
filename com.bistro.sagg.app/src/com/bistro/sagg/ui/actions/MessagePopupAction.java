@@ -15,9 +15,9 @@ public class MessagePopupAction extends Action {
         super(text);
         this.window = window;
         // The id is used to refer to the action in a menu or toolbar
-        setId(ICommandIds.CMD_OPEN_MESSAGE);
+        setId(ICommandIds.CMD_OPEN_EMPLOYEES);
         // Associate the action with a pre-defined command, to allow key bindings.
-        setActionDefinitionId(ICommandIds.CMD_OPEN_MESSAGE);
+        setActionDefinitionId(ICommandIds.CMD_OPEN_EMPLOYEES);
         setImageDescriptor(Activator.getImageDescriptor("/icons/sample3.gif"));
     }
 

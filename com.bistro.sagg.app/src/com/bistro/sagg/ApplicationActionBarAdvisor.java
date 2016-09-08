@@ -19,7 +19,7 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 
 import com.bistro.sagg.employees.views.EmployeeView;
 import com.bistro.sagg.ui.actions.MessagePopupAction;
-import com.bistro.sagg.ui.actions.OpenViewAction;
+import com.bistro.sagg.ui.actions.OpenEmployeesViewAction;
 
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
@@ -29,8 +29,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     private IWorkbenchAction exitAction;
     private IWorkbenchAction aboutAction;
     private IWorkbenchAction newWindowAction;
-    private OpenViewAction openViewAction;
-    private Action messagePopupAction;
+    private OpenEmployeesViewAction openemployeesViewAction;
+//    private Action messagePopupAction;
     
 
     public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
@@ -53,18 +53,20 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         newWindowAction = ActionFactory.OPEN_NEW_WINDOW.create(window);
         register(newWindowAction);
         
-        openViewAction = new OpenViewAction(window, "Open Another Message View", EmployeeView.ID);
-        register(openViewAction);
+        openemployeesViewAction = new OpenEmployeesViewAction(window, "Empleados", EmployeeView.ID);
+        register(openemployeesViewAction);
         
-        messagePopupAction = new MessagePopupAction("Open Message", window);
-        register(messagePopupAction);
+//        messagePopupAction = new OpenEmployeesViewAction("Open Message", window);
+//        register(messagePopupAction);
     }
     
     protected void fillMenuBar(IMenuManager menuBar) {
         MenuManager fileMenu = new MenuManager("&File", IWorkbenchActionConstants.M_FILE);
+        MenuManager employeesMenu = new MenuManager("&Empleados");
         MenuManager helpMenu = new MenuManager("&Help", IWorkbenchActionConstants.M_HELP);
         
         menuBar.add(fileMenu);
+        menuBar.add(employeesMenu);
         // Add a group marker indicating where action set menus will appear.
         menuBar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
         menuBar.add(helpMenu);
@@ -72,11 +74,12 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         // File
         fileMenu.add(newWindowAction);
         fileMenu.add(new Separator());
-        fileMenu.add(messagePopupAction);
-        fileMenu.add(openViewAction);
+//        fileMenu.add(messagePopupAction);
         fileMenu.add(new Separator());
         fileMenu.add(exitAction);
         
+        // Empleados
+        employeesMenu.add(openemployeesViewAction);
         // Help
         helpMenu.add(aboutAction);
     }
@@ -84,8 +87,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     protected void fillCoolBar(ICoolBarManager coolBar) {
         IToolBarManager toolbar = new ToolBarManager(SWT.FLAT | SWT.RIGHT);
         coolBar.add(new ToolBarContributionItem(toolbar, "main"));   
-        toolbar.add(openViewAction);
-        toolbar.add(messagePopupAction);
+        toolbar.add(openemployeesViewAction);
+//        toolbar.add(messagePopupAction);
     }
 
     
