@@ -14,5 +14,6 @@ public interface ICommandIds {
     
     // Bistro Commands
     public static final String CMD_OPEN_EMPLOYEES = "com.bistro.sagg.ui.actions.OpenEmployeesViewAction";
+    public static final String CMD_OPEN_NEW_EMPLOYEE = "com.bistro.sagg.ui.actions.OpenNewEmployeeDialogAction";
     
 }

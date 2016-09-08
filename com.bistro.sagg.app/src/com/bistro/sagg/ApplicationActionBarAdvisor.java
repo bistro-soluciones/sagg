@@ -1,6 +1,5 @@
 package com.bistro.sagg;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IMenuManager;
@@ -18,8 +17,8 @@ import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 
 import com.bistro.sagg.employees.views.EmployeeView;
-import com.bistro.sagg.ui.actions.MessagePopupAction;
 import com.bistro.sagg.ui.actions.OpenEmployeesViewAction;
+import com.bistro.sagg.ui.actions.OpenNewEmployeeDialogAction;
 
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
@@ -29,7 +28,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     private IWorkbenchAction exitAction;
     private IWorkbenchAction aboutAction;
     private IWorkbenchAction newWindowAction;
-    private OpenEmployeesViewAction openemployeesViewAction;
+    private OpenEmployeesViewAction openEmployeesViewAction;
+    private OpenNewEmployeeDialogAction openNewEmployeeDialogAction;
 //    private Action messagePopupAction;
     
 
@@ -53,8 +53,10 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         newWindowAction = ActionFactory.OPEN_NEW_WINDOW.create(window);
         register(newWindowAction);
         
-        openemployeesViewAction = new OpenEmployeesViewAction(window, "Empleados", EmployeeView.ID);
-        register(openemployeesViewAction);
+        openEmployeesViewAction = new OpenEmployeesViewAction(window, "Empleados", EmployeeView.ID);
+        register(openEmployeesViewAction);
+        openNewEmployeeDialogAction = new OpenNewEmployeeDialogAction("Nuevo Empleado", window);
+        register(openNewEmployeeDialogAction);
         
 //        messagePopupAction = new OpenEmployeesViewAction("Open Message", window);
 //        register(messagePopupAction);
@@ -79,7 +81,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         fileMenu.add(exitAction);
         
         // Empleados
-        employeesMenu.add(openemployeesViewAction);
+        employeesMenu.add(openEmployeesViewAction);
+        employeesMenu.add(openNewEmployeeDialogAction);
         // Help
         helpMenu.add(aboutAction);
     }
@@ -87,9 +90,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     protected void fillCoolBar(ICoolBarManager coolBar) {
         IToolBarManager toolbar = new ToolBarManager(SWT.FLAT | SWT.RIGHT);
         coolBar.add(new ToolBarContributionItem(toolbar, "main"));   
-        toolbar.add(openemployeesViewAction);
+        toolbar.add(openEmployeesViewAction);
 //        toolbar.add(messagePopupAction);
     }
 
-    
 }
