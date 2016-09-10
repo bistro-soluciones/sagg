@@ -1,4 +1,4 @@
-package com.bistro.sagg.ui.actions;
+package com.bistro.sagg.employees.ui.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -6,7 +6,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 
-import com.bistro.sagg.Activator;
+import com.bistro.sagg.employees.Activator;
 
 
 public class OpenEmployeesViewAction extends Action {
@@ -20,9 +20,9 @@ public class OpenEmployeesViewAction extends Action {
 		this.viewId = viewId;
         setText(label);
         // The id is used to refer to the action in a menu or toolbar
-		setId(ICommandIds.CMD_OPEN_EMPLOYEES);
+		setId(IEmployeeCommandIds.CMD_OPEN_EMPLOYEES);
         // Associate the action with a pre-defined command, to allow key bindings.
-		setActionDefinitionId(ICommandIds.CMD_OPEN_EMPLOYEES);
+		setActionDefinitionId(IEmployeeCommandIds.CMD_OPEN_EMPLOYEES);
 		setImageDescriptor(Activator.getImageDescriptor("/icons/sample2.gif"));
 	}
 	

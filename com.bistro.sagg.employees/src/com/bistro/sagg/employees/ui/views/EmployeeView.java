@@ -1,4 +1,4 @@
-package com.bistro.sagg.employees.views;
+package com.bistro.sagg.employees.ui.views;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -56,7 +56,7 @@ public class EmployeeView extends ViewPart {
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
-	public static final String ID = "com.bistro.sagg.employees.views.EmployeeView";
+	public static final String ID = "com.bistro.sagg.employees.ui.views.EmployeeView";
 
 	private Action action1;
 	private Action action2;

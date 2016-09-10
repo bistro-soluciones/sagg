@@ -1,4 +1,4 @@
-package com.bistro.sagg.employees.views;
+package com.bistro.sagg.employees.ui.dialogs;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -20,7 +20,7 @@ public class NewEmployeeDialog extends Dialog {
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
-	public static final String ID = "com.bistro.sagg.employees.views.NewEmployeeDialog";
+	public static final String ID = "com.bistro.sagg.employees.ui.dialogs.NewEmployeeDialog";
 	
 	private Text text;
 	private Text text_5;
@@ -35,6 +35,7 @@ public class NewEmployeeDialog extends Dialog {
 	 */
 	public NewEmployeeDialog(Shell parentShell) {
 		super(parentShell);
+		setShellStyle(SWT.MIN | SWT.MAX | SWT.TITLE);
 	}
 
 	/**
@@ -44,6 +45,8 @@ public class NewEmployeeDialog extends Dialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
+		container.getShell().setText("Nuevo Empleado");
+		
 		GridLayout gridLayout = (GridLayout) container.getLayout();
 		gridLayout.marginHeight = 14;
 		
@@ -192,6 +195,6 @@ public class NewEmployeeDialog extends Dialog {
 	 */
 	@Override
 	protected Point getInitialSize() {
-		return new Point(645, 525);
+		return new Point(644, 547);
 	}
 }

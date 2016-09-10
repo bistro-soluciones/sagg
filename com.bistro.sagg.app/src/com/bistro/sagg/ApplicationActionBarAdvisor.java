@@ -16,9 +16,9 @@ import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 
-import com.bistro.sagg.employees.views.EmployeeView;
-import com.bistro.sagg.ui.actions.OpenEmployeesViewAction;
-import com.bistro.sagg.ui.actions.OpenNewEmployeeDialogAction;
+import com.bistro.sagg.employees.ui.actions.OpenEmployeesViewAction;
+import com.bistro.sagg.employees.ui.actions.OpenNewEmployeeDialogAction;
+import com.bistro.sagg.employees.ui.views.EmployeeView;
 
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 

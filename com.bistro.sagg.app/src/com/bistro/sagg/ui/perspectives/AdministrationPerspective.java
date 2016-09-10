@@ -3,7 +3,7 @@ package com.bistro.sagg.ui.perspectives;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
-import com.bistro.sagg.employees.views.EmployeeView;
+import com.bistro.sagg.employees.ui.views.EmployeeView;
 
 public class AdministrationPerspective implements IPerspectiveFactory {
 
