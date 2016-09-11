@@ -46,7 +46,7 @@
       <perspective
             class="com.bistro.sagg.employees.ui.perspectives.EmployeesPerspective"
             id="com.bistro.sagg.employees.ui.perspectives.EmployeesPerspective"
-            name="Employees Perspective">
+            name="Empleados">
       </perspective>
    </extension>
 
