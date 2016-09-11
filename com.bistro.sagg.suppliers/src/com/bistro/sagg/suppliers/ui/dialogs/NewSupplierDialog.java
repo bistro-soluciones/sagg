@@ -1,4 +1,4 @@
-package com.bistro.sagg.suppliers.views;
+package com.bistro.sagg.suppliers.ui.dialogs;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -29,6 +29,7 @@ public class NewSupplierDialog extends Dialog {
 	 */
 	public NewSupplierDialog(Shell parentShell) {
 		super(parentShell);
+		setShellStyle(SWT.MIN | SWT.MAX | SWT.TITLE);
 	}
 
 	/**
@@ -38,6 +39,8 @@ public class NewSupplierDialog extends Dialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
+		container.getShell().setText("Nuevo Proveedor");
+		
 		GridLayout gridLayout = (GridLayout) container.getLayout();
 		gridLayout.marginHeight = 14;
 		
@@ -160,6 +163,6 @@ public class NewSupplierDialog extends Dialog {
 	 */
 	@Override
 	protected Point getInitialSize() {
-		return new Point(645, 598);
+		return new Point(644, 610);
 	}
 }

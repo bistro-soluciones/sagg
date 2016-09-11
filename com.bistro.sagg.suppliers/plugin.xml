@@ -4,35 +4,48 @@
 
    <extension
          point="org.eclipse.ui.views">
-      <category
-            name="Suppliers Category"
-            id="com.bistro.sagg.suppliers">
-      </category>
       <view
             name="Proveedores"
             icon="icons/sample.gif"
-            category="com.bistro.sagg.suppliers"
-            class="com.bistro.sagg.suppliers.views.SupplierView"
-            id="com.bistro.sagg.suppliers.views.SupplierView">
+            category="com.bistro.sagg.category.views"
+            class="com.bistro.sagg.suppliers.ui.views.SupplierView"
+            id="com.bistro.sagg.suppliers.ui.views.SupplierView">
+      </view>
+      <view
+            allowMultiple="true"
+            class="com.bistro.sagg.suppliers.ui.views.SupplierListView"
+            id="com.bistro.sagg.suppliers.ui.views.SupplierListView"
+            name="Listado de Proveedores"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            class="com.bistro.sagg.suppliers.ui.views.SupplierFilterView"
+            id="com.bistro.sagg.suppliers.ui.views.SupplierFilterView"
+            name="Filtro de Proveedores"
+            restorable="true">
       </view>
    </extension>
    <extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
-            targetID="org.eclipse.jdt.ui.JavaPerspective">
-         <view
-               ratio="0.5"
-               relative="org.eclipse.ui.views.ProblemView"
-               relationship="right"
-               id="com.bistro.sagg.suppliers.views.SupplierView">
-         </view>
-      </perspectiveExtension>
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="com.bistro.sagg.category.commands"
+            id="com.bistro.sagg.suppliers.ui.actions.OpenSuppliersViewAction"
+            name="Open Suppliers View">
+      </command>
+      <command
+            categoryId="com.bistro.sagg.category.commands"
+            id="com.bistro.sagg.suppliers.ui.actions.OpenNewSupplierDialogAction"
+            name="Open New Supplier Dialog">
+      </command>
    </extension>
    <extension
-         point="org.eclipse.help.contexts">
-      <contexts
-            file="contexts.xml">
-      </contexts>
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="com.bistro.sagg.suppliers.ui.perspectives.SuppliersPerspective"
+            id="com.bistro.sagg.suppliers.ui.perspectives.SuppliersPerspective"
+            name="Suppliers Perspective">
+      </perspective>
    </extension>
 
 </plugin>

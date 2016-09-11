@@ -9,3 +9,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
+Export-Package: com.bistro.sagg.suppliers.ui.actions,
+ com.bistro.sagg.suppliers.ui.dialogs,
+ com.bistro.sagg.suppliers.ui.perspectives,
+ com.bistro.sagg.suppliers.ui.views

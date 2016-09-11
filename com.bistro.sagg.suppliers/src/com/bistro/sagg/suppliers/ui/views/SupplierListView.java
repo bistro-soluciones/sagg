@@ -1,7 +1,6 @@
-package com.bistro.sagg.suppliers.views;
+package com.bistro.sagg.suppliers.ui.views;
 
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -25,7 +24,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
-import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
@@ -34,6 +32,8 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+
+import com.bistro.sagg.suppliers.ui.actions.OpenNewSupplierDialogAction;
 
 
 /**
@@ -54,18 +54,15 @@ import org.eclipse.ui.part.ViewPart;
  * <p>
  */
 
-public class SupplierView extends ViewPart {
+public class SupplierListView extends ViewPart {
 
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
-	public static final String ID = "com.bistro.sagg.suppliers.views.SupplierView";
+	public static final String ID = "com.bistro.sagg.suppliers.ui.views.SupplierListView";
 
-	private Action action1;
-	private Action action2;
-	private Table table;
-	private Text text;
-	private Text text_1;
+	private OpenNewSupplierDialogAction openNewSupplierDialogAction;
+	private Table suppliersTable;
 
 	/*
 	 * The content provider class is responsible for
@@ -103,7 +100,7 @@ public class SupplierView extends ViewPart {
 	/**
 	 * The constructor.
 	 */
-	public SupplierView() {
+	public SupplierListView() {
 	}
 
 	/**
@@ -111,109 +108,37 @@ public class SupplierView extends ViewPart {
 	 * to create the viewer and initialize it.
 	 */
 	public void createPartControl(Composite parent) {
-		parent.setLayout(new RowLayout(SWT.HORIZONTAL));
+		parent.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		Group grpBsquedaDeProductos = new Group(parent, SWT.NONE);
-		grpBsquedaDeProductos.setLayout(new FillLayout(SWT.HORIZONTAL));
-		grpBsquedaDeProductos.setLayoutData(new RowData(1262, 168));
-		grpBsquedaDeProductos.setText("Filtro de Proveedores");
+		suppliersTable = new Table(parent, SWT.BORDER | SWT.FULL_SELECTION);
+		suppliersTable.setLinesVisible(true);
+		suppliersTable.setHeaderVisible(true);
 		
-		Composite composite_4 = new Composite(grpBsquedaDeProductos, SWT.NONE);
-		composite_4.setLayout(new GridLayout(1, false));
-		
-		Composite composite_5 = new Composite(composite_4, SWT.NONE);
-		composite_5.setLayout(new GridLayout(6, false));
-		GridData gd_composite_5 = new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1);
-		gd_composite_5.heightHint = 110;
-		gd_composite_5.widthHint = 1248;
-		composite_5.setLayoutData(gd_composite_5);
-		
-		Label lblRaznSocial = new Label(composite_5, SWT.NONE);
-		lblRaznSocial.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblRaznSocial.setText("Raz\u00F3n Social");
-		
-		text = new Text(composite_5, SWT.BORDER);
-		GridData gd_text = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		gd_text.widthHint = 364;
-		text.setLayoutData(gd_text);
-		
-		Label lblRut = new Label(composite_5, SWT.NONE);
-		lblRut.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblRut.setText("RUT");
-		
-		text_1 = new Text(composite_5, SWT.BORDER);
-		GridData gd_text_1 = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
-		gd_text_1.widthHint = 145;
-		text_1.setLayoutData(gd_text_1);
-		
-		Label lblInsumos = new Label(composite_5, SWT.NONE);
-		lblInsumos.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblInsumos.setText("Insumos");
-		
-		Combo combo = new Combo(composite_5, SWT.NONE);
-		GridData gd_combo = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		gd_combo.widthHint = 425;
-		combo.setLayoutData(gd_combo);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		
-		List list = new List(composite_5, SWT.BORDER);
-		list.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		
-		Composite composite_3 = new Composite(composite_4, SWT.NONE);
-		composite_3.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		composite_3.setLayout(new GridLayout(2, false));
-		
-		Button btnFiltrar = new Button(composite_3, SWT.NONE);
-		GridData gd_btnFiltrar = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		gd_btnFiltrar.widthHint = 80;
-		btnFiltrar.setLayoutData(gd_btnFiltrar);
-		btnFiltrar.setText("Filtrar");
-		
-		Button btnLimpiar = new Button(composite_3, SWT.NONE);
-		GridData gd_btnLimpiar = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		gd_btnLimpiar.widthHint = 80;
-		btnLimpiar.setLayoutData(gd_btnLimpiar);
-		btnLimpiar.setText("Limpiar");
-		
-		Group grpListadoDeProductos = new Group(parent, SWT.NONE);
-		grpListadoDeProductos.setLayout(null);
-		grpListadoDeProductos.setLayoutData(new RowData(1262, 515));
-		grpListadoDeProductos.setText("Listado de Proveedores");
-		
-		table = new Table(grpListadoDeProductos, SWT.BORDER | SWT.FULL_SELECTION);
-		table.setBounds(10, 33, 1248, 495);
-		table.setLinesVisible(true);
-		table.setHeaderVisible(true);
-		
-		TableColumn tblclmnNombre = new TableColumn(table, SWT.NONE);
+		TableColumn tblclmnNombre = new TableColumn(suppliersTable, SWT.NONE);
 		tblclmnNombre.setWidth(182);
 		tblclmnNombre.setText("Raz\u00F3n Social");
 		
-		TableColumn tblclmnRut = new TableColumn(table, SWT.NONE);
+		TableColumn tblclmnRut = new TableColumn(suppliersTable, SWT.NONE);
 		tblclmnRut.setWidth(88);
 		tblclmnRut.setText("RUT");
 		
-		TableColumn tblclmnNewColumn = new TableColumn(table, SWT.NONE);
-		tblclmnNewColumn.setWidth(394);
+		TableColumn tblclmnNewColumn = new TableColumn(suppliersTable, SWT.NONE);
+		tblclmnNewColumn.setWidth(386);
 		tblclmnNewColumn.setText("Insumos");
 		
-		TableColumn tblclmnUnidadDeMedida = new TableColumn(table, SWT.NONE);
+		TableColumn tblclmnUnidadDeMedida = new TableColumn(suppliersTable, SWT.NONE);
 		tblclmnUnidadDeMedida.setWidth(190);
 		tblclmnUnidadDeMedida.setText("Datos de Contacto");
 		
-		TableColumn tblclmnNewColumn_1 = new TableColumn(table, SWT.NONE);
+		TableColumn tblclmnNewColumn_1 = new TableColumn(suppliersTable, SWT.NONE);
 		tblclmnNewColumn_1.setWidth(100);
 		tblclmnNewColumn_1.setText("Tel\u00E9fono");
 		
-		TableColumn tblclmnStockLocal = new TableColumn(table, SWT.NONE);
+		TableColumn tblclmnStockLocal = new TableColumn(suppliersTable, SWT.NONE);
 		tblclmnStockLocal.setWidth(100);
 		tblclmnStockLocal.setText("Celular");
 		
-		TableColumn tblclmnStockBodega = new TableColumn(table, SWT.NONE);
+		TableColumn tblclmnStockBodega = new TableColumn(suppliersTable, SWT.NONE);
 		tblclmnStockBodega.setWidth(190);
 		tblclmnStockBodega.setText("Correo Electr\u00F3nico");
 		makeActions();
@@ -227,7 +152,7 @@ public class SupplierView extends ViewPart {
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
-				SupplierView.this.fillContextMenu(manager);
+				SupplierListView.this.fillContextMenu(manager);
 			}
 		});
 	}
@@ -239,43 +164,26 @@ public class SupplierView extends ViewPart {
 	}
 
 	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(action1);
+		manager.add(openNewSupplierDialogAction);
 		manager.add(new Separator());
-		manager.add(action2);
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
-		manager.add(action1);
-		manager.add(action2);
+		manager.add(openNewSupplierDialogAction);
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 	
 	private void fillLocalToolBar(IToolBarManager manager) {
-		manager.add(action1);
-		manager.add(action2);
+		manager.add(openNewSupplierDialogAction);
 	}
 
 	private void makeActions() {
-		action1 = new Action() {
-			public void run() {
-				showMessage("Action 1 executed");
-			}
-		};
-		action1.setText("Action 1");
-		action1.setToolTipText("Action 1 tooltip");
-		action1.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+		openNewSupplierDialogAction = new OpenNewSupplierDialogAction("Nuevo Proveedor",PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+		openNewSupplierDialogAction.setText("Nuevo Proveedor");
+		openNewSupplierDialogAction.setToolTipText("Nuevo Proveedor");
+		openNewSupplierDialogAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
-		
-		action2 = new Action() {
-			public void run() {
-				showMessage("Action 2 executed");
-			}
-		};
-		action2.setText("Action 2");
-		action2.setToolTipText("Action 2 tooltip");
-		action2.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 //		doubleClickAction = new Action() {
 //			public void run() {
 //				ISelection selection = viewer.getSelection();
