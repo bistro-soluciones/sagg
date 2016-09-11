@@ -4,17 +4,50 @@
 
    <extension
          point="org.eclipse.ui.views">
-      <category
-            name="Employees Category"
-            id="com.bistro.sagg.employees">
-      </category>
       <view
-            name="Empleados project"
-            icon="icons/sample.gif"
-            category="com.bistro.sagg.employees"
+            category="com.bistro.sagg.category.views"
             class="com.bistro.sagg.employees.ui.views.EmployeeView"
-            id="com.bistro.sagg.employees.ui.views.EmployeeView">
+            icon="icons/sample.gif"
+            id="com.bistro.sagg.employees.ui.views.EmployeeView"
+            name="Empleados">
       </view>
+      <view
+            allowMultiple="true"
+            category="com.bistro.sagg.category.views"
+            class="com.bistro.sagg.employees.ui.views.EmployeeListView"
+            id="com.bistro.sagg.employees.ui.views.EmployeeListView"
+            name="Listado de Empleados"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            category="com.bistro.sagg.category.views"
+            class="com.bistro.sagg.employees.ui.views.EmployeeFilterView"
+            id="com.bistro.sagg.employees.ui.views.EmployeeFilterView"
+            name="Filtro de Empleados"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="com.bistro.sagg.category.commands"
+            id="com.bistro.sagg.ui.actions.OpenEmployeesViewAction"
+            name="Open Employees View">
+      </command>
+      <command
+            categoryId="com.bistro.sagg.category.commands"
+            id="com.bistro.sagg.ui.actions.OpenNewEmployeeDialogAction"
+            name="Open New Employee Dialog">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="com.bistro.sagg.employees.ui.perspectives.EmployeesPerspective"
+            id="com.bistro.sagg.employees.ui.perspectives.EmployeesPerspective"
+            name="Employees Perspective">
+      </perspective>
    </extension>
 
 </plugin>

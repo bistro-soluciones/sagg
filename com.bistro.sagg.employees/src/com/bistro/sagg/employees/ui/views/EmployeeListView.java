@@ -53,17 +53,15 @@ import com.bistro.sagg.employees.ui.actions.OpenNewEmployeeDialogAction;
  * <p>
  */
 
-public class EmployeeView extends ViewPart {
+public class EmployeeListView extends ViewPart {
 
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
-	public static final String ID = "com.bistro.sagg.employees.ui.views.EmployeeView";
+	public static final String ID = "com.bistro.sagg.employees.ui.views.EmployeeListView";
 
 	private Action openNewEmployeeDialogAction;
-	private Table table;
-	private Text text_1;
-	private Text text;
+	private Table employeesTable;
 
 	/*
 	 * The content provider class is responsible for
@@ -101,7 +99,7 @@ public class EmployeeView extends ViewPart {
 	/**
 	 * The constructor.
 	 */
-	public EmployeeView() {
+	public EmployeeListView() {
 	}
 
 	/**
@@ -109,114 +107,41 @@ public class EmployeeView extends ViewPart {
 	 * to create the viewer and initialize it.
 	 */
 	public void createPartControl(Composite parent) {
-		parent.setLayout(new RowLayout(SWT.HORIZONTAL));
+		parent.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		Group grpBsquedaDeProductos = new Group(parent, SWT.NONE);
-		grpBsquedaDeProductos.setLayout(new FillLayout(SWT.HORIZONTAL));
-		grpBsquedaDeProductos.setLayoutData(new RowData(1243, 125));
-		grpBsquedaDeProductos.setText("Filtro de Empleados");
+		employeesTable = new Table(parent, SWT.BORDER | SWT.FULL_SELECTION);
+		employeesTable.setLinesVisible(true);
+		employeesTable.setHeaderVisible(true);
 		
-		Composite composite_4 = new Composite(grpBsquedaDeProductos, SWT.NONE);
-		composite_4.setLayout(new GridLayout(1, false));
-		
-		Composite composite_5 = new Composite(composite_4, SWT.NONE);
-		composite_5.setLayout(new GridLayout(6, false));
-		GridData gd_composite_5 = new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1);
-		gd_composite_5.heightHint = 80;
-		gd_composite_5.widthHint = 1238;
-		composite_5.setLayoutData(gd_composite_5);
-		
-		Label lblRaznSocial = new Label(composite_5, SWT.NONE);
-		lblRaznSocial.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblRaznSocial.setText("Nombre");
-		
-		text = new Text(composite_5, SWT.BORDER);
-		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
-		Label lblRut = new Label(composite_5, SWT.NONE);
-		lblRut.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblRut.setText("RUT");
-		
-		text_1 = new Text(composite_5, SWT.BORDER);
-		text_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
-		Label lblInsumos = new Label(composite_5, SWT.NONE);
-		lblInsumos.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblInsumos.setText("Cargo");
-		
-		Combo combo = new Combo(composite_5, SWT.NONE);
-		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
-		Label lblFechaDeIngreso = new Label(composite_5, SWT.NONE);
-		lblFechaDeIngreso.setText("Fecha de Ingreso");
-		
-		Composite composite = new Composite(composite_5, SWT.NONE);
-		composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		GridLayout gl_composite = new GridLayout(1, false);
-		composite.setLayout(gl_composite);
-		
-		DateTime dateTime = new DateTime(composite, SWT.BORDER);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		
-		Composite composite_3 = new Composite(composite_4, SWT.NONE);
-		composite_3.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		GridLayout gl_composite_3 = new GridLayout(2, false);
-		gl_composite_3.marginHeight = 0;
-		composite_3.setLayout(gl_composite_3);
-		
-		Button btnFiltrar = new Button(composite_3, SWT.NONE);
-		GridData gd_btnFiltrar = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		gd_btnFiltrar.widthHint = 80;
-		btnFiltrar.setLayoutData(gd_btnFiltrar);
-		btnFiltrar.setText("Filtrar");
-		
-		Button btnLimpiar = new Button(composite_3, SWT.NONE);
-		GridData gd_btnLimpiar = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		gd_btnLimpiar.widthHint = 80;
-		btnLimpiar.setLayoutData(gd_btnLimpiar);
-		btnLimpiar.setText("Limpiar");
-		
-		Group grpListadoDeProductos = new Group(parent, SWT.NONE);
-		grpListadoDeProductos.setLayout(new FillLayout(SWT.HORIZONTAL));
-		grpListadoDeProductos.setLayoutData(new RowData(1243, 435));
-		grpListadoDeProductos.setText("Listado de Empleados");
-		
-		table = new Table(grpListadoDeProductos, SWT.BORDER | SWT.FULL_SELECTION);
-		table.setLinesVisible(true);
-		table.setHeaderVisible(true);
-		
-		TableColumn tblclmnNombre = new TableColumn(table, SWT.NONE);
+		TableColumn tblclmnNombre = new TableColumn(employeesTable, SWT.NONE);
 		tblclmnNombre.setWidth(250);
 		tblclmnNombre.setText("Nombre");
 		
-		TableColumn tblclmnRut = new TableColumn(table, SWT.NONE);
+		TableColumn tblclmnRut = new TableColumn(employeesTable, SWT.NONE);
 		tblclmnRut.setWidth(100);
 		tblclmnRut.setText("RUT");
 		
-		TableColumn tblclmnNewColumn = new TableColumn(table, SWT.NONE);
+		TableColumn tblclmnNewColumn = new TableColumn(employeesTable, SWT.NONE);
 		tblclmnNewColumn.setWidth(194);
 		tblclmnNewColumn.setText("Cargo");
 		
-		TableColumn tblclmnUnidadDeMedida = new TableColumn(table, SWT.NONE);
+		TableColumn tblclmnUnidadDeMedida = new TableColumn(employeesTable, SWT.NONE);
 		tblclmnUnidadDeMedida.setWidth(280);
 		tblclmnUnidadDeMedida.setText("Direcci\u00F3n");
 		
-		TableColumn tblclmnNewColumn_1 = new TableColumn(table, SWT.NONE);
+		TableColumn tblclmnNewColumn_1 = new TableColumn(employeesTable, SWT.NONE);
 		tblclmnNewColumn_1.setWidth(100);
 		tblclmnNewColumn_1.setText("Tel\u00E9fono");
 		
-		TableColumn tblclmnStockLocal = new TableColumn(table, SWT.NONE);
+		TableColumn tblclmnStockLocal = new TableColumn(employeesTable, SWT.NONE);
 		tblclmnStockLocal.setWidth(100);
 		tblclmnStockLocal.setText("Celular");
 		
-		TableColumn tblclmnStockBodega = new TableColumn(table, SWT.NONE);
+		TableColumn tblclmnStockBodega = new TableColumn(employeesTable, SWT.NONE);
 		tblclmnStockBodega.setWidth(220);
 		tblclmnStockBodega.setText("Correo Electr\u00F3nico");
 		
-		TableColumn tblclmnFechaDeIngreso = new TableColumn(table, SWT.NONE);
+		TableColumn tblclmnFechaDeIngreso = new TableColumn(employeesTable, SWT.NONE);
 		tblclmnFechaDeIngreso.setWidth(135);
 		tblclmnFechaDeIngreso.setText("Fecha de Ingreso");
 		makeActions();
@@ -230,7 +155,7 @@ public class EmployeeView extends ViewPart {
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
-				EmployeeView.this.fillContextMenu(manager);
+				EmployeeListView.this.fillContextMenu(manager);
 			}
 		});
 	}
