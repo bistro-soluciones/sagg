@@ -21,6 +21,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         configurer.setInitialSize(new Point(1280, 768));
         configurer.setShowCoolBar(true);
         configurer.setShowStatusLine(true);
+        configurer.setShowPerspectiveBar(true);
         configurer.setTitle("SAGG"); //$NON-NLS-1$
     }
 }

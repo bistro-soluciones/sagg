@@ -13,11 +13,6 @@
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
-      <perspective
-            name="Administration Perspective"
-            class="com.bistro.sagg.ui.perspectives.AdministrationPerspective"
-            id="com.bistro.sagg.ui.perspectives.AdministrationPerspective">
-      </perspective>
    </extension>
    <extension
          id="product"
