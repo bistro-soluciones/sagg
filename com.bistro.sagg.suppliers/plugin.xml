@@ -44,7 +44,7 @@
       <perspective
             class="com.bistro.sagg.suppliers.ui.perspectives.SuppliersPerspective"
             id="com.bistro.sagg.suppliers.ui.perspectives.SuppliersPerspective"
-            name="Suppliers Perspective">
+            name="Proveedores">
       </perspective>
    </extension>
 
