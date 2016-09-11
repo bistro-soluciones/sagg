@@ -19,6 +19,9 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 import com.bistro.sagg.employees.ui.actions.OpenEmployeesViewAction;
 import com.bistro.sagg.employees.ui.actions.OpenNewEmployeeDialogAction;
 import com.bistro.sagg.employees.ui.views.EmployeeView;
+import com.bistro.sagg.suppliers.ui.actions.OpenNewSupplierDialogAction;
+import com.bistro.sagg.suppliers.ui.actions.OpenSuppliersViewAction;
+import com.bistro.sagg.suppliers.ui.views.SupplierView;
 
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
@@ -29,7 +32,10 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     private IWorkbenchAction aboutAction;
     private IWorkbenchAction newWindowAction;
     private OpenEmployeesViewAction openEmployeesViewAction;
+    private OpenSuppliersViewAction openSuppliersViewAction;
+    
     private OpenNewEmployeeDialogAction openNewEmployeeDialogAction;
+    private OpenNewSupplierDialogAction openNewSupplierDialogAction;
 //    private Action messagePopupAction;
     
 
@@ -53,22 +59,26 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         newWindowAction = ActionFactory.OPEN_NEW_WINDOW.create(window);
         register(newWindowAction);
         
+        // Administración
         openEmployeesViewAction = new OpenEmployeesViewAction(window, "Empleados", EmployeeView.ID);
         register(openEmployeesViewAction);
+        openSuppliersViewAction = new OpenSuppliersViewAction(window, "Proveedores", SupplierView.ID);
+        register(openSuppliersViewAction);
+        
         openNewEmployeeDialogAction = new OpenNewEmployeeDialogAction("Nuevo Empleado", window);
         register(openNewEmployeeDialogAction);
-        
-//        messagePopupAction = new OpenEmployeesViewAction("Open Message", window);
-//        register(messagePopupAction);
+        openNewSupplierDialogAction = new OpenNewSupplierDialogAction("Nuevo Proveedor", window);
+        register(openNewSupplierDialogAction);
     }
     
     protected void fillMenuBar(IMenuManager menuBar) {
         MenuManager fileMenu = new MenuManager("&File", IWorkbenchActionConstants.M_FILE);
-        MenuManager employeesMenu = new MenuManager("&Empleados");
+        MenuManager administrationMenu = new MenuManager("&Administración");
+//        MenuManager employeesMenu = new MenuManager("&Empleados");
         MenuManager helpMenu = new MenuManager("&Help", IWorkbenchActionConstants.M_HELP);
         
         menuBar.add(fileMenu);
-        menuBar.add(employeesMenu);
+        menuBar.add(administrationMenu);
         // Add a group marker indicating where action set menus will appear.
         menuBar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
         menuBar.add(helpMenu);
@@ -80,18 +90,18 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         fileMenu.add(new Separator());
         fileMenu.add(exitAction);
         
-        // Empleados
-        employeesMenu.add(openEmployeesViewAction);
-        employeesMenu.add(openNewEmployeeDialogAction);
+        // Administracion
+        administrationMenu.add(openEmployeesViewAction);
+        administrationMenu.add(openSuppliersViewAction);
         // Help
         helpMenu.add(aboutAction);
     }
     
     protected void fillCoolBar(ICoolBarManager coolBar) {
         IToolBarManager toolbar = new ToolBarManager(SWT.FLAT | SWT.RIGHT);
-        coolBar.add(new ToolBarContributionItem(toolbar, "main"));   
-        toolbar.add(openEmployeesViewAction);
-//        toolbar.add(messagePopupAction);
+        coolBar.add(new ToolBarContributionItem(toolbar, "main"));
+        toolbar.add(openNewEmployeeDialogAction);
+        toolbar.add(openNewSupplierDialogAction);
     }
 
 }

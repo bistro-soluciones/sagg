@@ -4,5 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.bistro.sagg.employees"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.bistro.sagg.suppliers"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

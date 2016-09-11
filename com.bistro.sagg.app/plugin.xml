@@ -26,35 +26,19 @@
    <extension
          point="org.eclipse.ui.commands">
       <category
-            id="com.bistro.sagg.category.employees"
-            name="Employees">
+            id="com.bistro.sagg.category.commands"
+            name="Bistro Commands">
       </category>
-      <command
-            categoryId="com.bistro.sagg.category.employees"
-            id="com.bistro.sagg.ui.actions.OpenEmployeesViewAction"
-            name="Open Employees">
-      </command>
-      <command
-            categoryId="com.bistro.sagg.category.employees"
-            id="com.bistro.sagg.ui.actions.OpenNewEmployeeDialogAction"
-            name="New Employee">
-      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
-      <menuContribution
-            allPopups="false"
-            locationURI="com.bistro.sagg.ui.main.menu">
-         <menu
-               label="Empleados Menu">
-            <command
-                  commandId="com.bistro.sagg.ui.actions.OpenEmployeesViewAction"
-                  icon="icons/sample3.gif"
-                  label="Empleados"
-                  style="push">
-            </command>
-         </menu>
-      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="com.bistro.sagg.category.views"
+            name="Bistro Views">
+      </category>
    </extension>
 
 </plugin>
