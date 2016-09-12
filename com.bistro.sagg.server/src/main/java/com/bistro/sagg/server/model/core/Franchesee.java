@@ -1,19 +1,13 @@
-package com.bistro.sagg.server.model;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+package com.bistro.sagg.server.model.core;
 
 import com.bistro.sagg.server.model.core.location.City;
 
-@Entity
-public class Employee {
+public class Franchesee {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	private String name;
+	// Personal information
+	private String firstname;
+	private String lastname;
 	private String personId;
 	// Contact information
 	private String email;
@@ -24,13 +18,8 @@ public class Employee {
 	private String addressL2;
 	private City city;
 
-	public Employee() {
+	public Franchesee() {
 		super();
-	}
-
-	public Employee(String name, String personId) {
-		this.name = name;
-		this.personId = personId;
 	}
 
 	public Long getId() {
@@ -41,12 +30,20 @@ public class Employee {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public String getFirstname() {
+		return firstname;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setFirstname(String firstname) {
+		this.firstname = firstname;
+	}
+
+	public String getLastname() {
+		return lastname;
+	}
+
+	public void setLastname(String lastname) {
+		this.lastname = lastname;
 	}
 
 	public String getPersonId() {
