@@ -1,11 +1,14 @@
-package com.bistro.sagg.server.model.core.location;
+package com.bistro.sagg.core.model.core.location;
 
-public class City {
+import java.util.List;
+
+public class State {
 
 	private Long id;
 	private String name;
+	private List<City> cities;
 
-	public City() {
+	public State() {
 		super();
 	}
 
@@ -23,6 +26,14 @@ public class City {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public List<City> getCities() {
+		return cities;
+	}
+
+	public void setCities(List<City> cities) {
+		this.cities = cities;
 	}
 
 }

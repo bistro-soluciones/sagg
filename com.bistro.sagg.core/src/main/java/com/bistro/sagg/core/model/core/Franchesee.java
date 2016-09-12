@@ -1,6 +1,6 @@
-package com.bistro.sagg.server.model.core;
+package com.bistro.sagg.core.model.core;
 
-import com.bistro.sagg.server.model.core.location.City;
+import com.bistro.sagg.core.model.core.location.City;
 
 public class Franchesee {
 

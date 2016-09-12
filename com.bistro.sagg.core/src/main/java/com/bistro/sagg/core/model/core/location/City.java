@@ -1,11 +1,11 @@
-package com.bistro.sagg.server.model.core;
+package com.bistro.sagg.core.model.core.location;
 
-public class Brand {
+public class City {
 
 	private Long id;
 	private String name;
 
-	public Brand() {
+	public City() {
 		super();
 	}
 

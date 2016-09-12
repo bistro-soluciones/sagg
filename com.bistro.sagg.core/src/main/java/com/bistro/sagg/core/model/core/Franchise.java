@@ -1,10 +1,10 @@
-package com.bistro.sagg.server.model.core;
+package com.bistro.sagg.core.model.core;
 
 import java.util.List;
 
-import com.bistro.sagg.server.model.Employee;
-import com.bistro.sagg.server.model.Supplier;
-import com.bistro.sagg.server.model.core.location.City;
+import com.bistro.sagg.core.model.Employee;
+import com.bistro.sagg.core.model.Supplier;
+import com.bistro.sagg.core.model.core.location.City;
 
 public class Franchise {
 

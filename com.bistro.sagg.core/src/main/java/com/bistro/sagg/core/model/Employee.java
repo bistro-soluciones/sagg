@@ -1,11 +1,11 @@
-package com.bistro.sagg.server.model;
+package com.bistro.sagg.core.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import com.bistro.sagg.server.model.core.location.City;
+import com.bistro.sagg.core.model.core.location.City;
 
 @Entity
 public class Employee {

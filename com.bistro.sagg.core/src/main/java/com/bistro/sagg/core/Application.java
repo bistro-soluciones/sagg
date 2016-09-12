@@ -1,4 +1,4 @@
-package com.bistro.sagg.server;
+package com.bistro.sagg.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,8 +7,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import com.bistro.sagg.server.model.Employee;
-import com.bistro.sagg.server.repository.EmployeeRepository;
+import com.bistro.sagg.core.model.Employee;
+import com.bistro.sagg.core.repository.EmployeeRepository;
 
 @SpringBootApplication
 public class Application {
