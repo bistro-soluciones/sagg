@@ -15,6 +15,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import com.bistro.sagg.core.services.EmployeeServices;
+import com.bistro.sagg.core.services.SaggServiceLocator;
+import com.bistro.sagg.core.spring.SaggApplicationContext;
+
 public class NewEmployeeDialog extends Dialog {
 	
 	/**
@@ -22,12 +26,13 @@ public class NewEmployeeDialog extends Dialog {
 	 */
 	public static final String ID = "com.bistro.sagg.employees.ui.dialogs.NewEmployeeDialog";
 	
-	private Text text;
-	private Text text_5;
-	private Text text_2;
-	private Text text_3;
-	private Text text_4;
-	private Text text_1;
+	private Text textNombres;
+	private Text textRut;
+	private Text textCorreoElectronico;
+	private Text textTelefono;
+	private Text textCelular;
+	private Text textDatosDeContacto;
+	private Text textApellidos;
 
 	/**
 	 * Create the dialog.
@@ -50,132 +55,145 @@ public class NewEmployeeDialog extends Dialog {
 		GridLayout gridLayout = (GridLayout) container.getLayout();
 		gridLayout.marginHeight = 14;
 		
-		Group grpInformacinBsica = new Group(container, SWT.NONE);
-		GridLayout gl_grpInformacinBsica = new GridLayout(2, false);
-		gl_grpInformacinBsica.marginTop = 10;
-		gl_grpInformacinBsica.marginLeft = 5;
-		gl_grpInformacinBsica.marginRight = 5;
-		gl_grpInformacinBsica.marginHeight = 0;
-		gl_grpInformacinBsica.marginWidth = 0;
-		grpInformacinBsica.setLayout(gl_grpInformacinBsica);
-		GridData gd_grpInformacinBsica = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-		gd_grpInformacinBsica.heightHint = 75;
-		gd_grpInformacinBsica.widthHint = 604;
-		grpInformacinBsica.setLayoutData(gd_grpInformacinBsica);
-		grpInformacinBsica.setText("Informaci\u00F3n B\u00E1sica");
+		Group grpInformacionBasica = new Group(container, SWT.NONE);
+		GridLayout gl_grpInformacionBasica = new GridLayout(2, false);
+		gl_grpInformacionBasica.marginTop = 10;
+		gl_grpInformacionBasica.marginLeft = 5;
+		gl_grpInformacionBasica.marginRight = 5;
+		gl_grpInformacionBasica.marginHeight = 0;
+		gl_grpInformacionBasica.marginWidth = 0;
+		grpInformacionBasica.setLayout(gl_grpInformacionBasica);
+		GridData gd_grpInformacionBasica = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_grpInformacionBasica.heightHint = 75;
+		gd_grpInformacionBasica.widthHint = 604;
+		grpInformacionBasica.setLayoutData(gd_grpInformacionBasica);
+		grpInformacionBasica.setText("Informaci\u00F3n B\u00E1sica");
 		
-		Label lblNombre = new Label(grpInformacinBsica, SWT.NONE);
-		lblNombre.setAlignment(SWT.RIGHT);
-		GridData gd_lblNombre = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_lblNombre.widthHint = 124;
-		lblNombre.setLayoutData(gd_lblNombre);
-		lblNombre.setText("Nombre");
+		Label lblNombres = new Label(grpInformacionBasica, SWT.NONE);
+		lblNombres.setAlignment(SWT.RIGHT);
+		GridData gd_lblNombres = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
+		gd_lblNombres.widthHint = 124;
+		lblNombres.setLayoutData(gd_lblNombres);
+		lblNombres.setText("Nombres");
 		
-		text = new Text(grpInformacinBsica, SWT.BORDER);
-		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		Composite composite = new Composite(grpInformacionBasica, SWT.NONE);
+		GridLayout gl_composite = new GridLayout(3, false);
+		gl_composite.marginWidth = 0;
+		gl_composite.marginHeight = 0;
+		composite.setLayout(gl_composite);
+		composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		
-		Label lblRut = new Label(grpInformacinBsica, SWT.RIGHT);
+		textNombres = new Text(composite, SWT.BORDER);
+		textNombres.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		Label lblApellidos = new Label(composite, SWT.NONE);
+		lblApellidos.setText("Apellidos");
+		
+		textApellidos = new Text(composite, SWT.BORDER);
+		textApellidos.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		Label lblRut = new Label(grpInformacionBasica, SWT.RIGHT);
 		lblRut.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblRut.setText("RUT");
 		
-		text_5 = new Text(grpInformacinBsica, SWT.BORDER);
-		GridData gd_text_5 = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
-		gd_text_5.widthHint = 145;
-		text_5.setLayoutData(gd_text_5);
+		textRut = new Text(grpInformacionBasica, SWT.BORDER);
+		GridData gd_textRut = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
+		gd_textRut.widthHint = 145;
+		textRut.setLayoutData(gd_textRut);
 		
-		Group grpInformacinLaboral = new Group(container, SWT.NONE);
-		grpInformacinLaboral.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		grpInformacinLaboral.setText("Informaci\u00F3n Laboral");
-		grpInformacinLaboral.setLayout(new GridLayout(2, false));
+		Group grpInformacionLaboral = new Group(container, SWT.NONE);
+		grpInformacionLaboral.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		grpInformacionLaboral.setText("Informaci\u00F3n Laboral");
+		grpInformacionLaboral.setLayout(new GridLayout(2, false));
 		
-		Label lblCargo = new Label(grpInformacinLaboral, SWT.RIGHT);
+		Label lblCargo = new Label(grpInformacionLaboral, SWT.RIGHT);
 		GridData gd_lblCargo = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
 		gd_lblCargo.widthHint = 124;
 		lblCargo.setLayoutData(gd_lblCargo);
 		lblCargo.setText("Cargo");
 		
-		Combo combo_2 = new Combo(grpInformacinLaboral, SWT.NONE);
-		combo_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		Combo comboCargo = new Combo(grpInformacionLaboral, SWT.NONE);
+		comboCargo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		Label lblFechaDeIngreso = new Label(grpInformacinLaboral, SWT.NONE);
+		Label lblFechaDeIngreso = new Label(grpInformacionLaboral, SWT.NONE);
 		lblFechaDeIngreso.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblFechaDeIngreso.setText("Fecha de Ingreso");
 		
-		DateTime dateTime = new DateTime(grpInformacinLaboral, SWT.BORDER);
+		DateTime dateTimeFechaDeIngreso = new DateTime(grpInformacionLaboral, SWT.BORDER);
 		
-		Group grpInformacinDeDomicililo = new Group(container, SWT.NONE);
-		grpInformacinDeDomicililo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		grpInformacinDeDomicililo.setText("Informaci\u00F3n de Domicililo");
-		grpInformacinDeDomicililo.setLayout(new GridLayout(2, false));
+		Group grpInformacionDeDomicililo = new Group(container, SWT.NONE);
+		grpInformacionDeDomicililo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		grpInformacionDeDomicililo.setText("Informaci\u00F3n de Domicililo");
+		grpInformacionDeDomicililo.setLayout(new GridLayout(2, false));
 		
-		Label lblDatosDeContacto = new Label(grpInformacinDeDomicililo, SWT.RIGHT);
+		Label lblDatosDeContacto = new Label(grpInformacionDeDomicililo, SWT.RIGHT);
 		GridData gd_lblDatosDeContacto = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
 		gd_lblDatosDeContacto.widthHint = 124;
 		lblDatosDeContacto.setLayoutData(gd_lblDatosDeContacto);
 		lblDatosDeContacto.setText("Calle");
 		
-		text_1 = new Text(grpInformacinDeDomicililo, SWT.BORDER);
-		text_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		textDatosDeContacto = new Text(grpInformacionDeDomicililo, SWT.BORDER);
+		textDatosDeContacto.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		Label lblRegin = new Label(grpInformacinDeDomicililo, SWT.NONE);
-		lblRegin.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblRegin.setText("Regi\u00F3n");
+		Label lblRegion = new Label(grpInformacionDeDomicililo, SWT.NONE);
+		lblRegion.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblRegion.setText("Regi\u00F3n");
 		
-		Composite composite_1 = new Composite(grpInformacinDeDomicililo, SWT.NONE);
+		Composite composite_1 = new Composite(grpInformacionDeDomicililo, SWT.NONE);
 		GridLayout gl_composite_1 = new GridLayout(3, false);
 		gl_composite_1.marginWidth = 0;
 		gl_composite_1.marginHeight = 0;
 		composite_1.setLayout(gl_composite_1);
 		composite_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		
-		Combo combo = new Combo(composite_1, SWT.NONE);
-		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		Combo comboRegion = new Combo(composite_1, SWT.NONE);
+		comboRegion.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label lblComuna = new Label(composite_1, SWT.NONE);
 		lblComuna.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblComuna.setText("Comuna");
 		
-		Combo combo_1 = new Combo(composite_1, SWT.NONE);
-		combo_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		Combo comboComuna = new Combo(composite_1, SWT.NONE);
+		comboComuna.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		Group grpInformacinDeStock = new Group(container, SWT.NONE);
-		grpInformacinDeStock.setLayout(new GridLayout(2, false));
-		GridData gd_grpInformacinDeStock = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-		gd_grpInformacinDeStock.heightHint = 81;
-		grpInformacinDeStock.setLayoutData(gd_grpInformacinDeStock);
-		grpInformacinDeStock.setText("Informaci\u00F3n de Contacto");
+		Group grpInformacionDeStock = new Group(container, SWT.NONE);
+		grpInformacionDeStock.setLayout(new GridLayout(2, false));
+		GridData gd_grpInformacionDeStock = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_grpInformacionDeStock.heightHint = 81;
+		grpInformacionDeStock.setLayoutData(gd_grpInformacionDeStock);
+		grpInformacionDeStock.setText("Informaci\u00F3n de Contacto");
 		
-		Label lblTelfono = new Label(grpInformacinDeStock, SWT.RIGHT);
-		GridData gd_lblTelfono = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_lblTelfono.widthHint = 124;
-		lblTelfono.setLayoutData(gd_lblTelfono);
-		lblTelfono.setText("Tel\u00E9fono");
+		Label lblTelefono = new Label(grpInformacionDeStock, SWT.RIGHT);
+		GridData gd_lblTelefono = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
+		gd_lblTelefono.widthHint = 124;
+		lblTelefono.setLayoutData(gd_lblTelefono);
+		lblTelefono.setText("Tel\u00E9fono");
 		
-		Composite composite = new Composite(grpInformacinDeStock, SWT.NONE);
-		GridLayout gl_composite = new GridLayout(3, false);
-		gl_composite.marginHeight = 0;
-		gl_composite.marginWidth = 0;
-		composite.setLayout(gl_composite);
-		composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		Composite compositeTelefonos = new Composite(grpInformacionDeStock, SWT.NONE);
+		GridLayout gl_compositeTelefonos = new GridLayout(3, false);
+		gl_compositeTelefonos.marginHeight = 0;
+		gl_compositeTelefonos.marginWidth = 0;
+		compositeTelefonos.setLayout(gl_compositeTelefonos);
+		compositeTelefonos.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		
-		text_3 = new Text(composite, SWT.BORDER);
-		text_3.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		textTelefono = new Text(compositeTelefonos, SWT.BORDER);
+		textTelefono.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		Label lblCelular = new Label(composite, SWT.RIGHT);
+		Label lblCelular = new Label(compositeTelefonos, SWT.RIGHT);
 		GridData gd_lblCelular = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
 		gd_lblCelular.widthHint = 141;
 		lblCelular.setLayoutData(gd_lblCelular);
 		lblCelular.setText("Celular");
 		
-		text_4 = new Text(composite, SWT.BORDER);
-		text_4.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		textCelular = new Text(compositeTelefonos, SWT.BORDER);
+		textCelular.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		Label lblCorreoElectrnico = new Label(grpInformacinDeStock, SWT.NONE);
-		lblCorreoElectrnico.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblCorreoElectrnico.setText("Correo Electr\u00F3nico");
+		Label lblCorreoElectronico = new Label(grpInformacionDeStock, SWT.NONE);
+		lblCorreoElectronico.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblCorreoElectronico.setText("Correo Electr\u00F3nico");
 		
-		text_2 = new Text(grpInformacinDeStock, SWT.BORDER);
-		text_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		textCorreoElectronico = new Text(grpInformacionDeStock, SWT.BORDER);
+		textCorreoElectronico.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 		return container;
 	}
@@ -188,6 +206,13 @@ public class NewEmployeeDialog extends Dialog {
 	protected void createButtonsForButtonBar(Composite parent) {
 		createButton(parent, IDialogConstants.OK_ID, "Guardar", true);
 		createButton(parent, IDialogConstants.CANCEL_ID, "Cancelar", false);
+	}
+
+	@Override
+	protected void okPressed() {
+		SaggServiceLocator.getEmployeeServices().createEmployee(textNombres.getText(), textApellidos.getText(),
+				textRut.getText(), textCorreoElectronico.getText(), textTelefono.getText(), textCelular.getText());
+		super.okPressed();
 	}
 
 	/**
