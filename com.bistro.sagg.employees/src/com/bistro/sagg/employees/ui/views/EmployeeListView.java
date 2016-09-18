@@ -9,31 +9,29 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.DateTime;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
+import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.employees.ui.actions.OpenNewEmployeeDialogAction;
+import com.bistro.sagg.employees.ui.utils.EmployeeColumnIndex;
+import com.bistro.sagg.employees.ui.viewers.EmployeeListLabelProvider;
+import com.bistro.sagg.employees.ui.viewers.EmployeeListProvider;
+import com.bistro.sagg.employees.ui.viewers.EmployeeListSorter;
 
 /**
  * This sample class demonstrates how to plug-in a new
@@ -62,6 +60,7 @@ public class EmployeeListView extends ViewPart {
 
 	private Action openNewEmployeeDialogAction;
 	private Table employeesTable;
+	private Table table;
 
 	/*
 	 * The content provider class is responsible for
@@ -109,47 +108,114 @@ public class EmployeeListView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		employeesTable = new Table(parent, SWT.BORDER | SWT.FULL_SELECTION);
+		TableViewer employeesTableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
+		employeesTableViewer.setContentProvider(new EmployeeListProvider());
+		employeesTableViewer.setLabelProvider(new EmployeeListLabelProvider());
+		employeesTableViewer.setSorter(new EmployeeListSorter());
+		
+		employeesTable = employeesTableViewer.getTable();
 		employeesTable.setLinesVisible(true);
 		employeesTable.setHeaderVisible(true);
 		
 		TableColumn tblclmnNombre = new TableColumn(employeesTable, SWT.NONE);
+		tblclmnNombre.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				((EmployeeListSorter) employeesTableViewer.getSorter()).doSort(EmployeeColumnIndex.NAME_COLUMN_IDX);
+				employeesTableViewer.refresh();
+			}
+		});
 		tblclmnNombre.setWidth(250);
 		tblclmnNombre.setText("Nombre");
 		
 		TableColumn tblclmnRut = new TableColumn(employeesTable, SWT.NONE);
+		tblclmnRut.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				((EmployeeListSorter) employeesTableViewer.getSorter()).doSort(EmployeeColumnIndex.PERSON_ID_COLUMN_IDX);
+				employeesTableViewer.refresh();
+			}
+		});
 		tblclmnRut.setWidth(100);
 		tblclmnRut.setText("RUT");
 		
-		TableColumn tblclmnNewColumn = new TableColumn(employeesTable, SWT.NONE);
-		tblclmnNewColumn.setWidth(194);
-		tblclmnNewColumn.setText("Cargo");
+		TableColumn tblclmnCargo = new TableColumn(employeesTable, SWT.NONE);
+		tblclmnCargo.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				((EmployeeListSorter) employeesTableViewer.getSorter()).doSort(EmployeeColumnIndex.POSITION_COLUMN_IDX);
+				employeesTableViewer.refresh();
+			}
+		});
+		tblclmnCargo.setWidth(194);
+		tblclmnCargo.setText("Cargo");
 		
-		TableColumn tblclmnUnidadDeMedida = new TableColumn(employeesTable, SWT.NONE);
-		tblclmnUnidadDeMedida.setWidth(280);
-		tblclmnUnidadDeMedida.setText("Direcci\u00F3n");
+		TableColumn tblclmnDirección = new TableColumn(employeesTable, SWT.NONE);
+		tblclmnDirección.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				((EmployeeListSorter) employeesTableViewer.getSorter()).doSort(EmployeeColumnIndex.ADDRESS_COLUMN_IDX);
+				employeesTableViewer.refresh();
+			}
+		});
+		tblclmnDirección.setWidth(280);
+		tblclmnDirección.setText("Direcci\u00F3n");
 		
-		TableColumn tblclmnNewColumn_1 = new TableColumn(employeesTable, SWT.NONE);
-		tblclmnNewColumn_1.setWidth(100);
-		tblclmnNewColumn_1.setText("Tel\u00E9fono");
+		TableColumn tblclmnTelefono = new TableColumn(employeesTable, SWT.NONE);
+		tblclmnTelefono.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				((EmployeeListSorter) employeesTableViewer.getSorter()).doSort(EmployeeColumnIndex.PHONE_COLUMN_IDX);
+				employeesTableViewer.refresh();
+			}
+		});
+		tblclmnTelefono.setWidth(100);
+		tblclmnTelefono.setText("Tel\u00E9fono");
 		
-		TableColumn tblclmnStockLocal = new TableColumn(employeesTable, SWT.NONE);
-		tblclmnStockLocal.setWidth(100);
-		tblclmnStockLocal.setText("Celular");
+		TableColumn tblclmnCelular = new TableColumn(employeesTable, SWT.NONE);
+		tblclmnCelular.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				((EmployeeListSorter) employeesTableViewer.getSorter()).doSort(EmployeeColumnIndex.CELLPHONE_COLUMN_IDX);
+				employeesTableViewer.refresh();
+			}
+		});
+		tblclmnCelular.setWidth(100);
+		tblclmnCelular.setText("Celular");
 		
-		TableColumn tblclmnStockBodega = new TableColumn(employeesTable, SWT.NONE);
-		tblclmnStockBodega.setWidth(220);
-		tblclmnStockBodega.setText("Correo Electr\u00F3nico");
+		TableColumn tblclmnCorreoElectronico = new TableColumn(employeesTable, SWT.NONE);
+		tblclmnCorreoElectronico.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				((EmployeeListSorter) employeesTableViewer.getSorter()).doSort(EmployeeColumnIndex.EMAIL_COLUMN_IDX);
+				employeesTableViewer.refresh();
+			}
+		});
+		tblclmnCorreoElectronico.setWidth(220);
+		tblclmnCorreoElectronico.setText("Correo Electr\u00F3nico");
 		
 		TableColumn tblclmnFechaDeIngreso = new TableColumn(employeesTable, SWT.NONE);
+		tblclmnFechaDeIngreso.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				((EmployeeListSorter) employeesTableViewer.getSorter()).doSort(EmployeeColumnIndex.START_DATE_COLUMN_IDX);
+				employeesTableViewer.refresh();
+			}
+		});
 		tblclmnFechaDeIngreso.setWidth(135);
 		tblclmnFechaDeIngreso.setText("Fecha de Ingreso");
+		
+		update(employeesTableViewer);
 		makeActions();
 		hookContextMenu();
 		hookDoubleClickAction();
 		contributeToActionBars();
 	}
 
+	private void update(TableViewer employeesTableViewer) {
+		employeesTableViewer.setInput(SaggServiceLocator.getEmployeeServices());
+	}
+	
 	private void hookContextMenu() {
 		MenuManager menuMgr = new MenuManager("#PopupMenu");
 		menuMgr.setRemoveAllWhenShown(true);
