@@ -1,4 +1,4 @@
-package com.bistro.sagg.core.model.core.location;
+package com.bistro.sagg.core.model.location;
 
 public class City {
 

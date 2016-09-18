@@ -1,36 +1,41 @@
 package com.bistro.sagg.core.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
-import com.bistro.sagg.core.model.core.location.City;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "EMPLOYEES")
 public class Employee {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "ID")
 	private Long id;
-	private String name;
+	@Column(name = "FIRSTNAME")
+	private String firstname;
+	@Column(name = "LASTNAME")
+	private String lastname;
+	@Column(name = "PERSON_ID")
 	private String personId;
-	// Contact information
+	// // Contact information
+	@Column(name = "EMAIL")
 	private String email;
+	@Column(name = "PHONE")
 	private String phone;
+	@Column(name = "CELLPHONE")
 	private String cellphone;
-	// Address information
-	private String addressL1;
-	private String addressL2;
-	private City city;
+
+	// // Address information
+	// private String addressL1;
+	// private String addressL2;
+	// private City city;
 
 	public Employee() {
 		super();
-	}
-
-	public Employee(String name, String personId) {
-		this.name = name;
-		this.personId = personId;
 	}
 
 	public Long getId() {
@@ -41,12 +46,20 @@ public class Employee {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public String getFirstname() {
+		return firstname;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setFirstname(String firstname) {
+		this.firstname = firstname;
+	}
+
+	public String getLastname() {
+		return lastname;
+	}
+
+	public void setLastname(String lastname) {
+		this.lastname = lastname;
 	}
 
 	public String getPersonId() {
@@ -80,29 +93,9 @@ public class Employee {
 	public void setCellphone(String cellphone) {
 		this.cellphone = cellphone;
 	}
-
-	public String getAddressL1() {
-		return addressL1;
-	}
-
-	public void setAddressL1(String addressL1) {
-		this.addressL1 = addressL1;
-	}
-
-	public String getAddressL2() {
-		return addressL2;
-	}
-
-	public void setAddressL2(String addressL2) {
-		this.addressL2 = addressL2;
-	}
-
-	public City getCity() {
-		return city;
-	}
-
-	public void setCity(City city) {
-		this.city = city;
+	
+	public String getFullName() {
+		return getFirstname() + " " + getLastname();
 	}
 
 }

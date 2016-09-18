@@ -1,12 +1,12 @@
-package com.bistro.sagg.core.model.core;
+package com.bistro.sagg.core.model.company;
 
 import java.util.List;
 
 import com.bistro.sagg.core.model.Employee;
 import com.bistro.sagg.core.model.Supplier;
-import com.bistro.sagg.core.model.core.location.City;
+import com.bistro.sagg.core.model.location.City;
 
-public class Franchise {
+public class FranchiseeBranch {
 
 	private Long id;
 	private String name;
@@ -18,4 +18,5 @@ public class Franchise {
 	private List<Employee> employees;
 	// Suppliers information
 	private List<Supplier> suppliers;
+	
 }

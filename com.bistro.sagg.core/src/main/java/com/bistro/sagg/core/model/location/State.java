@@ -1,14 +1,14 @@
-package com.bistro.sagg.core.model.core.location;
+package com.bistro.sagg.core.model.location;
 
 import java.util.List;
 
-public class Country {
+public class State {
 
 	private Long id;
 	private String name;
-	private List<State> states;
+	private List<City> cities;
 
-	public Country() {
+	public State() {
 		super();
 	}
 
@@ -28,12 +28,12 @@ public class Country {
 		this.name = name;
 	}
 
-	public List<State> getStates() {
-		return states;
+	public List<City> getCities() {
+		return cities;
 	}
 
-	public void setStates(List<State> states) {
-		this.states = states;
+	public void setCities(List<City> cities) {
+		this.cities = cities;
 	}
 
 }
