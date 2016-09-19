@@ -4,7 +4,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-import com.bistro.sagg.core.model.Employee;
+import com.bistro.sagg.core.model.company.employees.Employee;
 import com.bistro.sagg.employees.ui.utils.EmployeeColumnIndex;
 
 public class EmployeeListLabelProvider implements ITableLabelProvider {

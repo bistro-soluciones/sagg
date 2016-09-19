@@ -3,7 +3,7 @@ package com.bistro.sagg.employees.ui.viewers;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 
-import com.bistro.sagg.core.model.Employee;
+import com.bistro.sagg.core.model.company.employees.Employee;
 import com.bistro.sagg.employees.ui.utils.EmployeeColumnIndex;
 
 public class EmployeeListSorter extends ViewerSorter {
