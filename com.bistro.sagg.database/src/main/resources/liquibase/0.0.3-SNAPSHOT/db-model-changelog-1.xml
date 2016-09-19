@@ -138,6 +138,17 @@
     	</addColumn>
     </changeSet>
 
+    <changeSet id="12" author="sebastian.lavie">
+        <createTable tableName="franchises_by_countries">
+            <column name="franchise_id" type="bigint(20)">
+                <constraints primaryKey="true" foreignKeyName="id" referencedTableName="franchises" nullable="false"/>
+            </column>
+            <column name="country_id" type="bigint(20)">
+                <constraints primaryKey="true" foreignKeyName="id" referencedTableName="countries" nullable="false"/>
+            </column>
+    	</createTable>
+    </changeSet>
+
 <!--     <changeSet id="2" author="sebastian.lavie"> -->
 <!--         <createTable tableName="suppliers"> -->
 <!--             <column name="id" type="bigint(20)" autoIncrement="true"> -->
