@@ -149,6 +149,33 @@
     	</createTable>
     </changeSet>
 
+    <changeSet id="13" author="sebastian.lavie">
+    	<dropIndex tableName="cities" indexName="state_id"/>
+    </changeSet>
+
+    <changeSet id="14" author="sebastian.lavie">
+        <modifyDataType tableName="franchises" columnName="name" newDataType="varchar(50)"/>
+	</changeSet>
+
+    <changeSet id="15" author="sebastian.lavie">
+        <modifyDataType tableName="franchise_branches" columnName="name" newDataType="varchar(50)"/>
+	</changeSet>
+
+    <changeSet id="16" author="sebastian.lavie">
+        <modifyDataType tableName="franchise_branches" columnName="address_l1" newDataType="varchar(50)"/>
+        <modifyDataType tableName="franchise_branches" columnName="address_l2" newDataType="varchar(50)"/>
+	</changeSet>
+
+    <changeSet id="17" author="sebastian.lavie">
+        <modifyDataType tableName="franchiseds" columnName="address_l1" newDataType="varchar(50)"/>
+        <modifyDataType tableName="franchiseds" columnName="address_l2" newDataType="varchar(50)"/>
+	</changeSet>
+
+    <changeSet id="18" author="sebastian.lavie">
+        <modifyDataType tableName="employees" columnName="address_l1" newDataType="varchar(50)"/>
+        <modifyDataType tableName="employees" columnName="address_l2" newDataType="varchar(50)"/>
+	</changeSet>
+
 <!--     <changeSet id="2" author="sebastian.lavie"> -->
 <!--         <createTable tableName="suppliers"> -->
 <!--             <column name="id" type="bigint(20)" autoIncrement="true"> -->
