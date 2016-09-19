@@ -2,6 +2,11 @@ package com.bistro.sagg.employees.ui.dialogs;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -15,9 +20,15 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.bistro.sagg.core.services.EmployeeServices;
+import com.bistro.sagg.core.model.location.Country;
+import com.bistro.sagg.core.model.location.State;
 import com.bistro.sagg.core.services.SaggServiceLocator;
-import com.bistro.sagg.core.spring.SaggApplicationContext;
+import com.bistro.sagg.employees.ui.viewers.CityComboContentProvider;
+import com.bistro.sagg.employees.ui.viewers.CityComboLabelProvider;
+import com.bistro.sagg.employees.ui.viewers.PositionComboContentProvider;
+import com.bistro.sagg.employees.ui.viewers.PositionComboLabelProvider;
+import com.bistro.sagg.employees.ui.viewers.StateComboContentProvider;
+import com.bistro.sagg.employees.ui.viewers.StateComboLabelProvider;
 
 public class NewEmployeeDialog extends Dialog {
 	
@@ -33,6 +44,8 @@ public class NewEmployeeDialog extends Dialog {
 	private Text textCelular;
 	private Text textDatosDeContacto;
 	private Text textApellidos;
+	
+	private Country country;
 
 	/**
 	 * Create the dialog.
@@ -41,6 +54,11 @@ public class NewEmployeeDialog extends Dialog {
 	public NewEmployeeDialog(Shell parentShell) {
 		super(parentShell);
 		setShellStyle(SWT.MIN | SWT.MAX | SWT.TITLE);
+		
+		// TODO replace by session franchised country
+		this.country = new Country();
+		this.country.setId(1L);
+		this.country.setName("Chile");
 	}
 
 	/**
@@ -112,7 +130,11 @@ public class NewEmployeeDialog extends Dialog {
 		lblCargo.setLayoutData(gd_lblCargo);
 		lblCargo.setText("Cargo");
 		
-		Combo comboCargo = new Combo(grpInformacionLaboral, SWT.NONE);
+		ComboViewer comboCargoViewer = new ComboViewer(grpInformacionLaboral, SWT.NONE);
+		comboCargoViewer.setContentProvider(new PositionComboContentProvider());
+		comboCargoViewer.setLabelProvider(new PositionComboLabelProvider());
+		comboCargoViewer.setInput(SaggServiceLocator.getRefdataServices());
+		Combo comboCargo = comboCargoViewer.getCombo();
 		comboCargo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label lblFechaDeIngreso = new Label(grpInformacionLaboral, SWT.NONE);
@@ -146,15 +168,39 @@ public class NewEmployeeDialog extends Dialog {
 		composite_1.setLayout(gl_composite_1);
 		composite_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		
-		Combo comboRegion = new Combo(composite_1, SWT.NONE);
+		ComboViewer comboRegionViewer = new ComboViewer(composite_1, SWT.NONE);
+		comboRegionViewer.setContentProvider(new StateComboContentProvider(country));
+		comboRegionViewer.setLabelProvider(new StateComboLabelProvider());
+		comboRegionViewer.setInput(SaggServiceLocator.getRefdataServices());
+		Combo comboRegion = comboRegionViewer.getCombo();
+//		comboRegion.addSelectionListener(new SelectionAdapter() {
+//			@Override
+//			public void widgetSelected(SelectionEvent e) {
+//				// TODO
+//			}
+//		});
 		comboRegion.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label lblComuna = new Label(composite_1, SWT.NONE);
 		lblComuna.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblComuna.setText("Comuna");
 		
-		Combo comboComuna = new Combo(composite_1, SWT.NONE);
+		ComboViewer comboComunaViewer = new ComboViewer(composite_1, SWT.NONE);
+		comboComunaViewer.setContentProvider(new CityComboContentProvider());
+		comboComunaViewer.setLabelProvider(new CityComboLabelProvider());
+		comboComunaViewer.setInput(SaggServiceLocator.getRefdataServices());
+		Combo comboComuna = comboComunaViewer.getCombo();
 		comboComuna.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		comboRegionViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				State state = (State) ((StructuredSelection) event.getSelection()).getFirstElement();
+				CityComboContentProvider provider = (CityComboContentProvider) comboComunaViewer.getContentProvider();
+				provider.setState(state);
+				comboComunaViewer.refresh();
+			}
+		});
 		
 		Group grpInformacionDeStock = new Group(container, SWT.NONE);
 		grpInformacionDeStock.setLayout(new GridLayout(2, false));

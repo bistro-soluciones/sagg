@@ -30,7 +30,7 @@ import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.employees.ui.actions.OpenNewEmployeeDialogAction;
 import com.bistro.sagg.employees.ui.utils.EmployeeColumnIndex;
 import com.bistro.sagg.employees.ui.viewers.EmployeeListLabelProvider;
-import com.bistro.sagg.employees.ui.viewers.EmployeeListProvider;
+import com.bistro.sagg.employees.ui.viewers.EmployeeListContentProvider;
 import com.bistro.sagg.employees.ui.viewers.EmployeeListSorter;
 
 /**
@@ -60,7 +60,6 @@ public class EmployeeListView extends ViewPart {
 
 	private Action openNewEmployeeDialogAction;
 	private Table employeesTable;
-	private Table table;
 
 	/*
 	 * The content provider class is responsible for
@@ -109,9 +108,10 @@ public class EmployeeListView extends ViewPart {
 		parent.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 		TableViewer employeesTableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
-		employeesTableViewer.setContentProvider(new EmployeeListProvider());
+		employeesTableViewer.setContentProvider(new EmployeeListContentProvider());
 		employeesTableViewer.setLabelProvider(new EmployeeListLabelProvider());
 		employeesTableViewer.setSorter(new EmployeeListSorter());
+		employeesTableViewer.setInput(SaggServiceLocator.getEmployeeServices());
 		
 		employeesTable = employeesTableViewer.getTable();
 		employeesTable.setLinesVisible(true);
@@ -205,17 +205,12 @@ public class EmployeeListView extends ViewPart {
 		tblclmnFechaDeIngreso.setWidth(135);
 		tblclmnFechaDeIngreso.setText("Fecha de Ingreso");
 		
-		update(employeesTableViewer);
 		makeActions();
 		hookContextMenu();
 		hookDoubleClickAction();
 		contributeToActionBars();
 	}
 
-	private void update(TableViewer employeesTableViewer) {
-		employeesTableViewer.setInput(SaggServiceLocator.getEmployeeServices());
-	}
-	
 	private void hookContextMenu() {
 		MenuManager menuMgr = new MenuManager("#PopupMenu");
 		menuMgr.setRemoveAllWhenShown(true);
