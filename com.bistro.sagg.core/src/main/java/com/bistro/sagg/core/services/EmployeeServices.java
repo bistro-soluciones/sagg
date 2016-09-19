@@ -2,7 +2,7 @@ package com.bistro.sagg.core.services;
 
 import java.util.List;
 
-import com.bistro.sagg.core.model.Employee;
+import com.bistro.sagg.core.model.company.employees.Employee;
 
 public interface EmployeeServices {
 

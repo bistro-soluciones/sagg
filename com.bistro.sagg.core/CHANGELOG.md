@@ -6,18 +6,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
--
+- SAGG Services Locator.
+- EmployeeServices with functionality to save employee and findAll employees
+- Create Franchise model (franchise, franchised, franchise branch)
+- Add employees address and job information
 
 ### Changed
 -
 
 ### Removed
 -
-
-## [0.0.2-SNAPSHOT] - 2016-09-18
-### Added
-- SAGG Services Locator.
-- EmployeeServices with functionality to save employee and findAll employees
 
 ## [0.0.2-SNAPSHOT] - 2016-09-17
 ### Added

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.bistro.sagg.core.model.Employee;
+import com.bistro.sagg.core.model.company.employees.Employee;
 import com.bistro.sagg.core.repository.EmployeeRepository;
 
 public class EmployeeServicesImpl implements EmployeeServices {

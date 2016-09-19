@@ -1,11 +1,17 @@
-package com.bistro.sagg.core.model;
+package com.bistro.sagg.core.model.company.employees;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.bistro.sagg.core.model.company.FranchiseeBranch;
+import com.bistro.sagg.core.model.location.City;
 
 @Entity
 @Table(name = "EMPLOYEES")
@@ -21,18 +27,28 @@ public class Employee {
 	private String lastname;
 	@Column(name = "PERSON_ID")
 	private String personId;
-	// // Contact information
+	// Job information
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "POSITION_ID")
+	private Position position;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "FRANCHISE_BRANCH_ID")
+	private FranchiseeBranch franchiseBranch; 
+	// Contact information
 	@Column(name = "EMAIL")
 	private String email;
 	@Column(name = "PHONE")
 	private String phone;
 	@Column(name = "CELLPHONE")
 	private String cellphone;
-
-	// // Address information
-	// private String addressL1;
-	// private String addressL2;
-	// private City city;
+	// Address information
+	@Column(name = "ADDRESS_L1")
+	private String addressL1;
+	@Column(name = "ADDRESS_L2")
+	private String addressL2;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CITY_ID")
+	private City city;
 
 	public Employee() {
 		super();
@@ -70,6 +86,22 @@ public class Employee {
 		this.personId = personId;
 	}
 
+	public Position getPosition() {
+		return position;
+	}
+
+	public void setPosition(Position position) {
+		this.position = position;
+	}
+
+	public FranchiseeBranch getFranchiseBranch() {
+		return franchiseBranch;
+	}
+
+	public void setFranchiseBranch(FranchiseeBranch franchiseBranch) {
+		this.franchiseBranch = franchiseBranch;
+	}
+
 	public String getEmail() {
 		return email;
 	}
@@ -93,7 +125,31 @@ public class Employee {
 	public void setCellphone(String cellphone) {
 		this.cellphone = cellphone;
 	}
-	
+
+	public String getAddressL1() {
+		return addressL1;
+	}
+
+	public void setAddressL1(String addressL1) {
+		this.addressL1 = addressL1;
+	}
+
+	public String getAddressL2() {
+		return addressL2;
+	}
+
+	public void setAddressL2(String addressL2) {
+		this.addressL2 = addressL2;
+	}
+
+	public City getCity() {
+		return city;
+	}
+
+	public void setCity(City city) {
+		this.city = city;
+	}
+
 	public String getFullName() {
 		return getFirstname() + " " + getLastname();
 	}
