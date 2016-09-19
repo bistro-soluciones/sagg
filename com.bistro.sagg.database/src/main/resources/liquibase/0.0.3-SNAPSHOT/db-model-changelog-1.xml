@@ -1,0 +1,157 @@
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="sebastian.lavie">
+        <createTable tableName="employees">
+            <column name="id" type="bigint(20)" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="firstname" type="varchar(25)"/>
+            <column name="lastname" type="varchar(25)"/>
+            <column name="person_id" type="varchar(12)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(50)"/>
+            <column name="phone" type="varchar(15)"/>
+            <column name="cellphone" type="varchar(15)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="sebastian.lavie">
+        <createTable tableName="countries">
+            <column name="id" type="bigint(20)" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="varchar(25)"/>
+        </createTable>
+    </changeSet>
+    
+    <changeSet id="3" author="sebastian.lavie">
+        <createTable tableName="states">
+            <column name="id" type="bigint(20)" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="varchar(25)"/>
+            <column name="country_id" type="bigint(20)">
+                <constraints nullable="false" unique="true" foreignKeyName="id" referencedTableName="countries"/>
+            </column>
+        </createTable>
+    </changeSet>
+        
+    <changeSet id="4" author="sebastian.lavie">
+        <createTable tableName="cities">
+            <column name="id" type="bigint(20)" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="varchar(25)"/>
+            <column name="state_id" type="bigint(20)">
+                <constraints nullable="false" unique="true" foreignKeyName="id" referencedTableName="states"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5" author="sebastian.lavie">
+    	<addColumn tableName="employees">
+    		<column name="address_l1" type="varchar(25)"/>
+    		<column name="address_l2" type="varchar(25)"/>
+            <column name="city_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="cities"/>
+            </column>
+    	</addColumn>
+    </changeSet>
+
+    <changeSet id="6" author="sebastian.lavie">
+        <createTable tableName="positions">
+            <column name="id" type="bigint(20)" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="position" type="varchar(20)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="7" author="sebastian.lavie">
+    	<addColumn tableName="employees">
+            <column name="position_id" type="bigint(20)" afterColumn="person_id">
+                <constraints foreignKeyName="id" referencedTableName="positions"/>
+            </column>
+    	</addColumn>
+    </changeSet>
+
+    <changeSet id="8" author="sebastian.lavie">
+        <createTable tableName="franchises">
+            <column name="id" type="bigint(20)" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="varchar(25)"/>
+        </createTable>
+    </changeSet>
+    
+    <changeSet id="9" author="sebastian.lavie">
+        <createTable tableName="franchise_branches">
+            <column name="id" type="bigint(20)" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="varchar(25)"/>
+            <column name="address_l1" type="varchar(25)"/>
+    		<column name="address_l2" type="varchar(25)"/>
+            <column name="city_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="cities"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="10" author="sebastian.lavie">
+        <createTable tableName="franchiseds">
+            <column name="id" type="bigint(20)" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="firstname" type="varchar(25)"/>
+            <column name="lastname" type="varchar(25)"/>
+            <column name="person_id" type="varchar(12)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(50)"/>
+            <column name="phone" type="varchar(15)"/>
+            <column name="cellphone" type="varchar(15)"/>
+            <column name="address_l1" type="varchar(25)"/>
+    		<column name="address_l2" type="varchar(25)"/>
+            <column name="city_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="cities"/>
+            </column>
+            <column name="franchise_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="franchises" nullable="false"/>
+            </column>
+            <column name="franchise_branch_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="franchise_branchs" nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="11" author="sebastian.lavie">
+    	<addColumn tableName="employees">
+            <column name="franchise_branch_id" type="bigint(20)" afterColumn="position_id">
+                <constraints foreignKeyName="id" referencedTableName="franchise_branches" nullable="false"/>
+            </column>
+    	</addColumn>
+    </changeSet>
+
+<!--     <changeSet id="2" author="sebastian.lavie"> -->
+<!--         <createTable tableName="suppliers"> -->
+<!--             <column name="id" type="bigint(20)" autoIncrement="true"> -->
+<!--                 <constraints primaryKey="true" nullable="false" unique="true"/> -->
+<!--             </column> -->
+<!--             <column name="business_name" type="varchar(50)"/> -->
+<!--             <column name="supplier_id" type="varchar(12)"> -->
+<!--                 <constraints nullable="false"/> -->
+<!--             </column> -->
+<!--             <column name="contact_name" type="varchar(50)"/> -->
+<!--             <column name="email" type="varchar(50)"/> -->
+<!--             <column name="phone" type="varchar(15)"/> -->
+<!--             <column name="cellphone" type="varchar(15)"/> -->
+<!--         </createTable> -->
+<!--     </changeSet> -->
+
+</databaseChangeLog>

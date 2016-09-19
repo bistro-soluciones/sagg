@@ -7,6 +7,10 @@
     
     <!-- Version 1.0.0.qualifier -->
     <!-- Domain model tables -->
-	<include file="src/main/resources/liquibase/1.0.0.qualifier/db-model-changelog-1.xml" />
+<!-- 	<include file="src/main/resources/liquibase/1.0.0.qualifier/db-model-changelog-1.xml" /> -->
+
+    <!-- Version 0.0.3.SNAPSHOT -->
+    <!-- Domain model tables -->
+	<include file="src/main/resources/liquibase/0.0.3-SNAPSHOT/db-model-changelog-1.xml" />
 
 </databaseChangeLog>
