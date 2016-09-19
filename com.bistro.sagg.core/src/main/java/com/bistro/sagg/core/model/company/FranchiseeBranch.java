@@ -38,7 +38,59 @@ public class FranchiseeBranch {
 	// Employees information
 	@OneToMany(mappedBy = "franchiseBranch")
 	private List<Employee> employees;
+
 	// Suppliers information
-	private List<Supplier> suppliers;
-	
+	// private List<Supplier> suppliers;
+	public FranchiseeBranch() {
+		super();
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getAddressL1() {
+		return addressL1;
+	}
+
+	public void setAddressL1(String addressL1) {
+		this.addressL1 = addressL1;
+	}
+
+	public String getAddressL2() {
+		return addressL2;
+	}
+
+	public void setAddressL2(String addressL2) {
+		this.addressL2 = addressL2;
+	}
+
+	public City getCity() {
+		return city;
+	}
+
+	public void setCity(City city) {
+		this.city = city;
+	}
+
+	public List<Employee> getEmployees() {
+		return employees;
+	}
+
+	public void setEmployees(List<Employee> employees) {
+		this.employees = employees;
+	}
+
 }

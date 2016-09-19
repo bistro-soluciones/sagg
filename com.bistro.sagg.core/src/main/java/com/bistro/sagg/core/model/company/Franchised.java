@@ -47,12 +47,108 @@ public class Franchised {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FRANCHISE_ID")
 	private Franchise franchise;
-	@OneToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="FRANCHISE_BRANCH_ID")
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "FRANCHISE_BRANCH_ID")
 	private FranchiseeBranch franchiseeBranch;
 
 	public Franchised() {
 		super();
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getFirstname() {
+		return firstname;
+	}
+
+	public void setFirstname(String firstname) {
+		this.firstname = firstname;
+	}
+
+	public String getLastname() {
+		return lastname;
+	}
+
+	public void setLastname(String lastname) {
+		this.lastname = lastname;
+	}
+
+	public String getPersonId() {
+		return personId;
+	}
+
+	public void setPersonId(String personId) {
+		this.personId = personId;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getCellphone() {
+		return cellphone;
+	}
+
+	public void setCellphone(String cellphone) {
+		this.cellphone = cellphone;
+	}
+
+	public String getAddressL1() {
+		return addressL1;
+	}
+
+	public void setAddressL1(String addressL1) {
+		this.addressL1 = addressL1;
+	}
+
+	public String getAddressL2() {
+		return addressL2;
+	}
+
+	public void setAddressL2(String addressL2) {
+		this.addressL2 = addressL2;
+	}
+
+	public City getCity() {
+		return city;
+	}
+
+	public void setCity(City city) {
+		this.city = city;
+	}
+
+	public Franchise getFranchise() {
+		return franchise;
+	}
+
+	public void setFranchise(Franchise franchise) {
+		this.franchise = franchise;
+	}
+
+	public FranchiseeBranch getFranchiseeBranch() {
+		return franchiseeBranch;
+	}
+
+	public void setFranchiseeBranch(FranchiseeBranch franchiseeBranch) {
+		this.franchiseeBranch = franchiseeBranch;
 	}
 
 }
