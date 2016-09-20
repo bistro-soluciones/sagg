@@ -1,8 +1,10 @@
 package com.bistro.sagg.employees.ui.dialogs;
 
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -20,6 +22,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import com.bistro.sagg.core.model.company.FranchiseBranch;
+import com.bistro.sagg.core.model.company.employees.Position;
+import com.bistro.sagg.core.model.location.City;
 import com.bistro.sagg.core.model.location.Country;
 import com.bistro.sagg.core.model.location.State;
 import com.bistro.sagg.core.services.SaggServiceLocator;
@@ -38,14 +43,20 @@ public class NewEmployeeDialog extends Dialog {
 	public static final String ID = "com.bistro.sagg.employees.ui.dialogs.NewEmployeeDialog";
 	
 	private Text textNombres;
+	private Text textApellidos;
 	private Text textRut;
+	private DateTime dateTimeFechaDeIngreso;
 	private Text textCorreoElectronico;
 	private Text textTelefono;
 	private Text textCelular;
-	private Text textDatosDeContacto;
-	private Text textApellidos;
+	private Text textDireccionL1;
+	private Text textDireccionL2;
+
+	private Position selectedPosition;
+	private City selectedCity;
 	
 	private Country country;
+	private FranchiseBranch franchiseBranch;
 
 	/**
 	 * Create the dialog.
@@ -55,10 +66,11 @@ public class NewEmployeeDialog extends Dialog {
 		super(parentShell);
 		setShellStyle(SWT.MIN | SWT.MAX | SWT.TITLE);
 		
-		// TODO replace by session franchised country
+		// TODO replace by session franchised information
 		this.country = new Country();
 		this.country.setId(1L);
 		this.country.setName("Chile");
+		this.franchiseBranch = SaggServiceLocator.getFranchiseServices().getById(1L);
 	}
 
 	/**
@@ -136,71 +148,18 @@ public class NewEmployeeDialog extends Dialog {
 		comboCargoViewer.setInput(SaggServiceLocator.getRefdataServices());
 		Combo comboCargo = comboCargoViewer.getCombo();
 		comboCargo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		comboCargoViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				selectedPosition = (Position) ((StructuredSelection) event.getSelection()).getFirstElement();
+			}
+		});
 		
 		Label lblFechaDeIngreso = new Label(grpInformacionLaboral, SWT.NONE);
 		lblFechaDeIngreso.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblFechaDeIngreso.setText("Fecha de Ingreso");
 		
-		DateTime dateTimeFechaDeIngreso = new DateTime(grpInformacionLaboral, SWT.BORDER);
-		
-		Group grpInformacionDeDomicililo = new Group(container, SWT.NONE);
-		grpInformacionDeDomicililo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		grpInformacionDeDomicililo.setText("Informaci\u00F3n de Domicililo");
-		grpInformacionDeDomicililo.setLayout(new GridLayout(2, false));
-		
-		Label lblDatosDeContacto = new Label(grpInformacionDeDomicililo, SWT.RIGHT);
-		GridData gd_lblDatosDeContacto = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_lblDatosDeContacto.widthHint = 124;
-		lblDatosDeContacto.setLayoutData(gd_lblDatosDeContacto);
-		lblDatosDeContacto.setText("Calle");
-		
-		textDatosDeContacto = new Text(grpInformacionDeDomicililo, SWT.BORDER);
-		textDatosDeContacto.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
-		Label lblRegion = new Label(grpInformacionDeDomicililo, SWT.NONE);
-		lblRegion.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblRegion.setText("Regi\u00F3n");
-		
-		Composite composite_1 = new Composite(grpInformacionDeDomicililo, SWT.NONE);
-		GridLayout gl_composite_1 = new GridLayout(3, false);
-		gl_composite_1.marginWidth = 0;
-		gl_composite_1.marginHeight = 0;
-		composite_1.setLayout(gl_composite_1);
-		composite_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		
-		ComboViewer comboRegionViewer = new ComboViewer(composite_1, SWT.NONE);
-		comboRegionViewer.setContentProvider(new StateComboContentProvider(country));
-		comboRegionViewer.setLabelProvider(new StateComboLabelProvider());
-		comboRegionViewer.setInput(SaggServiceLocator.getRefdataServices());
-		Combo comboRegion = comboRegionViewer.getCombo();
-//		comboRegion.addSelectionListener(new SelectionAdapter() {
-//			@Override
-//			public void widgetSelected(SelectionEvent e) {
-//				// TODO
-//			}
-//		});
-		comboRegion.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
-		Label lblComuna = new Label(composite_1, SWT.NONE);
-		lblComuna.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblComuna.setText("Comuna");
-		
-		ComboViewer comboComunaViewer = new ComboViewer(composite_1, SWT.NONE);
-		comboComunaViewer.setContentProvider(new CityComboContentProvider());
-		comboComunaViewer.setLabelProvider(new CityComboLabelProvider());
-		comboComunaViewer.setInput(SaggServiceLocator.getRefdataServices());
-		Combo comboComuna = comboComunaViewer.getCombo();
-		comboComuna.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
-		comboRegionViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				State state = (State) ((StructuredSelection) event.getSelection()).getFirstElement();
-				CityComboContentProvider provider = (CityComboContentProvider) comboComunaViewer.getContentProvider();
-				provider.setState(state);
-				comboComunaViewer.refresh();
-			}
-		});
+		dateTimeFechaDeIngreso = new DateTime(grpInformacionLaboral, SWT.DATE | SWT.DROP_DOWN);
 		
 		Group grpInformacionDeStock = new Group(container, SWT.NONE);
 		grpInformacionDeStock.setLayout(new GridLayout(2, false));
@@ -240,6 +199,69 @@ public class NewEmployeeDialog extends Dialog {
 		
 		textCorreoElectronico = new Text(grpInformacionDeStock, SWT.BORDER);
 		textCorreoElectronico.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		Group grpInformacionDeDomicililo = new Group(container, SWT.NONE);
+		grpInformacionDeDomicililo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		grpInformacionDeDomicililo.setText("Informaci\u00F3n de Domicililo");
+		grpInformacionDeDomicililo.setLayout(new GridLayout(2, false));
+		
+		Label lblDireccion = new Label(grpInformacionDeDomicililo, SWT.RIGHT);
+		GridData gd_lblDireccion = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
+		gd_lblDireccion.widthHint = 124;
+		lblDireccion.setLayoutData(gd_lblDireccion);
+		lblDireccion.setText("Direcci\u00F3n");
+		
+		textDireccionL1 = new Text(grpInformacionDeDomicililo, SWT.BORDER);
+		textDireccionL1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		new Label(grpInformacionDeDomicililo, SWT.NONE);
+		
+		textDireccionL2 = new Text(grpInformacionDeDomicililo, SWT.BORDER);
+		textDireccionL2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		Label lblRegion = new Label(grpInformacionDeDomicililo, SWT.NONE);
+		lblRegion.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblRegion.setText("Regi\u00F3n");
+		
+		Composite composite_1 = new Composite(grpInformacionDeDomicililo, SWT.NONE);
+		GridLayout gl_composite_1 = new GridLayout(3, false);
+		gl_composite_1.marginWidth = 0;
+		gl_composite_1.marginHeight = 0;
+		composite_1.setLayout(gl_composite_1);
+		composite_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		
+		ComboViewer comboRegionViewer = new ComboViewer(composite_1, SWT.NONE);
+		comboRegionViewer.setContentProvider(new StateComboContentProvider(country));
+		comboRegionViewer.setLabelProvider(new StateComboLabelProvider());
+		comboRegionViewer.setInput(SaggServiceLocator.getRefdataServices());
+		Combo comboRegion = comboRegionViewer.getCombo();
+		comboRegion.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		Label lblComuna = new Label(composite_1, SWT.NONE);
+		lblComuna.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		lblComuna.setText("Comuna");
+		
+		ComboViewer comboComunaViewer = new ComboViewer(composite_1, SWT.NONE);
+		comboComunaViewer.setContentProvider(new CityComboContentProvider());
+		comboComunaViewer.setLabelProvider(new CityComboLabelProvider());
+		comboComunaViewer.setInput(SaggServiceLocator.getRefdataServices());
+		Combo comboComuna = comboComunaViewer.getCombo();
+		comboComuna.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		comboRegionViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				State state = (State) ((StructuredSelection) event.getSelection()).getFirstElement();
+				CityComboContentProvider provider = (CityComboContentProvider) comboComunaViewer.getContentProvider();
+				provider.setState(state);
+				comboComunaViewer.refresh();
+			}
+		});
+		comboComunaViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				selectedCity = (City) ((StructuredSelection) event.getSelection()).getFirstElement();
+			}
+		});
 
 		return container;
 	}
@@ -256,8 +278,14 @@ public class NewEmployeeDialog extends Dialog {
 
 	@Override
 	protected void okPressed() {
+		int day = dateTimeFechaDeIngreso.getDay();
+		int month = dateTimeFechaDeIngreso.getMonth();
+		int year = dateTimeFechaDeIngreso.getYear();
+		Date startDate = new GregorianCalendar(year, month, day).getTime();
 		SaggServiceLocator.getEmployeeServices().createEmployee(textNombres.getText(), textApellidos.getText(),
-				textRut.getText(), textCorreoElectronico.getText(), textTelefono.getText(), textCelular.getText());
+				textRut.getText(), selectedPosition, startDate, franchiseBranch, textCorreoElectronico.getText(),
+				textTelefono.getText(), textCelular.getText(), textDireccionL1.getText(), textDireccionL2.getText(),
+				selectedCity);
 		super.okPressed();
 	}
 
@@ -266,6 +294,6 @@ public class NewEmployeeDialog extends Dialog {
 	 */
 	@Override
 	protected Point getInitialSize() {
-		return new Point(644, 547);
+		return new Point(644, 578);
 	}
 }
