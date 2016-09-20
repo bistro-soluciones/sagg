@@ -7,12 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added
 - SAGG Services Locator.
-- Provide EmployeeServices services class with functionality to save employee and findAll employees.
+- Provide EmployeeServices interface with functionality to save employee and findAll employees.
 - Create Franchise model (franchise, franchised, franchise branch).
-- Provide RefdataServices services class with functionality to get location and job position information.
+- Provide RefdataServices interface with functionality to get location and job position information.
+- Provide FranchiseServices interface with functionality to get franchise information.
 
 ### Changed
-- Add employees address and job information
+- Add employees address and job information.
 
 ### Removed
 -
