@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 -
 
-## [0.0.3-SNAPSHOT] - 2016-09-20
+## [0.0.3-M1] - 2016-09-20
 ### Added
 - SAGG Services Locator.
 - Create Franchise model (franchise, franchised, franchise branch).
