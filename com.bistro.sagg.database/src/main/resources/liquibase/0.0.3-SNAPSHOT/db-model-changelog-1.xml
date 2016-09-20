@@ -176,6 +176,12 @@
         <modifyDataType tableName="employees" columnName="address_l2" newDataType="varchar(50)"/>
 	</changeSet>
 
+    <changeSet id="19" author="sebastian.lavie">
+    	<addColumn tableName="employees">
+            <column name="start_working_date" type="date" afterColumn="position_id"/>
+    	</addColumn>
+    </changeSet>
+    
 <!--     <changeSet id="2" author="sebastian.lavie"> -->
 <!--         <createTable tableName="suppliers"> -->
 <!--             <column name="id" type="bigint(20)" autoIncrement="true"> -->
