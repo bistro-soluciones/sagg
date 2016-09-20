@@ -1,5 +1,7 @@
 package com.bistro.sagg.core.model.company.employees;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,7 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.bistro.sagg.core.model.company.FranchiseeBranch;
+import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.model.location.City;
 
 @Entity
@@ -31,9 +33,11 @@ public class Employee {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "POSITION_ID")
 	private Position position;
+	@Column(name = "START_WORKING_DATE")
+	private Date startDate;
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FRANCHISE_BRANCH_ID")
-	private FranchiseeBranch franchiseBranch; 
+	private FranchiseBranch franchiseBranch; 
 	// Contact information
 	@Column(name = "EMAIL")
 	private String email;
@@ -94,11 +98,19 @@ public class Employee {
 		this.position = position;
 	}
 
-	public FranchiseeBranch getFranchiseBranch() {
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public FranchiseBranch getFranchiseBranch() {
 		return franchiseBranch;
 	}
 
-	public void setFranchiseBranch(FranchiseeBranch franchiseBranch) {
+	public void setFranchiseBranch(FranchiseBranch franchiseBranch) {
 		this.franchiseBranch = franchiseBranch;
 	}
 

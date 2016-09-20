@@ -18,8 +18,8 @@ import com.bistro.sagg.core.model.company.employees.Employee;
 import com.bistro.sagg.core.model.location.City;
 
 @Entity
-@Table(name = "FANCHISE_BRANCHES")
-public class FranchiseeBranch {
+@Table(name = "FRANCHISE_BRANCHES")
+public class FranchiseBranch {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +41,7 @@ public class FranchiseeBranch {
 
 	// Suppliers information
 	// private List<Supplier> suppliers;
-	public FranchiseeBranch() {
+	public FranchiseBranch() {
 		super();
 	}
 

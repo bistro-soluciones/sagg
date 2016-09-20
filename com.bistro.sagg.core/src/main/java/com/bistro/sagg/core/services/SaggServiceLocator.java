@@ -8,6 +8,10 @@ public class SaggServiceLocator {
 		return SaggApplicationContext.getApplicationContext().getBean("employeeServices", EmployeeServices.class);
 	}
 
+	public static FranchiseServices getFranchiseServices() {
+		return SaggApplicationContext.getApplicationContext().getBean("franchiseServices", FranchiseServices.class);
+	}
+
 	public static RefdataServices getRefdataServices() {
 		return SaggApplicationContext.getApplicationContext().getBean("refdataServices", RefdataServices.class);
 	}

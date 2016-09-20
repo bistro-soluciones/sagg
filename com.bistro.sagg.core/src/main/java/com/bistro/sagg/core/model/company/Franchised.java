@@ -49,7 +49,7 @@ public class Franchised {
 	private Franchise franchise;
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FRANCHISE_BRANCH_ID")
-	private FranchiseeBranch franchiseeBranch;
+	private FranchiseBranch franchiseeBranch;
 
 	public Franchised() {
 		super();
@@ -143,11 +143,11 @@ public class Franchised {
 		this.franchise = franchise;
 	}
 
-	public FranchiseeBranch getFranchiseeBranch() {
+	public FranchiseBranch getFranchiseeBranch() {
 		return franchiseeBranch;
 	}
 
-	public void setFranchiseeBranch(FranchiseeBranch franchiseeBranch) {
+	public void setFranchiseeBranch(FranchiseBranch franchiseeBranch) {
 		this.franchiseeBranch = franchiseeBranch;
 	}
 
