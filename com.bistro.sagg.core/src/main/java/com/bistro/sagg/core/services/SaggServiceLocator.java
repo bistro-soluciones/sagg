@@ -16,4 +16,8 @@ public class SaggServiceLocator {
 		return SaggApplicationContext.getApplicationContext().getBean("refdataServices", RefdataServices.class);
 	}
 
+	public static SupplierServices getSupplierServices() {
+		return SaggApplicationContext.getApplicationContext().getBean("supplierServices", SupplierServices.class);
+	}
+
 }

@@ -46,7 +46,8 @@
 	<context:component-scan base-package="com.bistro.sagg.core" />
 	
 	<bean id="employeeServices" class="com.bistro.sagg.core.services.EmployeeServicesImpl"/>
-	<bean id="refdataServices" class="com.bistro.sagg.core.services.RefdataServicesImpl"/>
 	<bean id="franchiseServices" class="com.bistro.sagg.core.services.FranchiseServicesImpl"/>
+	<bean id="refdataServices" class="com.bistro.sagg.core.services.RefdataServicesImpl"/>
+	<bean id="supplierServices" class="com.bistro.sagg.core.services.SupplierServicesImpl"/>
 
 </beans>

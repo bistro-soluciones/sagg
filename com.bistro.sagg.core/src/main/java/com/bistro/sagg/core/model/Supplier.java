@@ -17,23 +17,43 @@ public class Supplier {
 	private String businessName;
 	@Column(name = "SUPPLIER_ID")
 	private String supplierId;
-	// // Contact information
-	@Column(name = "CONTACT_NAME")
-	private String contactName;
-	@Column(name = "EMAIL")
-	private String email;
-	@Column(name = "PHONE")
-	private String phone;
-	@Column(name = "CELLPHONE")
-	private String cellphone;
+	// Contact information
+	private SupplierContact contact;
 
-	// // Address information
-	// private String addressL1;
-	// private String addressL2;
-	// private City city;
-	
 	public Supplier() {
 		super();
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getBusinessName() {
+		return businessName;
+	}
+
+	public void setBusinessName(String businessName) {
+		this.businessName = businessName;
+	}
+
+	public String getSupplierId() {
+		return supplierId;
+	}
+
+	public void setSupplierId(String supplierId) {
+		this.supplierId = supplierId;
+	}
+
+	public SupplierContact getContact() {
+		return contact;
+	}
+
+	public void setContact(SupplierContact contact) {
+		this.contact = contact;
 	}
 
 }
