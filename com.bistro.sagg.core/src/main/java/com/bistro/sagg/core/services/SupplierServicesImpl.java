@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.bistro.sagg.core.builders.SupplierBuilder;
 import com.bistro.sagg.core.model.Supplier;
-import com.bistro.sagg.core.model.SupplierContact;
 import com.bistro.sagg.core.repository.SupplierRepository;
 
 public class SupplierServicesImpl implements SupplierServices {
@@ -16,16 +16,10 @@ public class SupplierServicesImpl implements SupplierServices {
 	public void createSupplier(String businessName, String supplierId, String contactFirstname, String contactLastname,
 			String contactEmail, String contactPhone, String contactCellphone) {
 		// Create supplier object
-		Supplier supplier = new Supplier();
-		supplier.setBusinessName(businessName);
-		supplier.setSupplierId(supplierId);
-		SupplierContact contact = new SupplierContact();
-		contact.setFirstname(contactFirstname);
-		contact.setLastname(contactLastname);
-		contact.setEmail(contactEmail);
-		contact.setPhone(contactPhone);
-		contact.setCellphone(contactCellphone);
-		supplier.setContact(contact);
+		SupplierBuilder builder = new SupplierBuilder();
+		builder.build(businessName, supplierId, contactFirstname, contactLastname, contactEmail, contactPhone,
+				contactCellphone);
+		Supplier supplier = builder.getSupplier();
 		// Save supplier
 		supplierRepository.save(supplier);
 	}

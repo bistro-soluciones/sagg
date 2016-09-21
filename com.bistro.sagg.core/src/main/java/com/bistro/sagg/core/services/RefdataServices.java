@@ -7,7 +7,7 @@ import com.bistro.sagg.core.model.location.City;
 import com.bistro.sagg.core.model.location.Country;
 import com.bistro.sagg.core.model.location.State;
 
-public interface RefdataServices {
+public interface RefdataServices extends ISaggService {
 
 	List<Position> getPositions();
 

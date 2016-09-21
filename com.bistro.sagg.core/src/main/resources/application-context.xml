@@ -45,9 +45,23 @@
 	<jpa:repositories base-package="com.bistro.sagg.core.repository" />
 	<context:component-scan base-package="com.bistro.sagg.core" />
 	
-	<bean id="employeeServices" class="com.bistro.sagg.core.services.EmployeeServicesImpl"/>
-	<bean id="franchiseServices" class="com.bistro.sagg.core.services.FranchiseServicesImpl"/>
-	<bean id="refdataServices" class="com.bistro.sagg.core.services.RefdataServicesImpl"/>
-	<bean id="supplierServices" class="com.bistro.sagg.core.services.SupplierServicesImpl"/>
+	<bean id="saggServiceLocator" class="com.bistro.sagg.core.services.SaggServiceLocator">
+		<property name="services">
+			<map>
+				<entry key="com.bistro.sagg.core.services.EmployeeServices">
+					<bean class="com.bistro.sagg.core.services.EmployeeServicesImpl"/>
+				</entry>
+				<entry key="com.bistro.sagg.core.services.FranchiseServices">
+					<bean class="com.bistro.sagg.core.services.FranchiseServicesImpl"/>
+				</entry>
+				<entry key="com.bistro.sagg.core.services.RefdataServices">
+					<bean class="com.bistro.sagg.core.services.RefdataServicesImpl"/>
+				</entry>
+				<entry key="com.bistro.sagg.core.services.SupplierServices">
+					<bean class="com.bistro.sagg.core.services.SupplierServicesImpl"/>
+				</entry>
+			</map>
+		</property>
+	</bean>
 
 </beans>

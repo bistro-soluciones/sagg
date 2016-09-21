@@ -1,23 +1,32 @@
 package com.bistro.sagg.core.services;
 
+import java.util.Map;
+
 import com.bistro.sagg.core.spring.SaggApplicationContext;
 
 public class SaggServiceLocator {
 
-	public static EmployeeServices getEmployeeServices() {
-		return SaggApplicationContext.getApplicationContext().getBean("employeeServices", EmployeeServices.class);
+	private static SaggServiceLocator instance;
+
+	private Map<String, ISaggService> services;
+
+	public static synchronized SaggServiceLocator getInstance() {
+		if (instance == null) {
+			instance = SaggApplicationContext.getApplicationContext().getBean(SaggServiceLocator.class);
+		}
+		return instance;
 	}
 
-	public static FranchiseServices getFranchiseServices() {
-		return SaggApplicationContext.getApplicationContext().getBean("franchiseServices", FranchiseServices.class);
+	public Map<String, ISaggService> getServices() {
+		return services;
 	}
 
-	public static RefdataServices getRefdataServices() {
-		return SaggApplicationContext.getApplicationContext().getBean("refdataServices", RefdataServices.class);
+	public void setServices(Map<String, ISaggService> services) {
+		this.services = services;
 	}
 
-	public static SupplierServices getSupplierServices() {
-		return SaggApplicationContext.getApplicationContext().getBean("supplierServices", SupplierServices.class);
+	public ISaggService lookup(String service) {
+		return this.services.get(service);
 	}
 
 }

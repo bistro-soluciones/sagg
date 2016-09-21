@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.bistro.sagg.core.builders.EmployeeBuilder;
 import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.model.company.employees.Employee;
 import com.bistro.sagg.core.model.company.employees.Position;
@@ -20,19 +21,10 @@ public class EmployeeServicesImpl implements EmployeeServices {
 			FranchiseBranch franchiseBranch, String email, String phone, String cellphone, String addressL1,
 			String addressL2, City city) {
 		// Create employee object
-		Employee employee = new Employee();
-		employee.setFirstname(firstname);
-		employee.setLastname(lastname);
-		employee.setPersonId(personId);
-		employee.setPosition(position);
-		employee.setStartDate(startDate);
-		employee.setFranchiseBranch(franchiseBranch);
-		employee.setEmail(email);
-		employee.setPhone(phone);
-		employee.setCellphone(cellphone);
-		employee.setAddressL1(addressL1);
-		employee.setAddressL2(addressL2);
-		employee.setCity(city);
+		EmployeeBuilder builder = new EmployeeBuilder();
+		builder.build(firstname, lastname, personId, position, startDate, franchiseBranch, email, phone, cellphone,
+				addressL1, addressL2, city);
+		Employee employee = builder.getEmployee();
 		// Save employee
 		employeeRepository.save(employee);
 	}

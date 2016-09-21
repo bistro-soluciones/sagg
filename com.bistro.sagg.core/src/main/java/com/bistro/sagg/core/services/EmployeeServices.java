@@ -8,7 +8,7 @@ import com.bistro.sagg.core.model.company.employees.Employee;
 import com.bistro.sagg.core.model.company.employees.Position;
 import com.bistro.sagg.core.model.location.City;
 
-public interface EmployeeServices {
+public interface EmployeeServices extends ISaggService {
 
 	void createEmployee(String firstname, String lastname, String personId, Position position, Date startDate,
 			FranchiseBranch franchiseBranch, String email, String phone, String cellphone, String addressL1,
