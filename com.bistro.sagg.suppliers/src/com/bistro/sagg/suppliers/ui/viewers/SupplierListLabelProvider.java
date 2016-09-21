@@ -38,7 +38,7 @@ public class SupplierListLabelProvider implements ITableLabelProvider {
 	public String getColumnText(Object element, int columnIndex) {
 		Supplier supplier = (Supplier) element;
 		switch(columnIndex) {
-			case SupplierColumnIndex.NAME_COLUMN_IDX: return supplier.setBusinessName();
+			case SupplierColumnIndex.NAME_COLUMN_IDX: return supplier.getBusinessName();
 			case SupplierColumnIndex.SUPPLIER_ID_COLUMN_IDX: return supplier.getSupplierId();
 			case SupplierColumnIndex.SUPPLIES_COLUMN_IDX: return "";
 			case SupplierColumnIndex.CONTACT_COLUMN_IDX: return supplier.getContact().getFullName();
