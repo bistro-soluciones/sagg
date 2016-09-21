@@ -11,6 +11,7 @@
 
     <!-- Version 0.0.3.SNAPSHOT -->
     <!-- Domain model tables -->
-	<include file="src/main/resources/liquibase/0.0.3-SNAPSHOT/db-model-changelog-1.xml" />
+	<include file="src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-1.xml" />
+	<include file="src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-2.xml" />
 
 </databaseChangeLog>
