@@ -2,11 +2,16 @@ package com.bistro.sagg.core.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "SUPPLIERS")
 public class Supplier {
 
 	@Id
@@ -18,6 +23,8 @@ public class Supplier {
 	@Column(name = "SUPPLIER_ID")
 	private String supplierId;
 	// Contact information
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CONTACT_ID")
 	private SupplierContact contact;
 
 	public Supplier() {

@@ -1,21 +1,26 @@
 package com.bistro.sagg.core.model;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "SUPPLIER_CONTACTS")
 public class SupplierContact {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
 	private Long id;
-	// Contact information
+	// General information
 	@Column(name = "FIRSTNAME")
 	private String firstname;
 	@Column(name = "LASTNAME")
 	private String lastname;
+	// Contact information
 	@Column(name = "EMAIL")
 	private String email;
 	@Column(name = "PHONE")
