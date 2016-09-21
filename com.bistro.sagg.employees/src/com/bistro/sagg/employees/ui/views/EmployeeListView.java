@@ -26,6 +26,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
+import com.bistro.sagg.core.services.EmployeeServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.employees.ui.actions.OpenNewEmployeeDialogAction;
 import com.bistro.sagg.employees.ui.utils.EmployeeColumnIndex;
@@ -60,6 +61,9 @@ public class EmployeeListView extends ViewPart {
 
 	private Action openNewEmployeeDialogAction;
 	private Table employeesTable;
+	
+	private EmployeeServices employeeService = (EmployeeServices) SaggServiceLocator.getInstance()
+			.lookup(EmployeeServices.class.getName());
 
 	/*
 	 * The content provider class is responsible for
@@ -111,7 +115,7 @@ public class EmployeeListView extends ViewPart {
 		employeesTableViewer.setContentProvider(new EmployeeListContentProvider());
 		employeesTableViewer.setLabelProvider(new EmployeeListLabelProvider());
 		employeesTableViewer.setSorter(new EmployeeListSorter());
-		employeesTableViewer.setInput(SaggServiceLocator.getEmployeeServices());
+		employeesTableViewer.setInput(employeeService);
 		
 		employeesTable = employeesTableViewer.getTable();
 		employeesTable.setLinesVisible(true);

@@ -27,6 +27,9 @@ import com.bistro.sagg.core.model.company.employees.Position;
 import com.bistro.sagg.core.model.location.City;
 import com.bistro.sagg.core.model.location.Country;
 import com.bistro.sagg.core.model.location.State;
+import com.bistro.sagg.core.services.EmployeeServices;
+import com.bistro.sagg.core.services.FranchiseServices;
+import com.bistro.sagg.core.services.RefdataServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.employees.ui.viewers.CityComboContentProvider;
 import com.bistro.sagg.employees.ui.viewers.CityComboLabelProvider;
@@ -57,6 +60,13 @@ public class NewEmployeeDialog extends Dialog {
 	
 	private Country country;
 	private FranchiseBranch franchiseBranch;
+	
+	private EmployeeServices employeeService = (EmployeeServices) SaggServiceLocator.getInstance()
+			.lookup(EmployeeServices.class.getName());
+	private FranchiseServices franchiseService = (FranchiseServices) SaggServiceLocator.getInstance()
+			.lookup(FranchiseServices.class.getName());
+	private RefdataServices refdataService = (RefdataServices) SaggServiceLocator.getInstance()
+			.lookup(RefdataServices.class.getName());
 
 	/**
 	 * Create the dialog.
@@ -70,7 +80,7 @@ public class NewEmployeeDialog extends Dialog {
 		this.country = new Country();
 		this.country.setId(1L);
 		this.country.setName("Chile");
-		this.franchiseBranch = SaggServiceLocator.getFranchiseServices().getById(1L);
+		this.franchiseBranch = franchiseService.getById(1L);
 	}
 
 	/**
@@ -145,7 +155,7 @@ public class NewEmployeeDialog extends Dialog {
 		ComboViewer comboCargoViewer = new ComboViewer(grpInformacionLaboral, SWT.NONE);
 		comboCargoViewer.setContentProvider(new PositionComboContentProvider());
 		comboCargoViewer.setLabelProvider(new PositionComboLabelProvider());
-		comboCargoViewer.setInput(SaggServiceLocator.getRefdataServices());
+		comboCargoViewer.setInput(refdataService);
 		Combo comboCargo = comboCargoViewer.getCombo();
 		comboCargo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		comboCargoViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -232,7 +242,7 @@ public class NewEmployeeDialog extends Dialog {
 		ComboViewer comboRegionViewer = new ComboViewer(composite_1, SWT.NONE);
 		comboRegionViewer.setContentProvider(new StateComboContentProvider(country));
 		comboRegionViewer.setLabelProvider(new StateComboLabelProvider());
-		comboRegionViewer.setInput(SaggServiceLocator.getRefdataServices());
+		comboRegionViewer.setInput(refdataService);
 		Combo comboRegion = comboRegionViewer.getCombo();
 		comboRegion.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
@@ -243,7 +253,7 @@ public class NewEmployeeDialog extends Dialog {
 		ComboViewer comboComunaViewer = new ComboViewer(composite_1, SWT.NONE);
 		comboComunaViewer.setContentProvider(new CityComboContentProvider());
 		comboComunaViewer.setLabelProvider(new CityComboLabelProvider());
-		comboComunaViewer.setInput(SaggServiceLocator.getRefdataServices());
+		comboComunaViewer.setInput(refdataService);
 		Combo comboComuna = comboComunaViewer.getCombo();
 		comboComuna.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
@@ -282,10 +292,10 @@ public class NewEmployeeDialog extends Dialog {
 		int month = dateTimeFechaDeIngreso.getMonth();
 		int year = dateTimeFechaDeIngreso.getYear();
 		Date startDate = new GregorianCalendar(year, month, day).getTime();
-		SaggServiceLocator.getEmployeeServices().createEmployee(textNombres.getText(), textApellidos.getText(),
-				textRut.getText(), selectedPosition, startDate, franchiseBranch, textCorreoElectronico.getText(),
-				textTelefono.getText(), textCelular.getText(), textDireccionL1.getText(), textDireccionL2.getText(),
-				selectedCity);
+		
+		employeeService.createEmployee(textNombres.getText(), textApellidos.getText(), textRut.getText(), selectedPosition,
+				startDate, franchiseBranch, textCorreoElectronico.getText(), textTelefono.getText(),
+				textCelular.getText(), textDireccionL1.getText(), textDireccionL2.getText(), selectedCity);
 		super.okPressed();
 	}
 

@@ -41,4 +41,4 @@ Bundle-ClassPath: .,
  lib/spring-jdbc-4.2.6.RELEASE.jar,
  lib/spring-orm-4.2.6.RELEASE.jar,
  lib/spring-tx-4.2.6.RELEASE.jar,
- lib/sagg-core-0.0.3-SNAPSHOT.jar
+ lib/sagg-core-0.0.4-SNAPSHOT.jar
