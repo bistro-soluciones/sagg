@@ -4,7 +4,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-import com.bistro.sagg.core.model.Supplier;
+import com.bistro.sagg.core.model.suppliers.Supplier;
 import com.bistro.sagg.suppliers.ui.utils.SupplierColumnIndex;
 
 public class SupplierListLabelProvider implements ITableLabelProvider {
@@ -38,7 +38,7 @@ public class SupplierListLabelProvider implements ITableLabelProvider {
 	public String getColumnText(Object element, int columnIndex) {
 		Supplier supplier = (Supplier) element;
 		switch(columnIndex) {
-			case SupplierColumnIndex.NAME_COLUMN_IDX: return supplier.getBusinessName();
+			case SupplierColumnIndex.BUSINESS_NAME_COLUMN_IDX: return supplier.getBusinessName();
 			case SupplierColumnIndex.SUPPLIER_ID_COLUMN_IDX: return supplier.getSupplierId();
 			case SupplierColumnIndex.SUPPLIES_COLUMN_IDX: return "";
 			case SupplierColumnIndex.CONTACT_COLUMN_IDX: return supplier.getContact().getFullName();

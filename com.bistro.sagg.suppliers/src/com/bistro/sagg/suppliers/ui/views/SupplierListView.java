@@ -9,31 +9,30 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
+import com.bistro.sagg.core.services.SaggServiceLocator;
+import com.bistro.sagg.core.services.SupplierServices;
 import com.bistro.sagg.suppliers.ui.actions.OpenNewSupplierDialogAction;
+import com.bistro.sagg.suppliers.ui.utils.SupplierColumnIndex;
+import com.bistro.sagg.suppliers.ui.viewers.SupplierListContentProvider;
+import com.bistro.sagg.suppliers.ui.viewers.SupplierListLabelProvider;
+import com.bistro.sagg.suppliers.ui.viewers.SupplierListSorter;
 
 
 /**
@@ -63,6 +62,9 @@ public class SupplierListView extends ViewPart {
 
 	private OpenNewSupplierDialogAction openNewSupplierDialogAction;
 	private Table suppliersTable;
+	
+	private SupplierServices supplierServices = (SupplierServices) SaggServiceLocator.getInstance()
+			.lookup(SupplierServices.class.getName());
 
 	/*
 	 * The content provider class is responsible for
@@ -110,35 +112,90 @@ public class SupplierListView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		suppliersTable = new Table(parent, SWT.BORDER | SWT.FULL_SELECTION);
+		TableViewer suppliersTableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
+		suppliersTableViewer.setContentProvider(new SupplierListContentProvider());
+		suppliersTableViewer.setLabelProvider(new SupplierListLabelProvider());
+		suppliersTableViewer.setSorter(new SupplierListSorter());
+		suppliersTableViewer.setInput(supplierServices);
+		
+		suppliersTable = suppliersTableViewer.getTable();
 		suppliersTable.setLinesVisible(true);
 		suppliersTable.setHeaderVisible(true);
 		
 		TableColumn tblclmnNombre = new TableColumn(suppliersTable, SWT.NONE);
+		tblclmnNombre.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				((SupplierListSorter) suppliersTableViewer.getSorter()).doSort(SupplierColumnIndex.BUSINESS_NAME_COLUMN_IDX);
+				suppliersTableViewer.refresh();
+			}
+		});
 		tblclmnNombre.setWidth(182);
 		tblclmnNombre.setText("Raz\u00F3n Social");
 		
 		TableColumn tblclmnRut = new TableColumn(suppliersTable, SWT.NONE);
+		tblclmnRut.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				((SupplierListSorter) suppliersTableViewer.getSorter()).doSort(SupplierColumnIndex.SUPPLIER_ID_COLUMN_IDX);
+				suppliersTableViewer.refresh();
+			}
+		});
 		tblclmnRut.setWidth(88);
 		tblclmnRut.setText("RUT");
 		
 		TableColumn tblclmnNewColumn = new TableColumn(suppliersTable, SWT.NONE);
+		tblclmnNewColumn.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				((SupplierListSorter) suppliersTableViewer.getSorter()).doSort(SupplierColumnIndex.SUPPLIES_COLUMN_IDX);
+				suppliersTableViewer.refresh();
+			}
+		});
 		tblclmnNewColumn.setWidth(386);
 		tblclmnNewColumn.setText("Insumos");
 		
 		TableColumn tblclmnUnidadDeMedida = new TableColumn(suppliersTable, SWT.NONE);
+		tblclmnUnidadDeMedida.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				((SupplierListSorter) suppliersTableViewer.getSorter()).doSort(SupplierColumnIndex.CONTACT_COLUMN_IDX);
+				suppliersTableViewer.refresh();
+			}
+		});
 		tblclmnUnidadDeMedida.setWidth(190);
 		tblclmnUnidadDeMedida.setText("Datos de Contacto");
 		
 		TableColumn tblclmnNewColumn_1 = new TableColumn(suppliersTable, SWT.NONE);
+		tblclmnNewColumn_1.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				((SupplierListSorter) suppliersTableViewer.getSorter()).doSort(SupplierColumnIndex.PHONE_COLUMN_IDX);
+				suppliersTableViewer.refresh();
+			}
+		});
 		tblclmnNewColumn_1.setWidth(100);
 		tblclmnNewColumn_1.setText("Tel\u00E9fono");
 		
 		TableColumn tblclmnStockLocal = new TableColumn(suppliersTable, SWT.NONE);
+		tblclmnStockLocal.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				((SupplierListSorter) suppliersTableViewer.getSorter()).doSort(SupplierColumnIndex.CELLPHONE_COLUMN_IDX);
+				suppliersTableViewer.refresh();
+			}
+		});
 		tblclmnStockLocal.setWidth(100);
 		tblclmnStockLocal.setText("Celular");
 		
 		TableColumn tblclmnStockBodega = new TableColumn(suppliersTable, SWT.NONE);
+		tblclmnStockBodega.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				((SupplierListSorter) suppliersTableViewer.getSorter()).doSort(SupplierColumnIndex.EMAIL_COLUMN_IDX);
+				suppliersTableViewer.refresh();
+			}
+		});
 		tblclmnStockBodega.setWidth(190);
 		tblclmnStockBodega.setText("Correo Electr\u00F3nico");
 		makeActions();

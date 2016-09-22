@@ -16,8 +16,8 @@ public class SuppliersPerspective implements IPerspectiveFactory {
 //    	addViewShortcuts(layout);
     	
     	String editorArea = layout.getEditorArea();
-    	layout.addStandaloneView(SupplierFilterView.ID, true, IPageLayout.TOP, 0.25f, editorArea);
-    	layout.addStandaloneView(SupplierListView.ID, true, IPageLayout.TOP, 0.75f, editorArea);
+//    	layout.addStandaloneView(SupplierFilterView.ID, true, IPageLayout.TOP, 0.25f, editorArea);
+    	layout.addStandaloneView(SupplierListView.ID, true, IPageLayout.TOP, 1f, editorArea);
 
     }
 //	private void addViewShortcuts(IPageLayout layout) {

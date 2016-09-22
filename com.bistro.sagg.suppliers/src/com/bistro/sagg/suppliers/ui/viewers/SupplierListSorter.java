@@ -4,6 +4,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 
 import com.bistro.sagg.core.model.company.employees.Employee;
+import com.bistro.sagg.core.model.suppliers.Supplier;
 import com.bistro.sagg.suppliers.ui.utils.SupplierColumnIndex;
 
 public class SupplierListSorter extends ViewerSorter {
@@ -37,28 +38,28 @@ public class SupplierListSorter extends ViewerSorter {
 	 */
 	public int compare(Viewer viewer, Object e1, Object e2) {
 		int result = 0;
-		Employee employee1 = (Employee) e1;
-		Employee employee2 = (Employee) e2;
+		Supplier supplier1 = (Supplier) e1;
+		Supplier supplier2 = (Supplier) e2;
 
 		// Determine which column and do the appropriate sort
 		switch (column) {
-		case SupplierColumnIndex.NAME_COLUMN_IDX:
-			result = employee1.getFullName().compareTo(employee2.getFullName());
+		case SupplierColumnIndex.BUSINESS_NAME_COLUMN_IDX:
+			result = supplier1.getBusinessName().compareTo(supplier2.getBusinessName());
 			break;
 		case SupplierColumnIndex.SUPPLIER_ID_COLUMN_IDX:
-			result = employee1.getPersonId().compareTo(employee2.getPersonId());
+			result = supplier1.getSupplierId().compareTo(supplier2.getSupplierId());
 			break;
 		case SupplierColumnIndex.CONTACT_COLUMN_IDX:
-			result = employee1.getPersonId().compareTo(employee2.getPersonId());
+			result = supplier1.getContact().getFullName().compareTo(supplier2.getContact().getFullName());
 			break;
 		case SupplierColumnIndex.PHONE_COLUMN_IDX:
-			result = employee1.getPhone().compareTo(employee2.getPhone());
+			result = supplier1.getContact().getPhone().compareTo(supplier2.getContact().getPhone());
 			break;
 		case SupplierColumnIndex.CELLPHONE_COLUMN_IDX:
-			result = employee1.getCellphone().compareTo(employee2.getCellphone());
+			result = supplier1.getContact().getCellphone().compareTo(supplier2.getContact().getCellphone());
 			break;
 		case SupplierColumnIndex.EMAIL_COLUMN_IDX:
-			result = employee1.getEmail().compareTo(employee2.getEmail());
+			result = supplier1.getContact().getEmail().compareTo(supplier2.getContact().getEmail());
 			break;
 		}
 

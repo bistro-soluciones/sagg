@@ -2,27 +2,34 @@ package com.bistro.sagg.suppliers.ui.dialogs;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
+
+import com.bistro.sagg.core.services.SaggServiceLocator;
+import com.bistro.sagg.core.services.SupplierServices;
 
 public class NewSupplierDialog extends Dialog {
-	private Text text;
-	private Text text_5;
-	private Text text_1;
-	private Text text_2;
-	private Text text_3;
-	private Text text_4;
+	private Text businessNameText;
+	private Text supplierIdText;
+	private Text firstnameText;
+	private Text lastnameText;
+	private Text emailText;
+	private Text phoneText;
+	private Text cellphoneText;
 
+	private SupplierServices supplierService = (SupplierServices) SaggServiceLocator.getInstance()
+			.lookup(SupplierServices.class.getName());
+	
 	/**
 	 * Create the dialog.
 	 * @param parentShell
@@ -65,17 +72,17 @@ public class NewSupplierDialog extends Dialog {
 		lblNombre.setLayoutData(gd_lblNombre);
 		lblNombre.setText("Raz\u00F3n Social");
 		
-		text = new Text(grpInformacinBsica, SWT.BORDER);
-		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		businessNameText = new Text(grpInformacinBsica, SWT.BORDER);
+		businessNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label lblRut = new Label(grpInformacinBsica, SWT.RIGHT);
 		lblRut.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblRut.setText("RUT");
 		
-		text_5 = new Text(grpInformacinBsica, SWT.BORDER);
-		GridData gd_text_5 = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
-		gd_text_5.widthHint = 145;
-		text_5.setLayoutData(gd_text_5);
+		supplierIdText = new Text(grpInformacinBsica, SWT.BORDER);
+		GridData gd_supplierIdText = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
+		gd_supplierIdText.widthHint = 145;
+		supplierIdText.setLayoutData(gd_supplierIdText);
 		
 		Group grpInformacinDeStock = new Group(container, SWT.NONE);
 		grpInformacinDeStock.setLayout(new GridLayout(2, false));
@@ -90,8 +97,21 @@ public class NewSupplierDialog extends Dialog {
 		lblDatosDeContacto.setLayoutData(gd_lblDatosDeContacto);
 		lblDatosDeContacto.setText("Datos de Contacto");
 		
-		text_1 = new Text(grpInformacinDeStock, SWT.BORDER);
-		text_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		Composite compositeInformacionBsica = new Composite(grpInformacinDeStock, SWT.NONE);
+		GridLayout gl_composite_1 = new GridLayout(3, false);
+		gl_composite_1.marginWidth = 0;
+		gl_composite_1.marginHeight = 0;
+		compositeInformacionBsica.setLayout(gl_composite_1);
+		compositeInformacionBsica.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		
+		firstnameText = new Text(compositeInformacionBsica, SWT.BORDER);
+		firstnameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		Label lblApellidos = new Label(compositeInformacionBsica, SWT.NONE);
+		lblApellidos.setText("Apellidos");
+		
+		lastnameText = new Text(compositeInformacionBsica, SWT.BORDER);
+		lastnameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label lblTelfono = new Label(grpInformacinDeStock, SWT.NONE);
 		lblTelfono.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -104,8 +124,8 @@ public class NewSupplierDialog extends Dialog {
 		composite.setLayout(gl_composite);
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		
-		text_3 = new Text(composite, SWT.BORDER);
-		text_3.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		phoneText = new Text(composite, SWT.BORDER);
+		phoneText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label lblCelular = new Label(composite, SWT.RIGHT);
 		GridData gd_lblCelular = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
@@ -113,15 +133,15 @@ public class NewSupplierDialog extends Dialog {
 		lblCelular.setLayoutData(gd_lblCelular);
 		lblCelular.setText("Celular");
 		
-		text_4 = new Text(composite, SWT.BORDER);
-		text_4.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		cellphoneText = new Text(composite, SWT.BORDER);
+		cellphoneText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label lblCorreoElectrnico = new Label(grpInformacinDeStock, SWT.NONE);
 		lblCorreoElectrnico.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblCorreoElectrnico.setText("Correo Electr\u00F3nico");
 		
-		text_2 = new Text(grpInformacinDeStock, SWT.BORDER);
-		text_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		emailText = new Text(grpInformacinDeStock, SWT.BORDER);
+		emailText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Group grpInformacinDeInsumos = new Group(container, SWT.NONE);
 		grpInformacinDeInsumos.setLayout(new GridLayout(2, false));
@@ -158,6 +178,13 @@ public class NewSupplierDialog extends Dialog {
 		createButton(parent, IDialogConstants.CANCEL_ID, "Cancelar", false);
 	}
 
+	@Override
+	protected void okPressed() {
+		supplierService.createSupplier(businessNameText.getText(), supplierIdText.getText(), firstnameText.getText(),
+				lastnameText.getText(), emailText.getText(), phoneText.getText(), cellphoneText.getText());
+		super.okPressed();
+	}
+	
 	/**
 	 * Return the initial size of the dialog.
 	 */

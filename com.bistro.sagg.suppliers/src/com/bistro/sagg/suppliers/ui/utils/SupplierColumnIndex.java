@@ -2,7 +2,7 @@ package com.bistro.sagg.suppliers.ui.utils;
 
 public interface SupplierColumnIndex {
 
-	int NAME_COLUMN_IDX = 0;
+	int BUSINESS_NAME_COLUMN_IDX = 0;
 	int SUPPLIER_ID_COLUMN_IDX = 1;
 	int SUPPLIES_COLUMN_IDX = 2;
 	int CONTACT_COLUMN_IDX = 3;
