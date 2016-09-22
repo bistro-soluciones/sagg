@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.bistro.sagg.core.builders.SupplierBuilder;
-import com.bistro.sagg.core.model.Supplier;
+import com.bistro.sagg.core.model.suppliers.Supplier;
 import com.bistro.sagg.core.repository.SupplierRepository;
 
 public class SupplierServicesImpl implements SupplierServices {

@@ -1,4 +1,4 @@
-package com.bistro.sagg.core.model;
+package com.bistro.sagg.core.model.suppliers;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

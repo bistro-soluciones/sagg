@@ -2,7 +2,7 @@ package com.bistro.sagg.core.services;
 
 import java.util.List;
 
-import com.bistro.sagg.core.model.Supplier;
+import com.bistro.sagg.core.model.suppliers.Supplier;
 
 public interface SupplierServices extends ISaggService {
 

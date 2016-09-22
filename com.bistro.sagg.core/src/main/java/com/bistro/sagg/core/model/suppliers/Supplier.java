@@ -1,5 +1,6 @@
-package com.bistro.sagg.core.model;
+package com.bistro.sagg.core.model.suppliers;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -23,7 +24,7 @@ public class Supplier {
 	@Column(name = "SUPPLIER_ID")
 	private String supplierId;
 	// Contact information
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
 	@JoinColumn(name = "CONTACT_ID")
 	private SupplierContact contact;
 

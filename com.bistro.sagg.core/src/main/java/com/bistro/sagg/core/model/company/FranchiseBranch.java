@@ -13,9 +13,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.bistro.sagg.core.model.Supplier;
 import com.bistro.sagg.core.model.company.employees.Employee;
 import com.bistro.sagg.core.model.location.City;
+import com.bistro.sagg.core.model.suppliers.Supplier;
 
 @Entity
 @Table(name = "FRANCHISE_BRANCHES")
