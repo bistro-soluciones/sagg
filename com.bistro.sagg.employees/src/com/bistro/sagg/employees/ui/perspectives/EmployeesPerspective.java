@@ -16,8 +16,8 @@ public class EmployeesPerspective implements IPerspectiveFactory {
 //    	addViewShortcuts(layout);
     	
     	String editorArea = layout.getEditorArea();
-    	layout.addStandaloneView(EmployeeFilterView.ID, true, IPageLayout.TOP, 0.25f, editorArea);
-    	layout.addStandaloneView(EmployeeListView.ID, true, IPageLayout.TOP, 0.75f, editorArea);
+//    	layout.addStandaloneView(EmployeeFilterView.ID, true, IPageLayout.TOP, 0.25f, editorArea);
+    	layout.addStandaloneView(EmployeeListView.ID, true, IPageLayout.TOP, 1f, editorArea);
 
     }
 //	private void addViewShortcuts(IPageLayout layout) {
