@@ -116,7 +116,6 @@ public class SupplierListView extends ViewPart {
 		suppliersTableViewer.setContentProvider(new SupplierListContentProvider());
 		suppliersTableViewer.setLabelProvider(new SupplierListLabelProvider());
 		suppliersTableViewer.setSorter(new SupplierListSorter());
-		suppliersTableViewer.setInput(supplierServices);
 		
 		suppliersTable = suppliersTableViewer.getTable();
 		suppliersTable.setLinesVisible(true);
@@ -198,6 +197,9 @@ public class SupplierListView extends ViewPart {
 		});
 		tblclmnStockBodega.setWidth(190);
 		tblclmnStockBodega.setText("Correo Electr\u00F3nico");
+		
+		suppliersTableViewer.setInput(supplierServices);
+		
 		makeActions();
 		hookContextMenu();
 		hookDoubleClickAction();

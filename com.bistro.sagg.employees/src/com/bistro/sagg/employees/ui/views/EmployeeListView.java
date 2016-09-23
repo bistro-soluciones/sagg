@@ -30,8 +30,8 @@ import com.bistro.sagg.core.services.EmployeeServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.employees.ui.actions.OpenNewEmployeeDialogAction;
 import com.bistro.sagg.employees.ui.utils.EmployeeColumnIndex;
-import com.bistro.sagg.employees.ui.viewers.EmployeeListLabelProvider;
 import com.bistro.sagg.employees.ui.viewers.EmployeeListContentProvider;
+import com.bistro.sagg.employees.ui.viewers.EmployeeListLabelProvider;
 import com.bistro.sagg.employees.ui.viewers.EmployeeListSorter;
 
 /**
@@ -115,7 +115,6 @@ public class EmployeeListView extends ViewPart {
 		employeesTableViewer.setContentProvider(new EmployeeListContentProvider());
 		employeesTableViewer.setLabelProvider(new EmployeeListLabelProvider());
 		employeesTableViewer.setSorter(new EmployeeListSorter());
-		employeesTableViewer.setInput(employeeService);
 		
 		employeesTable = employeesTableViewer.getTable();
 		employeesTable.setLinesVisible(true);
@@ -131,6 +130,7 @@ public class EmployeeListView extends ViewPart {
 		});
 		tblclmnNombre.setWidth(250);
 		tblclmnNombre.setText("Nombre");
+//		TableViewerColumn tblclmnNombreViewer = new TableViewerColumn(employeesTableViewer, tblclmnNombre);
 		
 		TableColumn tblclmnRut = new TableColumn(employeesTable, SWT.NONE);
 		tblclmnRut.addSelectionListener(new SelectionAdapter() {
@@ -208,6 +208,8 @@ public class EmployeeListView extends ViewPart {
 		});
 		tblclmnFechaDeIngreso.setWidth(135);
 		tblclmnFechaDeIngreso.setText("Fecha de Ingreso");
+		
+		employeesTableViewer.setInput(employeeService);
 		
 		makeActions();
 		hookContextMenu();
