@@ -24,7 +24,7 @@ public class Supplier {
 	@Column(name = "SUPPLIER_ID")
 	private String supplierId;
 	// Contact information
-	@OneToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+	@OneToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
 	@JoinColumn(name = "CONTACT_ID")
 	private SupplierContact contact;
 
