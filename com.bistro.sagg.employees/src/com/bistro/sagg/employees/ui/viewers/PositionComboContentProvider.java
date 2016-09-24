@@ -1,21 +1,9 @@
 package com.bistro.sagg.employees.ui.viewers;
 
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.Viewer;
-
+import com.bistro.sagg.core.osgi.ui.viewers.SaggStructuredContentProvider;
 import com.bistro.sagg.core.services.RefdataServices;
 
-public class PositionComboContentProvider implements IStructuredContentProvider {
-
-	@Override
-	public void dispose() {
-
-	}
-
-	@Override
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-
-	}
+public class PositionComboContentProvider extends SaggStructuredContentProvider {
 
 	@Override
 	public Object[] getElements(Object inputElement) {

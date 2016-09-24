@@ -1,12 +1,10 @@
 package com.bistro.sagg.employees.ui.viewers;
 
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.Viewer;
-
 import com.bistro.sagg.core.model.location.Country;
+import com.bistro.sagg.core.osgi.ui.viewers.SaggStructuredContentProvider;
 import com.bistro.sagg.core.services.RefdataServices;
 
-public class StateComboContentProvider implements IStructuredContentProvider {
+public class StateComboContentProvider extends SaggStructuredContentProvider {
 
 	private Country country;
 
@@ -17,12 +15,7 @@ public class StateComboContentProvider implements IStructuredContentProvider {
 
 	@Override
 	public void dispose() {
-
-	}
-
-	@Override
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-
+		this.country = null;
 	}
 
 	@Override

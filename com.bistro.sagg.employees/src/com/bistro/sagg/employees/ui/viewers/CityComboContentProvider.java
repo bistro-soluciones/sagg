@@ -2,19 +2,13 @@ package com.bistro.sagg.employees.ui.viewers;
 
 import java.util.Collections;
 
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.Viewer;
-
 import com.bistro.sagg.core.model.location.State;
+import com.bistro.sagg.core.osgi.ui.viewers.SaggStructuredContentProvider;
 import com.bistro.sagg.core.services.RefdataServices;
 
-public class CityComboContentProvider implements IStructuredContentProvider {
+public class CityComboContentProvider extends SaggStructuredContentProvider {
 
 	private State state;
-
-	public CityComboContentProvider() {
-		super();
-	}
 
 	public State getState() {
 		return state;
@@ -30,13 +24,8 @@ public class CityComboContentProvider implements IStructuredContentProvider {
 	}
 
 	@Override
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-
-	}
-
-	@Override
 	public Object[] getElements(Object inputElement) {
-		if(state != null) {
+		if (state != null) {
 			RefdataServices refdataServices = (RefdataServices) inputElement;
 			return refdataServices.getCitiesByState(state).toArray();
 		}
