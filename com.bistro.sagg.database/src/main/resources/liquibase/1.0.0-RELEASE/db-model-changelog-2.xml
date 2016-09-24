@@ -32,4 +32,49 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="3" author="sebastian.lavie">
+        <createTable tableName="product_categories">
+            <column name="id" type="bigint(20)" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="varchar(50)"/>
+        </createTable>
+    </changeSet>
+    
+    <changeSet id="4" author="sebastian.lavie">
+        <createTable tableName="supplies">
+            <column name="id" type="bigint(20)" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="varchar(50)"/>
+            <column name="product_category_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="product_category" nullable="false"/>
+            </column>
+            <column name="stock" type="int"/>
+            <column name="stock_min" type="int"/>
+            <column name="unit_price" type="currency"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5" author="sebastian.lavie">
+        <createTable tableName="marketable_products">
+            <column name="id" type="bigint(20)" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="varchar(50)"/>
+            <column name="product_category_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="product_category" nullable="false"/>
+            </column>
+            <column name="stock" type="int"/>
+            <column name="stock_min" type="int"/>
+            <column name="unit_price" type="currency"/>
+            <column name="sell_unit_price" type="currency"/>
+        </createTable>
+    </changeSet>
+    
+    <changeSet id="6" author="sebastian.lavie">
+        <renameColumn tableName="marketable_products" oldColumnName="sell_unit_price" 
+        	newColumnName="unit_sales_price" columnDataType="currency"/>
+	</changeSet>
+        
 </databaseChangeLog>
