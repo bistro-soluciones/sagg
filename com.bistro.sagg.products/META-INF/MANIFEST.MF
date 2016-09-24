@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Products
+Bundle-SymbolicName: com.bistro.sagg.products;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: com.bistro.sagg.products.Activator
+Bundle-Vendor: BISTRO
+Require-Bundle: com.bistro.sagg.core.osgi;bundle-version="1.0.0",
+ org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Export-Package: com.bistro.sagg.products.ui.actions,
+ com.bistro.sagg.products.ui.dialogs,
+ com.bistro.sagg.products.ui.perspectives,
+ com.bistro.sagg.products.ui.views

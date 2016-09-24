@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            category="com.bistro.sagg.category.views"
+            class="com.bistro.sagg.products.ui.views.ProductCategoryListView"
+            id="com.bistro.sagg.products.ui.views.ProductCategoryListView"
+            name="Categorías de Productos"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="com.bistro.sagg.category.commands"
+            id="com.bistro.sagg.products.ui.actions.OpenProductCategoriesViewAction"
+            name="Open Product Categories View">
+      </command>
+      <command
+            categoryId="com.bistro.sagg.category.commands"
+            id="com.bistro.sagg.products.ui.actions.OpenNewProductCategoryDialogAction"
+            name="Open New Product Category Dialog">
+      </command>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="com.bistro.sagg.products.ui.perspectives.ProductsPerspective"
+            id="com.bistro.sagg.products.ui.perspectives.ProductsPerspective"
+            name="Productos">
+      </perspective>
+   </extension>
+
+</plugin>
