@@ -48,6 +48,10 @@ ALTER TABLE marketable_products CHANGE sell_unit_price unit_sales_price DECIMAL;
 
 INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('6', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-2.xml', NOW(), 25, '7:7aaadf8cf38c16fc25cb4a810e757457', 'renameColumn newColumnName=unit_sales_price, oldColumnName=sell_unit_price, tableName=marketable_products', '', 'EXECUTED', NULL, NULL, '3.5.1', '4720348429');
 
+--  Changeset src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-2.xml::7::sebastian.lavie
+CREATE TABLE id_generator (generator_name VARCHAR(20) NOT NULL, generator_value BIGINT NULL, CONSTRAINT PK_ID_GENERATOR PRIMARY KEY (generator_name), UNIQUE (generator_name));
+
+INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('7', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-2.xml', NOW(), 26, '7:7cc322c3af3a5ce6d69f431191f7523b', 'createTable tableName=id_generator', '', 'EXECUTED', NULL, NULL, '3.5.1', '4748428643');
+
 --  Release Database Lock
 UPDATE DATABASECHANGELOGLOCK SET LOCKED = 0, LOCKEDBY = NULL, LOCKGRANTED = NULL WHERE ID = 1;
-

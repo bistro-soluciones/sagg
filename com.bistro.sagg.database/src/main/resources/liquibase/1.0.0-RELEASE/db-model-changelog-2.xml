@@ -76,5 +76,14 @@
         <renameColumn tableName="marketable_products" oldColumnName="sell_unit_price" 
         	newColumnName="unit_sales_price" columnDataType="currency"/>
 	</changeSet>
+
+    <changeSet id="7" author="sebastian.lavie">
+        <createTable tableName="id_generator">
+        	<column name="generator_name" type="varchar(20)">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+        	<column name="generator_value" type="bigint(20)"/>
+        </createTable>
+	</changeSet>
         
 </databaseChangeLog>
