@@ -2,22 +2,4 @@
 <?eclipse version="3.4"?>
 <plugin>
 
-   <extension
-         id="application"
-         point="org.eclipse.core.runtime.applications">
-      <application>
-         <run
-               class="com.bistro.sagg.core.osgi.Application">
-         </run>
-      </application>
-   </extension>
-   <extension
-         point="org.eclipse.ui.perspectives">
-      <perspective
-            name="RCP Perspective"
-            class="com.bistro.sagg.core.osgi.Perspective"
-            id="com.bistro.sagg.core.osgi.perspective">
-      </perspective>
-   </extension>
-
 </plugin>
