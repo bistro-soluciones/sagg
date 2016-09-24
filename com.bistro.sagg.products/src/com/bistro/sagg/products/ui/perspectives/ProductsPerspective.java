@@ -3,6 +3,7 @@ package com.bistro.sagg.products.ui.perspectives;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
+import com.bistro.sagg.products.ui.views.MarketableProductListView;
 import com.bistro.sagg.products.ui.views.ProductCategoryListView;
 
 public class ProductsPerspective implements IPerspectiveFactory {
@@ -15,8 +16,8 @@ public class ProductsPerspective implements IPerspectiveFactory {
 //    	addViewShortcuts(layout);
     	
     	String editorArea = layout.getEditorArea();
-//    	layout.addStandaloneView(EmployeeFilterView.ID, true, IPageLayout.TOP, 0.25f, editorArea);
-    	layout.addStandaloneView(ProductCategoryListView.ID, true, IPageLayout.TOP, 1f, editorArea);
+    	layout.addStandaloneView(ProductCategoryListView.ID, true, IPageLayout.LEFT, 0.25f, editorArea);
+    	layout.addStandaloneView(MarketableProductListView.ID, true, IPageLayout.TOP, 1f, editorArea);
 
     }
 //	private void addViewShortcuts(IPageLayout layout) {

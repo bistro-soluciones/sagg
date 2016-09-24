@@ -11,6 +11,14 @@
             name="Categorías de Productos"
             restorable="true">
       </view>
+      <view
+            allowMultiple="false"
+            category="com.bistro.sagg.category.views"
+            class="com.bistro.sagg.products.ui.views.MarketableProductListView"
+            id="com.bistro.sagg.products.ui.views.MarketableProductListView"
+            name="Productos"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
