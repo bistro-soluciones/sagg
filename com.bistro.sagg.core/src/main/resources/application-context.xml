@@ -54,6 +54,9 @@
 				<entry key="com.bistro.sagg.core.services.FranchiseServices">
 					<bean class="com.bistro.sagg.core.services.FranchiseServicesImpl"/>
 				</entry>
+				<entry key="com.bistro.sagg.core.services.ProductServices">
+					<bean class="com.bistro.sagg.core.services.ProductServicesImpl"/>
+				</entry>
 				<entry key="com.bistro.sagg.core.services.RefdataServices">
 					<bean class="com.bistro.sagg.core.services.RefdataServicesImpl"/>
 				</entry>
