@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added
 - Provide SupplierServices interface with functionality to create and find all suppliers.
-- 
+- Add Product model with supplies, marketable products and product categories.
+- Provide ProductServices interface with functionality to create and find all supplies, marketable products and product categories.
 
 ### Changed
 
