@@ -3,7 +3,7 @@ package com.bistro.sagg.core.osgi.ui.viewers;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 
-public abstract class SaggListSorter extends ViewerSorter {
+public abstract class SaggViewerSorter extends ViewerSorter {
 
 	private static final int ASCENDING = 0;
 	private static final int DESCENDING = 1;

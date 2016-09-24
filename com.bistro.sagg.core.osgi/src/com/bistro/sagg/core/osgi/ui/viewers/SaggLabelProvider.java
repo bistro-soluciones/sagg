@@ -1,10 +1,10 @@
 package com.bistro.sagg.core.osgi.ui.viewers;
 
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-public abstract class SaggListLabelProvider implements ITableLabelProvider {
+public abstract class SaggLabelProvider implements ILabelProvider {
 
 	@Override
 	public void addListener(ILabelProviderListener listener) {
@@ -27,7 +27,7 @@ public abstract class SaggListLabelProvider implements ITableLabelProvider {
 	}
 
 	@Override
-	public Image getColumnImage(Object element, int columnIndex) {
+	public Image getImage(Object element) {
 		return null;
 	}
 
