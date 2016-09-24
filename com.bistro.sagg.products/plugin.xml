@@ -32,6 +32,16 @@
             id="com.bistro.sagg.products.ui.actions.OpenNewProductCategoryDialogAction"
             name="Open New Product Category Dialog">
       </command>
+      <command
+            categoryId="com.bistro.sagg.category.commands"
+            id="com.bistro.sagg.products.ui.actions.OpenMarketableProductsViewAction"
+            name="Open Marketable Products View">
+      </command>
+      <command
+            categoryId="com.bistro.sagg.category.commands"
+            id="com.bistro.sagg.products.ui.actions.OpenNewMarketableProductDialogAction"
+            name="Open New Marketable Product Dialog">
+      </command>
    </extension>
 
    <extension
