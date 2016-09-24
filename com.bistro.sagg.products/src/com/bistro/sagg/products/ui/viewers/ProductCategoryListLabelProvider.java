@@ -1,10 +1,10 @@
 package com.bistro.sagg.products.ui.viewers;
 
 import com.bistro.sagg.core.model.products.ProductCategory;
-import com.bistro.sagg.core.osgi.ui.viewers.SaggListLabelProvider;
+import com.bistro.sagg.core.osgi.ui.viewers.SaggTableLabelProvider;
 import com.bistro.sagg.products.ui.utils.ProductCategoryColumnIndex;
 
-public class ProductCategoryListLabelProvider extends SaggListLabelProvider {
+public class ProductCategoryListLabelProvider extends SaggTableLabelProvider {
 
 	@Override
 	public String getColumnText(Object element, int columnIndex) {
