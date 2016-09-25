@@ -55,6 +55,11 @@ CREATE TABLE id_generator (generator_name VARCHAR(20) NOT NULL, generator_value 
 
 INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('9', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-2.xml', NOW(), 28, '7:7cc322c3af3a5ce6d69f431191f7523b', 'createTable tableName=id_generator', '', 'EXECUTED', NULL, NULL, '3.5.1', '4763067637');
 
+--  Changeset src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-2.xml::10::sebastian.lavie
+CREATE TABLE suppliers_for_categories (supplier_id BIGINT NOT NULL, product_category_id BIGINT NOT NULL, CONSTRAINT PK_SUPPLIERS_FOR_CATEGORIES PRIMARY KEY (supplier_id, product_category_id));
+
+INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('10', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-2.xml', NOW(), 29, '7:f18a8c2da55d4d476647b148f13c193a', 'createTable tableName=suppliers_for_categories', '', 'EXECUTED', NULL, NULL, '3.5.1', '4825523997');
+
 --  Release Database Lock
 UPDATE DATABASECHANGELOGLOCK SET LOCKED = 0, LOCKEDBY = NULL, LOCKGRANTED = NULL WHERE ID = 1;
 

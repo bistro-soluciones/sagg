@@ -93,5 +93,16 @@
         	<column name="generator_value" type="bigint(20)"/>
         </createTable>
 	</changeSet>
+	
+	<changeSet id="10" author="sebastian.lavie">
+        <createTable tableName="suppliers_for_categories">
+            <column name="supplier_id" type="bigint(20)">
+                <constraints primaryKey="true" foreignKeyName="id" referencedTableName="suppliers" nullable="false"/>
+            </column>
+            <column name="product_category_id" type="bigint(20)">
+                <constraints primaryKey="true" foreignKeyName="id" referencedTableName="product_categories" nullable="false"/>
+            </column>
+    	</createTable>
+    </changeSet>
         
 </databaseChangeLog>
