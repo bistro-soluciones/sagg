@@ -78,6 +78,14 @@
 	</changeSet>
 
     <changeSet id="7" author="sebastian.lavie">
+        <dropColumn tableName="supplies" columnName="unit_price"/>
+	</changeSet>
+	
+    <changeSet id="8" author="sebastian.lavie">
+        <dropColumn tableName="marketable_products" columnName="unit_price"/>
+	</changeSet>
+	
+	<changeSet id="9" author="sebastian.lavie">
         <createTable tableName="id_generator">
         	<column name="generator_name" type="varchar(20)">
                 <constraints primaryKey="true" nullable="false" unique="true"/>
