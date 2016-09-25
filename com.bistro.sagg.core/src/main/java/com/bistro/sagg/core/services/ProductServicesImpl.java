@@ -37,10 +37,10 @@ public class ProductServicesImpl implements ProductServices {
 		return (List<ProductCategory>) productCategoryRepository.findAll();
 	}
 
-	public void createSypply(String name, ProductCategory category, int stock, int minStock, BigDecimal unitPrice) {
+	public void createSypply(String name, ProductCategory category, int minStock) {
 		// Create supply object
 		SupplyBuilder builder = new SupplyBuilder();
-		builder.build(name, category, stock, minStock, unitPrice);
+		builder.build(name, category, 0, minStock);
 		Supply product = builder.getProduct();
 		// Save supply
 		supplyRepository.save(product);
@@ -50,11 +50,11 @@ public class ProductServicesImpl implements ProductServices {
 		return (List<Supply>) supplyRepository.findAll();
 	}
 
-	public void createMarketableProduct(String name, ProductCategory category, int stock, int minStock,
-			BigDecimal unitPrice, BigDecimal unitSalesPrice) {
+	public void createMarketableProduct(String name, ProductCategory category, int minStock,
+			BigDecimal unitSalesPrice) {
 		// Create marketable product object
 		MarketableProductBuilder builder = new MarketableProductBuilder();
-		builder.build(name, category, stock, minStock, unitPrice, unitSalesPrice);
+		builder.build(name, category, 0, minStock, unitSalesPrice);
 		MarketableProduct product = builder.getProduct();
 		// Save marketable product
 		marketableProductRepository.save(product);

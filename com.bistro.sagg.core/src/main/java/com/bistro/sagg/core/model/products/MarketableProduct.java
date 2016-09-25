@@ -8,7 +8,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "MARKETABLE_PRODUCTS")
-public class MarketableProduct extends Supply {
+public class MarketableProduct extends Product {
 
 	@Column(name = "UNIT_SALES_PRICE")
 	private BigDecimal unitSalesPrice;

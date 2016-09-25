@@ -15,7 +15,7 @@ import javax.persistence.TableGenerator;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class Product {
+public abstract class Product {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "id_generator")
@@ -27,6 +27,10 @@ public class Product {
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
 	@JoinColumn(name = "PRODUCT_CATEGORY_ID")
 	private ProductCategory category;
+	@Column(name = "STOCK")
+	private int stock;
+	@Column(name = "STOCK_MIN")
+	private int minStock;
 
 	public Product() {
 		super();
@@ -54,6 +58,22 @@ public class Product {
 
 	public void setCategory(ProductCategory category) {
 		this.category = category;
+	}
+
+	public int getStock() {
+		return stock;
+	}
+
+	public void setStock(int stock) {
+		this.stock = stock;
+	}
+
+	public int getMinStock() {
+		return minStock;
+	}
+
+	public void setMinStock(int minStock) {
+		this.minStock = minStock;
 	}
 
 }

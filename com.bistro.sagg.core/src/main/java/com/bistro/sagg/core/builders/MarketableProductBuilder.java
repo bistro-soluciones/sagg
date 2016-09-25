@@ -19,13 +19,11 @@ public class MarketableProductBuilder {
 		this.product = product;
 	}
 
-	public void build(String name, ProductCategory category, int stock, int minStock, BigDecimal unitPrice,
-			BigDecimal unitSalesPrice) {
+	public void build(String name, ProductCategory category, int stock, int minStock, BigDecimal unitSalesPrice) {
 		this.product.setName(name);
 		this.product.setCategory(category);
 		this.product.setStock(stock);
 		this.product.setMinStock(minStock);
-		this.product.setUnitPrice(unitPrice);
 		this.product.setUnitSalesPrice(unitSalesPrice);
 	}
 

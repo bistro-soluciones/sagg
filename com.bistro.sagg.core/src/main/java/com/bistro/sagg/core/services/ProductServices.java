@@ -13,12 +13,11 @@ public interface ProductServices extends ISaggService {
 
 	List<ProductCategory> getProductCategories();
 
-	void createSypply(String name, ProductCategory category, int stock, int minStock, BigDecimal unitPrice);
+	void createSypply(String name, ProductCategory category, int minStock);
 
 	List<Supply> getSupplies();
 
-	void createMarketableProduct(String name, ProductCategory category, int stock, int minStock, BigDecimal unitPrice,
-			BigDecimal unitSalesPrice);
+	void createMarketableProduct(String name, ProductCategory category, int minStock, BigDecimal unitSalesPrice);
 
 	List<MarketableProduct> getMarketableProducts();
 
