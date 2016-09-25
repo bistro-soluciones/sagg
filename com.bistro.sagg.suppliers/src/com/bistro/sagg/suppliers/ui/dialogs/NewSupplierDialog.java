@@ -1,11 +1,21 @@
 package com.bistro.sagg.suppliers.ui.dialogs;
 
+import java.util.ArrayList;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -15,10 +25,16 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import com.bistro.sagg.core.model.products.ProductCategory;
+import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.core.services.SupplierServices;
+import com.bistro.sagg.suppliers.ui.viewers.ProductCategoryComboContentProvider;
+import com.bistro.sagg.suppliers.ui.viewers.ProductCategoryComboLabelProvider;
+import com.bistro.sagg.suppliers.ui.viewers.ProductCategoryListContentProvider;
 
 public class NewSupplierDialog extends Dialog {
+	
 	private Text businessNameText;
 	private Text supplierIdText;
 	private Text firstnameText;
@@ -27,8 +43,13 @@ public class NewSupplierDialog extends Dialog {
 	private Text phoneText;
 	private Text cellphoneText;
 
-	private SupplierServices supplierService = (SupplierServices) SaggServiceLocator.getInstance()
+	private ProductCategory selectedProductCategory;
+	private java.util.List<ProductCategory> selectedProductCategories = new ArrayList<ProductCategory>();
+	
+	private SupplierServices supplierServices = (SupplierServices) SaggServiceLocator.getInstance()
 			.lookup(SupplierServices.class.getName());
+	private ProductServices productServices = (ProductServices) SaggServiceLocator.getInstance()
+			.lookup(ProductServices.class.getName());
 	
 	/**
 	 * Create the dialog.
@@ -156,14 +177,54 @@ public class NewSupplierDialog extends Dialog {
 		lblInsumos.setLayoutData(gd_lblInsumos);
 		lblInsumos.setText("Insumos");
 		
-		Combo combo = new Combo(grpInformacinDeInsumos, SWT.NONE);
-		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		new Label(grpInformacinDeInsumos, SWT.NONE);
+		Composite productCategoryComposite = new Composite(grpInformacinDeInsumos, SWT.NONE);
+		GridData gd_productCategoryComposite = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_productCategoryComposite.widthHint = 465;
+		productCategoryComposite.setLayoutData(gd_productCategoryComposite);
+		GridLayout gl_productCategoryComposite = new GridLayout(2, false);
+		gl_productCategoryComposite.marginHeight = 0;
+		gl_productCategoryComposite.marginWidth = 0;
+		productCategoryComposite.setLayout(gl_productCategoryComposite);
 		
-		List list_1 = new List(grpInformacinDeInsumos, SWT.BORDER);
-		GridData gd_list_1 = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-		gd_list_1.heightHint = 155;
-		list_1.setLayoutData(gd_list_1);
+		ComboViewer productCategoryComboViewer = new ComboViewer(productCategoryComposite, SWT.NONE);
+		productCategoryComboViewer.setContentProvider(new ProductCategoryComboContentProvider());
+		productCategoryComboViewer.setLabelProvider(new ProductCategoryComboLabelProvider());
+		productCategoryComboViewer.setInput(productServices);
+		Combo combo = productCategoryComboViewer.getCombo();
+		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		Button addProductsCategoryButton = new Button(productCategoryComposite, SWT.NONE);
+		addProductsCategoryButton.setText("Agregar");
+		addProductsCategoryButton.setEnabled(false);
+		new Label(grpInformacinDeInsumos, SWT.NONE);
+		productCategoryComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				if(event.getSelection() != null){
+					addProductsCategoryButton.setEnabled(true);
+				}
+				selectedProductCategory = (ProductCategory) ((StructuredSelection) event.getSelection()).getFirstElement();
+			}
+		});
+		
+		ListViewer productsCategoryListViewer = new ListViewer(grpInformacinDeInsumos, SWT.BORDER | SWT.V_SCROLL);
+		productsCategoryListViewer.setContentProvider(new ProductCategoryListContentProvider());
+		productsCategoryListViewer.setLabelProvider(new ProductCategoryComboLabelProvider());
+		productsCategoryListViewer.setInput(selectedProductCategories);
+		List productsCategoryList = productsCategoryListViewer.getList();
+		GridData gd_productsCategoryList = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_productsCategoryList.heightHint = 155;
+		productsCategoryList.setLayoutData(gd_productsCategoryList);
+
+		addProductsCategoryButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if(!selectedProductCategories.contains(selectedProductCategory)) {
+					selectedProductCategories.add(selectedProductCategory);
+				}
+				productsCategoryListViewer.refresh();
+			}
+		});
 
 		return container;
 	}
@@ -180,8 +241,9 @@ public class NewSupplierDialog extends Dialog {
 
 	@Override
 	protected void okPressed() {
-		supplierService.createSupplier(businessNameText.getText(), supplierIdText.getText(), firstnameText.getText(),
-				lastnameText.getText(), emailText.getText(), phoneText.getText(), cellphoneText.getText());
+		supplierServices.createSupplier(businessNameText.getText(), supplierIdText.getText(), firstnameText.getText(),
+				lastnameText.getText(), emailText.getText(), phoneText.getText(), cellphoneText.getText(),
+				selectedProductCategories);
 		super.okPressed();
 	}
 	
