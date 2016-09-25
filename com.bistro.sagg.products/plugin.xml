@@ -19,6 +19,14 @@
             name="Productos"
             restorable="true">
       </view>
+      <view
+            allowMultiple="false"
+            category="com.bistro.sagg.category.views"
+            class="com.bistro.sagg.products.ui.views.SupplyListView"
+            id="com.bistro.sagg.products.ui.views.SupplyListView"
+            name="Insumos"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -41,6 +49,16 @@
             categoryId="com.bistro.sagg.category.commands"
             id="com.bistro.sagg.products.ui.actions.OpenNewMarketableProductDialogAction"
             name="Open New Marketable Product Dialog">
+      </command>
+      <command
+            categoryId="com.bistro.sagg.category.commands"
+            id="com.bistro.sagg.products.ui.actions.OpenSuppliesViewAction"
+            name="Open Supplies View">
+      </command>
+      <command
+            categoryId="com.bistro.sagg.category.commands"
+            id="com.bistro.sagg.products.ui.actions.OpenNewSupplyDialogAction"
+            name="Open New Supply Dialog">
       </command>
    </extension>
 

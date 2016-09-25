@@ -26,9 +26,6 @@ public class MarketableProductListSorter extends SaggViewerSorter {
 		case MarketableProductColumnIndex.STOCK_MIN_COLUMN_IDX:
 			result = Integer.valueOf(product1.getMinStock()).compareTo(product2.getMinStock());
 			break;
-		case MarketableProductColumnIndex.UNIT_PRICE_COLUMN_IDX:
-			result = product1.getUnitPrice().compareTo(product2.getUnitPrice());
-			break;
 		case MarketableProductColumnIndex.UNIT_SALES_PRICE_COLUMN_IDX:
 			result = product1.getUnitSalesPrice().compareTo(product2.getUnitSalesPrice());
 			break;

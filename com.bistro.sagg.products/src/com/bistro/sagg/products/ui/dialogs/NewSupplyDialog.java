@@ -1,7 +1,5 @@
 package com.bistro.sagg.products.ui.dialogs;
 
-import java.math.BigDecimal;
-
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -26,7 +24,7 @@ import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.products.ui.viewers.ProductCategoryComboContentProvider;
 import com.bistro.sagg.products.ui.viewers.ProductCategoryComboLabelProvider;
 
-public class NewMarketableProductDialog extends Dialog {
+public class NewSupplyDialog extends Dialog {
 
 	private Text nameText;
 
@@ -35,14 +33,13 @@ public class NewMarketableProductDialog extends Dialog {
 
 	private ProductCategory selectedCategory;
 	private Text minStockText;
-	private Text unitSalesPriceText;
 	
 	/**
 	 * Create the dialog.
 	 * 
 	 * @param parentShell
 	 */
-	public NewMarketableProductDialog(Shell parentShell) {
+	public NewSupplyDialog(Shell parentShell) {
 		super(parentShell);
 		setShellStyle(SWT.MIN | SWT.MAX | SWT.TITLE);
 	}
@@ -116,29 +113,11 @@ public class NewMarketableProductDialog extends Dialog {
 		minStockLabel.setToolTipText("");
 		minStockLabel.setText("Stock M\u00EDnimo");
 		
-		Composite composite = new Composite(additionalInfoGroup, SWT.NONE);
-		GridLayout gl_composite = new GridLayout(3, false);
-		gl_composite.marginWidth = 0;
-		composite.setLayout(gl_composite);
-		GridData gd_composite = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-		gd_composite.widthHint = 400;
-		composite.setLayoutData(gd_composite);
-		
-		minStockText = new Text(composite, SWT.BORDER);
+		minStockText = new Text(additionalInfoGroup, SWT.BORDER);
 		GridData gd_minStockText = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
 		gd_minStockText.widthHint = 100;
 		minStockText.setLayoutData(gd_minStockText);
 		minStockText.setText("0");
-		
-		Label unitSalesPriceLabel = new Label(composite, SWT.NONE);
-		unitSalesPriceLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		unitSalesPriceLabel.setText("Precio Unitario de Venta");
-		
-		unitSalesPriceText = new Text(composite, SWT.BORDER);
-		GridData gd_unitSalesPriceText = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
-		gd_unitSalesPriceText.widthHint = 100;
-		unitSalesPriceText.setLayoutData(gd_unitSalesPriceText);
-		unitSalesPriceText.setText("0");
 
 		return container;
 	}
@@ -156,8 +135,7 @@ public class NewMarketableProductDialog extends Dialog {
 
 	@Override
 	protected void okPressed() {
-		productService.createMarketableProduct(nameText.getText(), selectedCategory,
-				Integer.parseInt(minStockText.getText()), new BigDecimal(unitSalesPriceText.getText()));
+		productService.createSypply(nameText.getText(), selectedCategory, Integer.parseInt(minStockText.getText()));
 		super.okPressed();
 	}
 

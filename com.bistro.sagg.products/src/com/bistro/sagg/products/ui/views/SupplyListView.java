@@ -22,11 +22,11 @@ import org.eclipse.ui.part.ViewPart;
 
 import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
-import com.bistro.sagg.products.ui.actions.OpenNewMarketableProductDialogAction;
-import com.bistro.sagg.products.ui.utils.MarketableProductColumnIndex;
-import com.bistro.sagg.products.ui.viewers.MarketableProductListContentProvider;
-import com.bistro.sagg.products.ui.viewers.MarketableProductListLabelProvider;
-import com.bistro.sagg.products.ui.viewers.MarketableProductListSorter;
+import com.bistro.sagg.products.ui.actions.OpenNewSupplyDialogAction;
+import com.bistro.sagg.products.ui.utils.SupplyColumnIndex;
+import com.bistro.sagg.products.ui.viewers.SupplyListContentProvider;
+import com.bistro.sagg.products.ui.viewers.SupplyListLabelProvider;
+import com.bistro.sagg.products.ui.viewers.SupplyListSorter;
 
 
 /**
@@ -47,20 +47,20 @@ import com.bistro.sagg.products.ui.viewers.MarketableProductListSorter;
  * <p>
  */
 
-public class MarketableProductListView extends ViewPart {
+public class SupplyListView extends ViewPart {
 
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
-	public static final String ID = "com.bistro.sagg.products.ui.views.MarketableProductListView";
+	public static final String ID = "com.bistro.sagg.products.ui.views.SupplyListView";
 
-	private OpenNewMarketableProductDialogAction openNewMarketableProductDialogAction;
-	private Table productsTable;
+	private OpenNewSupplyDialogAction openNewSupplyDialogAction;
+	private Table suppliesTable;
 	
 	private ProductServices productServices = (ProductServices) SaggServiceLocator.getInstance()
 			.lookup(ProductServices.class.getName());
 
-	public MarketableProductListView() {
+	public SupplyListView() {
 		super();
 	}
 
@@ -71,71 +71,60 @@ public class MarketableProductListView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		TableViewer productsTableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
-		productsTableViewer.setContentProvider(new MarketableProductListContentProvider());
-		productsTableViewer.setLabelProvider(new MarketableProductListLabelProvider());
-		productsTableViewer.setSorter(new MarketableProductListSorter());
+		TableViewer suppliesTableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
+		suppliesTableViewer.setContentProvider(new SupplyListContentProvider());
+		suppliesTableViewer.setLabelProvider(new SupplyListLabelProvider());
+		suppliesTableViewer.setSorter(new SupplyListSorter());
 		
-		productsTable = productsTableViewer.getTable();
-		productsTable.setLinesVisible(true);
-		productsTable.setHeaderVisible(true);
+		suppliesTable = suppliesTableViewer.getTable();
+		suppliesTable.setLinesVisible(true);
+		suppliesTable.setHeaderVisible(true);
 		
-		TableColumn nameColumn = new TableColumn(productsTable, SWT.NONE);
+		TableColumn nameColumn = new TableColumn(suppliesTable, SWT.NONE);
 		nameColumn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				((MarketableProductListSorter) productsTableViewer.getSorter()).doSort(MarketableProductColumnIndex.NAME_COLUMN_IDX);
-				productsTableViewer.refresh();
+				((SupplyListSorter) suppliesTableViewer.getSorter()).doSort(SupplyColumnIndex.NAME_COLUMN_IDX);
+				suppliesTableViewer.refresh();
 			}
 		});
 		nameColumn.setWidth(182);
 		nameColumn.setText("Nombre");
 		
-		TableColumn categoryColumn = new TableColumn(productsTable, SWT.NONE);
+		TableColumn categoryColumn = new TableColumn(suppliesTable, SWT.NONE);
 		categoryColumn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				((MarketableProductListSorter) productsTableViewer.getSorter()).doSort(MarketableProductColumnIndex.CATEGORY_COLUMN_IDX);
-				productsTableViewer.refresh();
+				((SupplyListSorter) suppliesTableViewer.getSorter()).doSort(SupplyColumnIndex.CATEGORY_COLUMN_IDX);
+				suppliesTableViewer.refresh();
 			}
 		});
 		categoryColumn.setWidth(386);
 		categoryColumn.setText("Categor\u00EDa");
 		
-		TableColumn stockColumn = new TableColumn(productsTable, SWT.NONE);
+		TableColumn stockColumn = new TableColumn(suppliesTable, SWT.NONE);
 		stockColumn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				((MarketableProductListSorter) productsTableViewer.getSorter()).doSort(MarketableProductColumnIndex.STOCK_COLUMN_IDX);
-				productsTableViewer.refresh();
+				((SupplyListSorter) suppliesTableViewer.getSorter()).doSort(SupplyColumnIndex.STOCK_COLUMN_IDX);
+				suppliesTableViewer.refresh();
 			}
 		});
 		stockColumn.setWidth(88);
 		stockColumn.setText("Stock");
 		
-		TableColumn minStockColumn = new TableColumn(productsTable, SWT.NONE);
+		TableColumn minStockColumn = new TableColumn(suppliesTable, SWT.NONE);
 		minStockColumn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				((MarketableProductListSorter) productsTableViewer.getSorter()).doSort(MarketableProductColumnIndex.STOCK_MIN_COLUMN_IDX);
-				productsTableViewer.refresh();
+				((SupplyListSorter) suppliesTableViewer.getSorter()).doSort(SupplyColumnIndex.STOCK_MIN_COLUMN_IDX);
+				suppliesTableViewer.refresh();
 			}
 		});
 		minStockColumn.setWidth(190);
 		minStockColumn.setText("Stock M\u00EDnimo Requerido");
 		
-		TableColumn unitSalesPriceColumn = new TableColumn(productsTable, SWT.NONE);
-		unitSalesPriceColumn.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				((MarketableProductListSorter) productsTableViewer.getSorter()).doSort(MarketableProductColumnIndex.UNIT_SALES_PRICE_COLUMN_IDX);
-				productsTableViewer.refresh();
-			}
-		});
-		unitSalesPriceColumn.setWidth(100);
-		unitSalesPriceColumn.setText("Precio Unitario de Venta");
-		
-		productsTableViewer.setInput(productServices);
+		suppliesTableViewer.setInput(productServices);
 		
 		makeActions();
 		hookContextMenu();
@@ -148,7 +137,7 @@ public class MarketableProductListView extends ViewPart {
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
-				MarketableProductListView.this.fillContextMenu(manager);
+				SupplyListView.this.fillContextMenu(manager);
 			}
 		});
 	}
@@ -160,25 +149,25 @@ public class MarketableProductListView extends ViewPart {
 	}
 
 	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(openNewMarketableProductDialogAction);
+		manager.add(openNewSupplyDialogAction);
 		manager.add(new Separator());
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
-		manager.add(openNewMarketableProductDialogAction);
+		manager.add(openNewSupplyDialogAction);
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 	
 	private void fillLocalToolBar(IToolBarManager manager) {
-		manager.add(openNewMarketableProductDialogAction);
+		manager.add(openNewSupplyDialogAction);
 	}
 
 	private void makeActions() {
-		openNewMarketableProductDialogAction = new OpenNewMarketableProductDialogAction("Nuevo Producto",PlatformUI.getWorkbench().getActiveWorkbenchWindow());
-		openNewMarketableProductDialogAction.setText("Nuevo Producto");
-		openNewMarketableProductDialogAction.setToolTipText("Nuevo Producto");
-		openNewMarketableProductDialogAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+		openNewSupplyDialogAction = new OpenNewSupplyDialogAction("Nuevo Insumo",PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+		openNewSupplyDialogAction.setText("Nuevo Insumo");
+		openNewSupplyDialogAction.setToolTipText("Nuevo Insumo");
+		openNewSupplyDialogAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 	}
 

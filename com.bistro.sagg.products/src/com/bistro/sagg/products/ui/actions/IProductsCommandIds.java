@@ -13,5 +13,7 @@ public interface IProductsCommandIds {
     public static final String CMD_OPEN_NEW_PRODUCT_CATEGORY = "com.bistro.sagg.products.ui.actions.OpenNewProductCategoryDialogAction";
     public static final String CMD_OPEN_MARKETABLE_PRODUCTS = "com.bistro.sagg.products.ui.actions.OpenMarketableProductsViewAction";
     public static final String CMD_OPEN_NEW_MARKETABLE_PRODUCT = "com.bistro.sagg.products.ui.actions.OpenNewMarketableProductDialogAction";
+    public static final String CMD_OPEN_SUPPLIES = "com.bistro.sagg.products.ui.actions.OpenSuppliesViewAction";
+    public static final String CMD_OPEN_NEW_SUPPLY = "com.bistro.sagg.products.ui.actions.OpenNewSupplyDialogAction";
     
 }
