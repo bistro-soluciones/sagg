@@ -1,5 +1,7 @@
 package com.bistro.sagg.core.model.suppliers;
 
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,8 +10,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.bistro.sagg.core.model.products.ProductCategory;
 
 @Entity
 @Table(name = "SUPPLIERS")
@@ -24,9 +30,14 @@ public class Supplier {
 	@Column(name = "SUPPLIER_ID")
 	private String supplierId;
 	// Contact information
-	@OneToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "CONTACT_ID")
 	private SupplierContact contact;
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "SUPPLIERS_FOR_CATEGORIES", 
+		joinColumns = @JoinColumn(name = "SUPPLIER_ID", referencedColumnName = "ID"), 
+		inverseJoinColumns = @JoinColumn(name = "PRODUCT_CATEGORY_ID", referencedColumnName = "ID"))
+	private List<ProductCategory> categories;
 
 	public Supplier() {
 		super();
@@ -62,6 +73,14 @@ public class Supplier {
 
 	public void setContact(SupplierContact contact) {
 		this.contact = contact;
+	}
+
+	public List<ProductCategory> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(List<ProductCategory> categories) {
+		this.categories = categories;
 	}
 
 }
