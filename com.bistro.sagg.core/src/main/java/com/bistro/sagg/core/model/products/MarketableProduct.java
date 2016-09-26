@@ -3,11 +3,11 @@ package com.bistro.sagg.core.model.products;
 import java.math.BigDecimal;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Table;
 
 @Entity
-@Table(name = "MARKETABLE_PRODUCTS")
+@DiscriminatorValue("MARKETABLE_PRODUCT")
 public class MarketableProduct extends Product {
 
 	@Column(name = "UNIT_SALES_PRICE")

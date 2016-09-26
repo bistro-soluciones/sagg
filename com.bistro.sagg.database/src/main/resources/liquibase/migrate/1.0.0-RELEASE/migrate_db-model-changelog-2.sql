@@ -60,6 +60,41 @@ CREATE TABLE suppliers_for_categories (supplier_id BIGINT NOT NULL, product_cate
 
 INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('10', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-2.xml', NOW(), 29, '7:f18a8c2da55d4d476647b148f13c193a', 'createTable tableName=suppliers_for_categories', '', 'EXECUTED', NULL, NULL, '3.5.1', '4825523997');
 
+--  Changeset src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-2.xml::11::sebastian.lavie
+DROP TABLE supplies;
+
+INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('11', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-2.xml', NOW(), 30, '7:e9035e4fbc1012c3bf1c67ffb65ae8c3', 'dropTable tableName=supplies', '', 'EXECUTED', NULL, NULL, '3.5.1', '4839073875');
+
+--  Changeset src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-2.xml::12::sebastian.lavie
+ALTER TABLE marketable_products RENAME products;
+
+INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('12', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-2.xml', NOW(), 31, '7:f90f996396204b39c25441a669a94a48', 'renameTable newTableName=products, oldTableName=marketable_products', '', 'EXECUTED', NULL, NULL, '3.5.1', '4839073875');
+
+--  Changeset src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-2.xml::13::sebastian.lavie
+ALTER TABLE products ADD product_type VARCHAR(20) NULL AFTER `id`;
+
+INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('13', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-2.xml', NOW(), 32, '7:f510ef651fead2039b5f2e53fe54d568', 'addColumn tableName=products', '', 'EXECUTED', NULL, NULL, '3.5.1', '4839073875');
+
+--  Changeset src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-2.xml::14::sebastian.lavie
+DROP TABLE id_generator;
+
+INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('14', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-2.xml', NOW(), 33, '7:bd427650a39b080e99d5306604f0a1eb', 'dropTable tableName=id_generator', '', 'EXECUTED', NULL, NULL, '3.5.1', '4839073875');
+
+--  Changeset src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-2.xml::15::sebastian.lavie
+CREATE TABLE document_types (id BIGINT AUTO_INCREMENT NOT NULL, name VARCHAR(30) NULL, CONSTRAINT PK_DOCUMENT_TYPES PRIMARY KEY (id), UNIQUE (id));
+
+INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('15', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-2.xml', NOW(), 34, '7:20f31d2d6d383d8dd10f566ea32308f3', 'createTable tableName=document_types', '', 'EXECUTED', NULL, NULL, '3.5.1', '4839155565');
+
+--  Changeset src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-2.xml::16::sebastian.lavie
+CREATE TABLE billing_documents (id BIGINT AUTO_INCREMENT NOT NULL, document_type_id BIGINT NOT NULL, document_number VARCHAR(30) NULL, supplier_id BIGINT NOT NULL, franchise_branch_id BIGINT NOT NULL, CONSTRAINT PK_BILLING_DOCUMENTS PRIMARY KEY (id, document_type_id, supplier_id, franchise_branch_id), UNIQUE (id));
+
+INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('16', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-2.xml', NOW(), 35, '7:b3820df4cac2d615ca3831bced023edb', 'createTable tableName=billing_documents', '', 'EXECUTED', NULL, NULL, '3.5.1', '4839155565');
+
+--  Changeset src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-2.xml::17::sebastian.lavie
+CREATE TABLE billing_items (id BIGINT AUTO_INCREMENT NOT NULL, product_id BIGINT NOT NULL, quantity INT NULL, unit_price DECIMAL NULL, tax FLOAT NULL, tax_amount DECIMAL NULL, billing_document_id BIGINT NOT NULL, CONSTRAINT PK_BILLING_ITEMS PRIMARY KEY (id, product_id, billing_document_id), UNIQUE (id));
+
+INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('17', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-2.xml', NOW(), 36, '7:35f5150e75936d124faa2925c08a5b53', 'createTable tableName=billing_items', '', 'EXECUTED', NULL, NULL, '3.5.1', '4839155565');
+
 --  Release Database Lock
 UPDATE DATABASECHANGELOGLOCK SET LOCKED = 0, LOCKEDBY = NULL, LOCKGRANTED = NULL WHERE ID = 1;
 

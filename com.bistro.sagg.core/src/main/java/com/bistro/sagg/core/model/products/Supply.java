@@ -1,10 +1,10 @@
 package com.bistro.sagg.core.model.products;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Table;
 
 @Entity
-@Table(name = "SUPPLIES")
+@DiscriminatorValue("SUPPLY")
 public class Supply extends Product {
 
 	public Supply() {
