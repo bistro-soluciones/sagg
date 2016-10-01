@@ -22,6 +22,7 @@ import org.eclipse.ui.part.ViewPart;
 
 import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
+import com.bistro.sagg.products.ui.actions.OpenInventoryLoadingDialogAction;
 import com.bistro.sagg.products.ui.actions.OpenNewMarketableProductDialogAction;
 import com.bistro.sagg.products.ui.utils.MarketableProductColumnIndex;
 import com.bistro.sagg.products.ui.viewers.MarketableProductListContentProvider;
@@ -55,6 +56,7 @@ public class MarketableProductListView extends ViewPart {
 	public static final String ID = "com.bistro.sagg.products.ui.views.MarketableProductListView";
 
 	private OpenNewMarketableProductDialogAction openNewMarketableProductDialogAction;
+	private OpenInventoryLoadingDialogAction openInventoryLoadingDialogAction;
 	private Table productsTable;
 	
 	private ProductServices productServices = (ProductServices) SaggServiceLocator.getInstance()
@@ -161,17 +163,20 @@ public class MarketableProductListView extends ViewPart {
 
 	private void fillLocalPullDown(IMenuManager manager) {
 		manager.add(openNewMarketableProductDialogAction);
+		manager.add(openInventoryLoadingDialogAction);
 		manager.add(new Separator());
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
 		manager.add(openNewMarketableProductDialogAction);
+		manager.add(openInventoryLoadingDialogAction);
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 	
 	private void fillLocalToolBar(IToolBarManager manager) {
 		manager.add(openNewMarketableProductDialogAction);
+		manager.add(openInventoryLoadingDialogAction);
 	}
 
 	private void makeActions() {
@@ -179,6 +184,12 @@ public class MarketableProductListView extends ViewPart {
 		openNewMarketableProductDialogAction.setText("Nuevo Producto");
 		openNewMarketableProductDialogAction.setToolTipText("Nuevo Producto");
 		openNewMarketableProductDialogAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+		
+		openInventoryLoadingDialogAction = new OpenInventoryLoadingDialogAction("Carga de Inventario",PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+		openInventoryLoadingDialogAction.setText("Carga de Inventario");
+		openInventoryLoadingDialogAction.setToolTipText("Carga de Inventario");
+		openInventoryLoadingDialogAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 	}
 

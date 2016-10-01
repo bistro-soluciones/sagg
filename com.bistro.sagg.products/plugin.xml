@@ -60,6 +60,11 @@
             id="com.bistro.sagg.products.ui.actions.OpenNewSupplyDialogAction"
             name="Open New Supply Dialog">
       </command>
+      <command
+            categoryId="com.bistro.sagg.category.commands"
+            id="com.bistro.sagg.products.ui.actions.OpenInventoryLoadingDialogAction"
+            name="Open Inventory Loading Dialog">
+      </command>
    </extension>
 
    <extension
