@@ -48,6 +48,9 @@
 	<bean id="saggServiceLocator" class="com.bistro.sagg.core.services.SaggServiceLocator">
 		<property name="services">
 			<map>
+				<entry key="com.bistro.sagg.core.services.BillingServices">
+					<bean class="com.bistro.sagg.core.services.BillingServicesImpl"/>
+				</entry>
 				<entry key="com.bistro.sagg.core.services.EmployeeServices">
 					<bean class="com.bistro.sagg.core.services.EmployeeServicesImpl"/>
 				</entry>

@@ -1,6 +1,7 @@
 package com.bistro.sagg.core.services;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import com.bistro.sagg.core.builders.MarketableProductBuilder;
 import com.bistro.sagg.core.builders.ProductCategoryBuilder;
 import com.bistro.sagg.core.builders.SupplyBuilder;
 import com.bistro.sagg.core.model.products.MarketableProduct;
+import com.bistro.sagg.core.model.products.Product;
 import com.bistro.sagg.core.model.products.ProductCategory;
 import com.bistro.sagg.core.model.products.Supply;
 import com.bistro.sagg.core.repository.MarketableProductRepository;
@@ -62,6 +64,23 @@ public class ProductServicesImpl implements ProductServices {
 
 	public List<MarketableProduct> getMarketableProducts() {
 		return (List<MarketableProduct>) marketableProductRepository.findAll();
+	}
+
+	public List<Product> getProductsByCategory(ProductCategory category) {
+		List<Product> products = new ArrayList<Product>();
+		products = addSuppliers(products, category);
+		products = addMarketableProducts(products, category);
+		return products;
+	}
+
+	private List<Product> addSuppliers(List<Product> products, ProductCategory category) {
+		products.addAll(supplyRepository.findAllByCategory(category.getId()));
+		return products;
+	}
+
+	private List<Product> addMarketableProducts(List<Product> products, ProductCategory category) {
+		products.addAll(marketableProductRepository.findAllByCategory(category.getId()));
+		return products;
 	}
 
 }
