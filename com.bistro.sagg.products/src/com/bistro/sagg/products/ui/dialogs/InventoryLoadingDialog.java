@@ -1,12 +1,19 @@
 package com.bistro.sagg.products.ui.dialogs;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -21,16 +28,22 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
+import com.bistro.sagg.core.builders.BillingItemBuilder;
+import com.bistro.sagg.core.model.billing.BillingItem;
 import com.bistro.sagg.core.model.billing.DocumentType;
+import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.model.products.Product;
 import com.bistro.sagg.core.model.products.ProductCategory;
 import com.bistro.sagg.core.model.suppliers.Supplier;
+import com.bistro.sagg.core.osgi.ui.viewers.FromListContentProvider;
 import com.bistro.sagg.core.services.BillingServices;
+import com.bistro.sagg.core.services.FranchiseServices;
 import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.core.services.SupplierServices;
 import com.bistro.sagg.products.ui.viewers.BillilngDocumentTypeComboLabelProvider;
 import com.bistro.sagg.products.ui.viewers.BillingDocumentTypeComboContentProvider;
+import com.bistro.sagg.products.ui.viewers.BillingItemListLabelProvider;
 import com.bistro.sagg.products.ui.viewers.ProductCategoryComboContentProvider;
 import com.bistro.sagg.products.ui.viewers.ProductCategoryComboLabelProvider;
 import com.bistro.sagg.products.ui.viewers.ProductComboContentProvider;
@@ -45,23 +58,38 @@ public class InventoryLoadingDialog extends Dialog {
 	private Text quantityText;
 	private Text unitPriceText;
 	
+	private Combo supplierCombo;
+	private Combo productCategoryCombo;
+	private Combo productCombo;
+	
+	private Button addProductButton;
+	
 	private BillingServices billingServices = (BillingServices) SaggServiceLocator.getInstance()
 			.lookup(BillingServices.class.getName());
-	private SupplierServices supplierServices = (SupplierServices) SaggServiceLocator.getInstance()
-			.lookup(SupplierServices.class.getName());
+	private FranchiseServices franchiseService = (FranchiseServices) SaggServiceLocator.getInstance()
+			.lookup(FranchiseServices.class.getName());
 	private ProductServices productServices = (ProductServices) SaggServiceLocator.getInstance()
 			.lookup(ProductServices.class.getName());
+	private SupplierServices supplierServices = (SupplierServices) SaggServiceLocator.getInstance()
+			.lookup(SupplierServices.class.getName());
 
 	private DocumentType selectedBillingDocumentType;
-	private Supplier selectedSupplier;
+	private Supplier selectedSupplier = new Supplier();
 	private Product selectedProduct;
+	private List<BillingItem> items = new ArrayList<BillingItem>();
+	private FranchiseBranch franchiseBranch;
 
+	private BigDecimal subtotal = BigDecimal.ZERO;
+	private BigDecimal iva = BigDecimal.ZERO;
+	private BigDecimal total = BigDecimal.ZERO;
+	
 	/**
 	 * Create the dialog.
 	 * @param parentShell
 	 */
 	public InventoryLoadingDialog(Shell parentShell) {
 		super(parentShell);
+		this.franchiseBranch = franchiseService.getById(1L);
 	}
 
 	/**
@@ -104,6 +132,13 @@ public class InventoryLoadingDialog extends Dialog {
 		
 		ComboViewer billingDocumentComboViewer = new ComboViewer(billingInfoComposite, SWT.NONE);
 		Combo billingDocumentCombo = billingDocumentComboViewer.getCombo();
+		billingDocumentCombo.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				billingNumberText.setEnabled(true);
+				supplierCombo.setEnabled(true);
+			}
+		});
 		billingDocumentCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		billingDocumentComboViewer.setContentProvider(new BillingDocumentTypeComboContentProvider());
 		billingDocumentComboViewer.setLabelProvider(new BillilngDocumentTypeComboLabelProvider());
@@ -119,6 +154,7 @@ public class InventoryLoadingDialog extends Dialog {
 		billingNrLabel.setText("Nro.");
 		
 		billingNumberText = new Text(billingInfoComposite, SWT.BORDER);
+		billingNumberText.setEnabled(false);
 		billingNumberText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label supplierLabel = new Label(basicInfoGroup, SWT.NONE);
@@ -129,14 +165,9 @@ public class InventoryLoadingDialog extends Dialog {
 		supplierComboViewer.setContentProvider(new SupplierComboContentProvider());
 		supplierComboViewer.setLabelProvider(new SupplierComboLabelProvider());
 		supplierComboViewer.setInput(supplierServices);
-		Combo supplierCombo = supplierComboViewer.getCombo();
+		supplierCombo = supplierComboViewer.getCombo();
+		supplierCombo.setEnabled(false);
 		supplierCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		supplierComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				selectedSupplier = (Supplier) ((StructuredSelection) event.getSelection()).getFirstElement();
-			}
-		});
 		
 		Group inventoryInfoGroup = new Group(container, SWT.NONE);
 		inventoryInfoGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
@@ -162,17 +193,37 @@ public class InventoryLoadingDialog extends Dialog {
 		ComboViewer productCategoryComboViewer = new ComboViewer(productComposite, SWT.NONE);
 		productCategoryComboViewer.setContentProvider(new ProductCategoryComboContentProvider());
 		productCategoryComboViewer.setLabelProvider(new ProductCategoryComboLabelProvider());
-		productCategoryComboViewer.setInput(productServices);
-		Combo productCategoryCombo = productCategoryComboViewer.getCombo();
+		productCategoryComboViewer.setInput(selectedSupplier);
+		productCategoryCombo = productCategoryComboViewer.getCombo();
+		productCategoryCombo.setEnabled(false);
 		productCategoryCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		ComboViewer productComboViewer = new ComboViewer(productComposite, SWT.NONE);
 		productComboViewer.setContentProvider(new ProductComboContentProvider());
 		productComboViewer.setLabelProvider(new ProductComboLabelProvider());
 		productComboViewer.setInput(productServices);
-		Combo productCombo = productComboViewer.getCombo();
+		productCombo = productComboViewer.getCombo();
+		productCombo.setEnabled(false);
 		productCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		productComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				selectedProduct = (Product) ((StructuredSelection) event.getSelection()).getFirstElement();
+				quantityText.setEnabled(true);
+				unitPriceText.setEnabled(true);
+				addProductButton.setEnabled(true);
+			}
+		});
 		
+		supplierComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				selectedSupplier = (Supplier) ((StructuredSelection) event.getSelection()).getFirstElement();
+				productCategoryComboViewer.setInput(selectedSupplier);
+				productCategoryComboViewer.refresh();
+				productCategoryCombo.setEnabled(true);
+			}
+		});
 		productCategoryComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
@@ -180,12 +231,7 @@ public class InventoryLoadingDialog extends Dialog {
 				ProductComboContentProvider provider = (ProductComboContentProvider) productComboViewer.getContentProvider();
 				provider.setCategory(category);
 				productComboViewer.refresh();
-			}
-		});
-		productComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				selectedProduct = (Product) ((StructuredSelection) event.getSelection()).getFirstElement();
+				productCombo.setEnabled(true);
 			}
 		});
 		
@@ -202,6 +248,8 @@ public class InventoryLoadingDialog extends Dialog {
 		productInfoComposite.setLayout(gl_productInfoComposite);
 		
 		quantityText = new Text(productInfoComposite, SWT.BORDER);
+		quantityText.setText("0");
+		quantityText.setEnabled(false);
 		quantityText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label unitPriceLabel = new Label(productInfoComposite, SWT.NONE);
@@ -209,10 +257,19 @@ public class InventoryLoadingDialog extends Dialog {
 		unitPriceLabel.setText("Precio Unitario");
 		
 		unitPriceText = new Text(productInfoComposite, SWT.BORDER);
+		unitPriceText.setText("0");
+		unitPriceText.setEnabled(false);
 		unitPriceText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Button ivaCheckButton = new Button(productInfoComposite, SWT.CHECK);
+		ivaCheckButton.setEnabled(false);
 		ivaCheckButton.setText("Incluye IVA");
+		new Label(inventoryInfoGroup, SWT.NONE);
+		
+		addProductButton = new Button(inventoryInfoGroup, SWT.NONE);
+		addProductButton.setEnabled(false);
+		addProductButton.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		addProductButton.setText("Agregar");
 		
 		Group resumeGroup = new Group(container, SWT.NONE);
 		GridData gd_resumeGroup = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
@@ -221,7 +278,12 @@ public class InventoryLoadingDialog extends Dialog {
 		resumeGroup.setText("Resumen");
 		resumeGroup.setLayout(new GridLayout(1, false));
 		
-		resumeTable = new Table(resumeGroup, SWT.BORDER | SWT.FULL_SELECTION);
+		TableViewer resumeTableViewer = new TableViewer(resumeGroup, SWT.BORDER | SWT.FULL_SELECTION);
+		resumeTableViewer.setContentProvider(new FromListContentProvider());
+		resumeTableViewer.setLabelProvider(new BillingItemListLabelProvider());
+//		resumeTableViewer.setSorter(new ProductCategoryListSorter());
+		resumeTable = resumeTableViewer.getTable();
+//		resumeTable = new Table(resumeGroup, SWT.BORDER | SWT.FULL_SELECTION);
 		GridData gd_resumeTable = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		gd_resumeTable.heightHint = 198;
 		gd_resumeTable.widthHint = 572;
@@ -249,96 +311,95 @@ public class InventoryLoadingDialog extends Dialog {
 		tblclmnTotal.setWidth(58);
 		tblclmnTotal.setText("Total");
 		
-		Composite composite_5 = new Composite(resumeGroup, SWT.NONE);
-		composite_5.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		composite_5.setLayout(new GridLayout(18, false));
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
+		Composite composite = new Composite(resumeGroup, SWT.NONE);
+		GridData gd_composite = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_composite.heightHint = 78;
+		composite.setLayoutData(gd_composite);
 		
-		Label subtotalAmountLabel = new Label(composite_5, SWT.RIGHT);
-		GridData gd_subtotalAmountLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_subtotalAmountLabel.widthHint = 75;
-		subtotalAmountLabel.setLayoutData(gd_subtotalAmountLabel);
+		Label subtotalAmountNrLabel = new Label(composite, SWT.RIGHT);
+		subtotalAmountNrLabel.setBounds(512, 10, 75, 20);
+		subtotalAmountNrLabel.setText("0");
+		
+		Label ivaPercentageLabel = new Label(composite, SWT.RIGHT);
+		ivaPercentageLabel.setBounds(512, 30, 75, 20);
+		ivaPercentageLabel.setText("0");
+		
+		Label subtotalAmountLabel = new Label(composite, SWT.RIGHT);
+		subtotalAmountLabel.setBounds(430, 10, 75, 20);
 		subtotalAmountLabel.setText("Subtotal");
 		
-		Label subtotalAmountNrLabel = new Label(composite_5, SWT.RIGHT);
-		GridData gd_subtotalAmountNrLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_subtotalAmountNrLabel.widthHint = 40;
-		subtotalAmountNrLabel.setLayoutData(gd_subtotalAmountNrLabel);
-		subtotalAmountNrLabel.setText("0");
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		
-		Label ivaLabel = new Label(composite_5, SWT.RIGHT);
-		GridData gd_ivaLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_ivaLabel.widthHint = 75;
-		ivaLabel.setLayoutData(gd_ivaLabel);
+		Label ivaLabel = new Label(composite, SWT.RIGHT);
+		ivaLabel.setBounds(430, 30, 75, 20);
 		ivaLabel.setText("IVA 19%");
 		
-		Label ivaPercentageLabel = new Label(composite_5, SWT.RIGHT);
-		GridData gd_ivaPercentageLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_ivaPercentageLabel.widthHint = 40;
-		ivaPercentageLabel.setLayoutData(gd_ivaPercentageLabel);
-		ivaPercentageLabel.setText("0");
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		new Label(composite_5, SWT.NONE);
-		
-		Label totalAmountLabel = new Label(composite_5, SWT.RIGHT);
-		GridData gd_totalAmountLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_totalAmountLabel.widthHint = 75;
-		totalAmountLabel.setLayoutData(gd_totalAmountLabel);
+		Label totalAmountLabel = new Label(composite, SWT.RIGHT);
+		totalAmountLabel.setBounds(430, 48, 75, 20);
 		totalAmountLabel.setText("Total");
 		
-		Label totalAmountNrLabel = new Label(composite_5, SWT.RIGHT);
-		GridData gd_totalAmountNrLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_totalAmountNrLabel.widthHint = 40;
-		totalAmountNrLabel.setLayoutData(gd_totalAmountNrLabel);
+		Label totalAmountNrLabel = new Label(composite, SWT.RIGHT);
+		totalAmountNrLabel.setBounds(547, 48, 40, 20);
 		totalAmountNrLabel.setText("0");
-		
-		Label currencyLabel = new Label(composite_5, SWT.NONE);
-		currencyLabel.setText("CLP");
 
+		resumeTableViewer.setInput(items);
+		addProductButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				addItem();
+				recalculateAmounts();
+				resetWidgets(productComboViewer, resumeTableViewer);
+			}
+			
+			private void addItem() {
+				BillingItem item = lookupExistentItem();
+				boolean isNewItem = true;
+				BillingItemBuilder builder;
+				if(item == null) {
+					builder = new BillingItemBuilder();
+				} else {
+					builder = new BillingItemBuilder(item);
+					isNewItem = false;
+				}
+				builder.build(selectedProduct, Integer.parseInt(quantityText.getText()), new BigDecimal(unitPriceText.getText()), false);
+				item = builder.getItem();
+				if(isNewItem) {
+					items.add(item);
+				}
+			}
+
+			private BillingItem lookupExistentItem() {
+				for (BillingItem item : items) {
+					if(item.getProduct().equals(selectedProduct)) {
+						return item;
+					}
+				}
+				return null;
+			}
+
+			private void recalculateAmounts() {
+				quantityText.setText("0");
+				unitPriceText.setText("0");
+				subtotal = BigDecimal.ZERO;
+				for (BillingItem item : items) {
+					subtotal = subtotal.add(item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
+				}
+				total = subtotal.multiply(new BigDecimal("1.19"));
+				iva = total.subtract(subtotal);
+				subtotalAmountNrLabel.setText(String.valueOf(subtotal.intValue()));
+				ivaPercentageLabel.setText(String.valueOf(iva.intValue()));
+				totalAmountNrLabel.setText(String.valueOf(total.intValue()));
+			}
+			
+			private void resetWidgets(ComboViewer productComboViewer, TableViewer resumeTableViewer) {
+				quantityText.setEnabled(false);
+				unitPriceText.setEnabled(false);
+				supplierCombo.setEnabled(false);
+				resumeTableViewer.refresh();
+				productComboViewer.setSelection(null);
+				productComboViewer.refresh();
+				addProductButton.setEnabled(false);
+			}
+		});
+		
 		return container;
 	}
 
@@ -354,14 +415,9 @@ public class InventoryLoadingDialog extends Dialog {
 
 	@Override
 	protected void okPressed() {
-//		int day = dateTimeFechaDeIngreso.getDay();
-//		int month = dateTimeFechaDeIngreso.getMonth();
-//		int year = dateTimeFechaDeIngreso.getYear();
-//		Date startDate = new GregorianCalendar(year, month, day).getTime();
-//		
-//		employeeService.createEmployee(textNombres.getText(), textApellidos.getText(), textRut.getText(), selectedPosition,
-//				startDate, franchiseBranch, textCorreoElectronico.getText(), textTelefono.getText(),
-//				textCelular.getText(), textDireccionL1.getText(), textDireccionL2.getText(), selectedCity);
+		billingServices.createBillingDocument(selectedBillingDocumentType, billingNumberText.getText(),
+				selectedSupplier, items, franchiseBranch);
+		productServices.increaseProductStock(items);
 		super.okPressed();
 	}
 	
@@ -370,6 +426,6 @@ public class InventoryLoadingDialog extends Dialog {
 	 */
 	@Override
 	protected Point getInitialSize() {
-		return new Point(647, 727);
+		return new Point(647, 760);
 	}
 }
