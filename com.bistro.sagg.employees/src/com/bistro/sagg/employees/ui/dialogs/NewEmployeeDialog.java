@@ -247,7 +247,7 @@ public class NewEmployeeDialog extends Dialog {
 		comboRegion.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label lblComuna = new Label(composite_1, SWT.NONE);
-		lblComuna.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		lblComuna.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		lblComuna.setText("Comuna");
 		
 		ComboViewer comboComunaViewer = new ComboViewer(composite_1, SWT.NONE);
