@@ -1,5 +1,7 @@
 package com.bistro.sagg.core.model.products;
 
+import java.util.Objects;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -16,8 +18,8 @@ import javax.persistence.Table;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="PRODUCT_TYPE")
-@Table(name="PRODUCTS")
+@DiscriminatorColumn(name = "PRODUCT_TYPE")
+@Table(name = "PRODUCTS")
 public abstract class Product {
 
 	@Id
@@ -30,9 +32,9 @@ public abstract class Product {
 	@JoinColumn(name = "PRODUCT_CATEGORY_ID")
 	private ProductCategory category;
 	@Column(name = "STOCK")
-	private int stock;
+	private int stock = 0;
 	@Column(name = "STOCK_MIN")
-	private int minStock;
+	private int minStock = 0;
 
 	public Product() {
 		super();
@@ -76,6 +78,26 @@ public abstract class Product {
 
 	public void setMinStock(int minStock) {
 		this.minStock = minStock;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		// self check
+		if (this == obj)
+			return true;
+		// null check
+		if (obj == null)
+			return false;
+		// type check and cast
+		if (getClass() != obj.getClass())
+			return false;
+		Product product = (Product) obj;
+		// field comparison
+		return Objects.equals(id, product.id);
+	}
+
+	public void addStock(int quantity) {
+		this.stock += quantity;
 	}
 
 }

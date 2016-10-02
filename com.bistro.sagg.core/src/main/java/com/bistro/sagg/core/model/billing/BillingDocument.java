@@ -1,7 +1,9 @@
 package com.bistro.sagg.core.model.billing;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -27,13 +29,13 @@ public class BillingDocument {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DOCUMENT_TYPE_ID")
 	private DocumentType document;
-	@JoinColumn(name = "DOCUMENT_NUMBER")
+	@Column(name = "DOCUMENT_NUMBER")
 	private String documentNumber;
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SUPPLIER_ID")
 	private Supplier supplier;
-	@OneToMany(mappedBy = "billingDocument")
-	private List<BillingItem> items;
+	@OneToMany(mappedBy = "billingDocument", cascade = CascadeType.PERSIST)
+	private List<BillingItem> items = new ArrayList<BillingItem>();
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FRANCHISE_BRANCH_ID")
 	private FranchiseBranch branch;
@@ -88,6 +90,17 @@ public class BillingDocument {
 
 	public void setBranch(FranchiseBranch branch) {
 		this.branch = branch;
+	}
+	
+	public void addItem(BillingItem item) {
+		items.add(item);
+		item.setBillingDocument(this);
+	}
+	
+	public void addItems(List<BillingItem> items) {
+		for (BillingItem item : items) {
+			addItem(item);
+		}
 	}
 
 }

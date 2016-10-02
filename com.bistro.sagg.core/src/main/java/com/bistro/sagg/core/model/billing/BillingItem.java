@@ -26,13 +26,13 @@ public class BillingItem {
 	@JoinColumn(name = "PRODUCT_ID")
 	private Product product;
 	@Column(name = "QUANTITY")
-	private int quantity;
+	private int quantity = 0;
 	@Column(name = "UNIT_PRICE")
-	private BigDecimal unitPrice;
+	private BigDecimal unitPrice = BigDecimal.ZERO;
 	@Column(name = "TAX")
 	private float tax;
 	@Column(name = "TAX_AMOUNT")
-	private BigDecimal taxAmount;
+	private BigDecimal taxAmount = BigDecimal.ZERO;
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "BILLING_DOCUMENT_ID")
 	private BillingDocument billingDocument;
@@ -79,6 +79,14 @@ public class BillingItem {
 
 	public void setTax(float tax) {
 		this.tax = tax;
+	}
+
+	public BigDecimal getTaxAmount() {
+		return taxAmount;
+	}
+
+	public void setTaxAmount(BigDecimal taxAmount) {
+		this.taxAmount = taxAmount;
 	}
 
 	public BillingDocument getBillingDocument() {

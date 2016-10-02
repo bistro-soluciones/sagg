@@ -9,10 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.bistro.sagg.core.builders.MarketableProductBuilder;
 import com.bistro.sagg.core.builders.ProductCategoryBuilder;
 import com.bistro.sagg.core.builders.SupplyBuilder;
+import com.bistro.sagg.core.model.billing.BillingItem;
+import com.bistro.sagg.core.model.billing.DocumentType;
+import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.model.products.MarketableProduct;
 import com.bistro.sagg.core.model.products.Product;
 import com.bistro.sagg.core.model.products.ProductCategory;
 import com.bistro.sagg.core.model.products.Supply;
+import com.bistro.sagg.core.model.suppliers.Supplier;
 import com.bistro.sagg.core.repository.MarketableProductRepository;
 import com.bistro.sagg.core.repository.ProductCategoryRepository;
 import com.bistro.sagg.core.repository.SupplyRepository;
@@ -39,7 +43,7 @@ public class ProductServicesImpl implements ProductServices {
 		return (List<ProductCategory>) productCategoryRepository.findAll();
 	}
 
-	public void createSypply(String name, ProductCategory category, int minStock) {
+	public void createSupply(String name, ProductCategory category, int minStock) {
 		// Create supply object
 		SupplyBuilder builder = new SupplyBuilder();
 		builder.build(name, category, 0, minStock);
@@ -81,6 +85,22 @@ public class ProductServicesImpl implements ProductServices {
 	private List<Product> addMarketableProducts(List<Product> products, ProductCategory category) {
 		products.addAll(marketableProductRepository.findAllByCategory(category.getId()));
 		return products;
+	}
+
+	public void increaseProductStock(List<BillingItem> items) {
+		// Increase product stock
+		for (BillingItem item : items) {
+			Product product = item.getProduct();
+			product.addStock(item.getQuantity());
+			if (product instanceof Supply) {
+				// Save supply
+				supplyRepository.save((Supply) product);
+			}
+			if (product instanceof MarketableProduct) {
+				// Save marketable product
+				marketableProductRepository.save((MarketableProduct) product);
+			}
+		}
 	}
 
 }
