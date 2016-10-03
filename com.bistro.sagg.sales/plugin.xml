@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            name="Ventas"
+            icon="icons/sample.gif"
+            category="com.bistro.sagg.category.views"
+            class="com.bistro.sagg.sales.ui.views.SalesView"
+            id="com.bistro.sagg.sales.ui.views.SalesView">
+      </view>
+      <view
+            allowMultiple="false"
+            category="com.bistro.sagg.category.views"
+            class="com.bistro.sagg.sales.ui.views.ProductSelectionView"
+            id="com.bistro.sagg.sales.ui.views.ProductSelectionView"
+            name="Productos"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            class="com.bistro.sagg.sales.ui.views.SalesDetailView"
+            id="com.bistro.sagg.sales.ui.views.SalesDetailView"
+            name="Detalle de Venta"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="com.bistro.sagg.sales.ui.perspectives.SalesPerspective"
+            id="com.bistro.sagg.sales.ui.perspectives.SalesPerspective"
+            name="Ventas">
+      </perspective>
+   </extension>
+
+</plugin>
