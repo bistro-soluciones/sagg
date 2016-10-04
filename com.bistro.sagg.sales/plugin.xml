@@ -26,6 +26,14 @@
             name="Detalle de Venta"
             restorable="true">
       </view>
+      <view
+            allowMultiple="false"
+            category="com.bistro.sagg.category.views"
+            class="com.bistro.sagg.sales.ui.views.SalesConfirmationDetailView"
+            id="com.bistro.sagg.sales.ui.views.SalesConfirmationDetailView"
+            name="Confirmación de Venta"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">

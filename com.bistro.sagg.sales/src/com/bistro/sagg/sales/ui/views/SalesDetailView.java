@@ -36,6 +36,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.wb.swt.SWTResourceManager;
 
 /**
  * This sample class demonstrates how to plug-in a new
@@ -79,6 +81,29 @@ public class SalesDetailView extends ViewPart {
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
+		
+		Composite composite = new Composite(parent, SWT.NONE);
+		GridLayout gl_composite = new GridLayout(3, false);
+		gl_composite.marginWidth = 0;
+		gl_composite.marginHeight = 0;
+		composite.setLayout(gl_composite);
+		composite.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1));
+		
+		Spinner spinner = new Spinner(composite, SWT.BORDER);
+		
+		Button btnModificar = new Button(composite, SWT.NONE);
+		GridData gd_btnModificar = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnModificar.widthHint = 100;
+		btnModificar.setLayoutData(gd_btnModificar);
+		btnModificar.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
+		btnModificar.setText("Modificar");
+		
+		Button btnNewButton = new Button(composite, SWT.NONE);
+		GridData gd_btnNewButton = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnNewButton.widthHint = 100;
+		btnNewButton.setLayoutData(gd_btnNewButton);
+		btnNewButton.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
+		btnNewButton.setText("Eliminar");
 		
 		makeActions();
 		hookContextMenu();

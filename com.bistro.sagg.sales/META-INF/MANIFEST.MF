@@ -12,3 +12,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: com.bistro.sagg.sales.ui.perspectives,
  com.bistro.sagg.sales.ui.views
+Bundle-ClassPath: .,
+ swing2swt.jar
