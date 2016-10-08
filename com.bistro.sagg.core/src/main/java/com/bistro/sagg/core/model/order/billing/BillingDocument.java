@@ -1,6 +1,7 @@
-package com.bistro.sagg.core.model.billing;
+package com.bistro.sagg.core.model.order.billing;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -15,8 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.bistro.sagg.core.model.company.FranchiseBranch;
-import com.bistro.sagg.core.model.suppliers.Supplier;
+import com.bistro.sagg.core.model.order.payment.PaymentMethod;
 
 @Entity
 @Table(name = "BILLING_DOCUMENTS")
@@ -28,17 +28,16 @@ public class BillingDocument {
 	private Long id;
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DOCUMENT_TYPE_ID")
-	private DocumentType document;
+	private DocumentType documentType;
 	@Column(name = "DOCUMENT_NUMBER")
 	private String documentNumber;
+	@Column(name = "DOCUMENT_DATETIME")
+	private Date date;
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SUPPLIER_ID")
-	private Supplier supplier;
+	@JoinColumn(name = "PAYMENT_METHOD_ID")
+	private PaymentMethod paymentMethod;
 	@OneToMany(mappedBy = "billingDocument", cascade = CascadeType.PERSIST)
 	private List<BillingItem> items = new ArrayList<BillingItem>();
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "FRANCHISE_BRANCH_ID")
-	private FranchiseBranch branch;
 
 	public BillingDocument() {
 		super();
@@ -52,12 +51,12 @@ public class BillingDocument {
 		this.id = id;
 	}
 
-	public DocumentType getDocument() {
-		return document;
+	public DocumentType getDocumentType() {
+		return documentType;
 	}
 
-	public void setDocument(DocumentType document) {
-		this.document = document;
+	public void setDocumentType(DocumentType documentType) {
+		this.documentType = documentType;
 	}
 
 	public String getDocumentNumber() {
@@ -68,12 +67,20 @@ public class BillingDocument {
 		this.documentNumber = documentNumber;
 	}
 
-	public Supplier getSupplier() {
-		return supplier;
+	public Date getDate() {
+		return date;
 	}
 
-	public void setSupplier(Supplier supplier) {
-		this.supplier = supplier;
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public PaymentMethod getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	public void setPaymentMethod(PaymentMethod paymentMethod) {
+		this.paymentMethod = paymentMethod;
 	}
 
 	public List<BillingItem> getItems() {
@@ -83,24 +90,9 @@ public class BillingDocument {
 	public void setItems(List<BillingItem> items) {
 		this.items = items;
 	}
-
-	public FranchiseBranch getBranch() {
-		return branch;
-	}
-
-	public void setBranch(FranchiseBranch branch) {
-		this.branch = branch;
-	}
-	
-	public void addItem(BillingItem item) {
-		items.add(item);
-		item.setBillingDocument(this);
-	}
 	
 	public void addItems(List<BillingItem> items) {
-		for (BillingItem item : items) {
-			addItem(item);
-		}
+		this.items.addAll(items);
 	}
 
 }

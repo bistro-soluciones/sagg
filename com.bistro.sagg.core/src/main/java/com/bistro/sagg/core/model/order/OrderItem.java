@@ -1,4 +1,4 @@
-package com.bistro.sagg.core.model.products;
+package com.bistro.sagg.core.model.order;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,24 +10,23 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.bistro.sagg.core.model.company.FranchiseBranch;
+import com.bistro.sagg.core.model.products.Product;
 
 @Entity
-@Table(name = "PRODUCT_CATEGORIES")
-public class ProductCategory {
+@Table(name = "ORDER_ITEMS")
+public class OrderItem {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
 	private Long id;
-	@Column(name = "NAME")
-	private String name;
-	// Franchise information
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "FRANCHISE_BRANCH_ID")
-	private FranchiseBranch branch;
+	@JoinColumn(name = "PRODUCT_ID")
+	private Product product;
+	@Column(name = "QUANTITY")
+	private int quantity = 0;
 
-	public ProductCategory() {
+	public OrderItem() {
 		super();
 	}
 
@@ -39,12 +38,20 @@ public class ProductCategory {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public Product getProduct() {
+		return product;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
 	}
 
 }

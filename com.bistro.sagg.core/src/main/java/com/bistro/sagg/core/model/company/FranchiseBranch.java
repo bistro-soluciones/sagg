@@ -2,6 +2,7 @@ package com.bistro.sagg.core.model.company;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,7 +16,9 @@ import javax.persistence.Table;
 
 import com.bistro.sagg.core.model.company.employees.Employee;
 import com.bistro.sagg.core.model.location.City;
-import com.bistro.sagg.core.model.suppliers.Supplier;
+import com.bistro.sagg.core.model.order.PurchaseOrder;
+import com.bistro.sagg.core.model.order.SaleOrder;
+import com.bistro.sagg.core.model.products.ProductCategory;
 
 @Entity
 @Table(name = "FRANCHISE_BRANCHES")
@@ -38,6 +41,13 @@ public class FranchiseBranch {
 	// Employees information
 	@OneToMany(mappedBy = "franchiseBranch")
 	private List<Employee> employees;
+	
+	@OneToMany(mappedBy = "branch", cascade = CascadeType.PERSIST)
+	private List<ProductCategory> productCategories;
+	@OneToMany(mappedBy = "branch", cascade = CascadeType.PERSIST)
+	private List<PurchaseOrder> purchaseOrders;
+	@OneToMany(mappedBy = "branch", cascade = CascadeType.PERSIST)
+	private List<SaleOrder> saleOrders;
 
 	// Suppliers information
 	// private List<Supplier> suppliers;

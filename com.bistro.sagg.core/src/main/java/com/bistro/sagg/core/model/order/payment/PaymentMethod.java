@@ -1,20 +1,15 @@
-package com.bistro.sagg.core.model.products;
+package com.bistro.sagg.core.model.order.payment;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.bistro.sagg.core.model.company.FranchiseBranch;
-
 @Entity
-@Table(name = "PRODUCT_CATEGORIES")
-public class ProductCategory {
+@Table(name = "PAYMENT_METHODS")
+public class PaymentMethod {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,12 +17,8 @@ public class ProductCategory {
 	private Long id;
 	@Column(name = "NAME")
 	private String name;
-	// Franchise information
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "FRANCHISE_BRANCH_ID")
-	private FranchiseBranch branch;
 
-	public ProductCategory() {
+	public PaymentMethod() {
 		super();
 	}
 

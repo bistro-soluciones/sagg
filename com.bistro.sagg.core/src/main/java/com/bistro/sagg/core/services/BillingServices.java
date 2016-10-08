@@ -2,11 +2,10 @@ package com.bistro.sagg.core.services;
 
 import java.util.List;
 
-import com.bistro.sagg.core.model.billing.BillingDocument;
-import com.bistro.sagg.core.model.billing.BillingItem;
-import com.bistro.sagg.core.model.billing.DocumentType;
-import com.bistro.sagg.core.model.company.FranchiseBranch;
-import com.bistro.sagg.core.model.suppliers.Supplier;
+import com.bistro.sagg.core.model.order.billing.BillingDocument;
+import com.bistro.sagg.core.model.order.billing.BillingItem;
+import com.bistro.sagg.core.model.order.billing.DocumentType;
+import com.bistro.sagg.core.model.order.payment.PaymentMethod;
 
 public interface BillingServices extends ISaggService {
 
@@ -14,7 +13,7 @@ public interface BillingServices extends ISaggService {
 
 	List<BillingDocument> getBillingDocuments();
 
-	void createBillingDocument(DocumentType documentType, String documentNumber, Supplier supplier,
-			List<BillingItem> items, FranchiseBranch branch);
-	
+	void createBillingDocument(DocumentType documentType, String documentNumber, PaymentMethod paymentMethod,
+			List<BillingItem> items);
+
 }

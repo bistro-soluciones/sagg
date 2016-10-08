@@ -1,4 +1,4 @@
-package com.bistro.sagg.core.model.billing;
+package com.bistro.sagg.core.model.order.billing;
 
 import java.math.BigDecimal;
 
