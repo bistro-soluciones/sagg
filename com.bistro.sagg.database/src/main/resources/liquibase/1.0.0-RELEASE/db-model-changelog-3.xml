@@ -1,0 +1,123 @@
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="sebastian.lavie">
+    	<addColumn tableName="product_categories">
+            <column name="franchise_branch_id" type="bigint(20)" afterColumn="name">
+                <constraints foreignKeyName="id" referencedTableName="franchise_branches" nullable="false"/>
+            </column>
+    	</addColumn>
+    </changeSet>
+
+    <changeSet id="2" author="sebastian.lavie">
+        <createTable tableName="payment_methods">
+            <column name="id" type="bigint(20)" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="varchar(20)"/>
+        </createTable>
+    </changeSet>
+    
+    <changeSet id="3" author="sebastian.lavie">
+        <createTable tableName="sale_orders">
+            <column name="id" type="bigint(20)" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="order_number" type="varchar(18)"/> <!-- 9999-9999-99999999 (CODF-CODB-ORDERNR) -->
+            <column name="order_datetime" type="timestamp"/>
+            <column name="order_status" type="varchar(20)"/>
+            <column name="employee_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="employees" nullable="false"/>
+            </column>
+            <column name="billing_document_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="document_types"/>
+            </column>
+            <column name="franchise_branch_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="franchise_branches" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="4" author="sebastian.lavie">
+        <createTable tableName="sale_order_items">
+            <column name="id" type="bigint(20)" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="product_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="products" nullable="false"/>
+            </column>
+            <column name="quantity" type="int" defaultValue="0"/>
+            <column name="order_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="sale_orders" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    
+    <changeSet id="5" author="sebastian.lavie">
+        <createTable tableName="purchase_orders">
+            <column name="id" type="bigint(20)" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="order_number" type="varchar(18)"/> <!-- 9999-9999-9-99999999 (CODF-CODB-ORDERNR) -->
+            <column name="order_datetime" type="timestamp"/>
+            <column name="order_status" type="varchar(20)"/>
+            <column name="supplier_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="suppliers" nullable="false"/>
+            </column>
+            <column name="requestor_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="employees" nullable="false"/>
+            </column>
+            <column name="receiver_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="employees"/>
+            </column>
+            <column name="billing_document_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="document_types"/>
+            </column>
+            <column name="franchise_branch_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="franchise_branches" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="6" author="sebastian.lavie">
+        <createTable tableName="purchase_order_items">
+            <column name="id" type="bigint(20)" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="product_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="products" nullable="false"/>
+            </column>
+            <column name="quantity" type="int" defaultValue="0"/>
+            <column name="order_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="purchase_orders" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+        
+        
+    <changeSet id="7" author="sebastian.lavie">
+    	<dropColumn tableName="billing_documents" columnName="supplier_id"/>
+    </changeSet>
+    
+    <changeSet id="8" author="sebastian.lavie">
+    	<dropColumn tableName="billing_documents" columnName="franchise_branch_id"/>
+    </changeSet>
+    
+    <changeSet id="9" author="sebastian.lavie">
+    	<addColumn tableName="billing_documents">
+    		<column name="document_datetime" type="timestamp" afterColumn="document_number"/>
+    	</addColumn>
+    </changeSet>
+    
+    <changeSet id="10" author="sebastian.lavie">
+    	<addColumn tableName="billing_documents">
+    		<column name="payment_method_id" type="bigint(20)" afterColumn="document_datetime">
+                <constraints foreignKeyName="id" referencedTableName="payment_methods" nullable="false"/>
+            </column>
+    	</addColumn>
+    </changeSet>
+        
+</databaseChangeLog>

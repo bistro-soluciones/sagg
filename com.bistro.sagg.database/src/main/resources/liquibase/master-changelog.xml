@@ -13,5 +13,6 @@
     <!-- Domain model tables -->
 	<include file="src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-1.xml" />
 	<include file="src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-2.xml" />
+	<include file="src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-3.xml" />
 
 </databaseChangeLog>
