@@ -1,43 +1,35 @@
 package com.bistro.sagg.sales.ui.views;
 
-import org.eclipse.jface.action.Action;
+import java.util.Dictionary;
+import java.util.Hashtable;
+
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.ViewPart;
-
-import com.bistro.sagg.core.services.EmployeeServices;
-import com.bistro.sagg.core.services.SaggServiceLocator;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.part.ViewPart;
 import org.eclipse.wb.swt.SWTResourceManager;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
+
+import com.bistro.sagg.core.factory.OrderItemFactory;
+import com.bistro.sagg.core.model.order.SaleOrderItem;
+import com.bistro.sagg.core.model.products.Product;
+import com.bistro.sagg.sales.ui.utils.SalesCommunicationConstants;
+import com.bistro.sagg.sales.ui.viewers.OrderItemTableLabelProvider;
+import org.eclipse.swt.widgets.TableColumn;
 
 /**
  * This sample class demonstrates how to plug-in a new
@@ -63,7 +55,7 @@ public class SalesDetailView extends ViewPart {
 	 * The ID of the view as specified by the extension.
 	 */
 	public static final String ID = "com.bistro.sagg.sales.ui.views.SalesDetailView";
-	private Table table;
+	private Table productsTable;
 
 
 	public SalesDetailView() {
@@ -77,11 +69,49 @@ public class SalesDetailView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new GridLayout(1, false));
 		
-		table = new Table(parent, SWT.BORDER | SWT.FULL_SELECTION);
-		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		table.setHeaderVisible(true);
-		table.setLinesVisible(true);
+		TableViewer productsTableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
+//		productsTableViewer.setContentProvider(new MarketableProductListContentProvider());
+		productsTableViewer.setLabelProvider(new OrderItemTableLabelProvider());
+//		productsTableViewer.setSorter(new MarketableProductListSorter());
 		
+		productsTable = productsTableViewer.getTable();
+		productsTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		productsTable.setHeaderVisible(true);
+		productsTable.setLinesVisible(true);
+		
+		TableColumn productColumn = new TableColumn(productsTable, SWT.NONE);
+		productColumn.setWidth(500);
+		productColumn.setText("Producto");
+		
+		TableColumn quantityColumn = new TableColumn(productsTable, SWT.NONE);
+		quantityColumn.setWidth(100);
+		quantityColumn.setText("Cantidad");
+		
+		TableColumn amountColumn = new TableColumn(productsTable, SWT.NONE);
+		amountColumn.setWidth(100);
+		amountColumn.setText("Monto");
+		
+		BundleContext ctx = FrameworkUtil.getBundle(SalesDetailView.class).getBundleContext();
+	    EventHandler handler = new EventHandler() {
+			public void handleEvent(final Event event) {
+				SaleOrderItem item = OrderItemFactory.createSaleOrderItem(
+						(Product) event.getProperty(SalesCommunicationConstants.ADD_PRODUCT_DATA),
+						(int) event.getProperty(SalesCommunicationConstants.ADD_PRODUCT_QUANTITY_DATA));
+				if (parent.getDisplay().getThread() == Thread.currentThread()) {
+					productsTableViewer.add(item);
+				} else {
+					parent.getDisplay().syncExec(new Runnable() {
+						public void run() {
+							productsTableViewer.add(item);
+						}
+					});
+				}
+			}
+	    };
+	    Dictionary<String,String> properties = new Hashtable<String, String>();
+	    properties.put(EventConstants.EVENT_TOPIC, SalesCommunicationConstants.ADD_PRODUCT_EVENT);
+	    ctx.registerService(EventHandler.class, handler, properties);
+	    
 		Composite composite = new Composite(parent, SWT.NONE);
 		GridLayout gl_composite = new GridLayout(3, false);
 		gl_composite.marginWidth = 0;

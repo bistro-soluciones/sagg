@@ -1,52 +1,52 @@
 package com.bistro.sagg.sales.ui.views;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.wb.swt.SWTResourceManager;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
 
 import com.bistro.sagg.core.model.products.MarketableProduct;
 import com.bistro.sagg.core.model.products.Product;
 import com.bistro.sagg.core.model.products.ProductCategory;
-import com.bistro.sagg.core.services.EmployeeServices;
 import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.wb.swt.SWTResourceManager;
-import org.eclipse.swt.widgets.Spinner;
+import com.bistro.sagg.sales.ui.utils.SalesCommunicationConstants;
+import com.bistro.sagg.sales.ui.viewers.ProductCategoryComboContentProvider;
+import com.bistro.sagg.sales.ui.viewers.ProductCategoryComboLabelProvider;
+import com.bistro.sagg.sales.ui.viewers.ProductListContentProvider;
+import com.bistro.sagg.sales.ui.viewers.ProductListLabelProvider;
 
 /**
  * This sample class demonstrates how to plug-in a new
@@ -73,16 +73,23 @@ public class ProductSelectionView extends ViewPart {
 	 */
 	public static final String ID = "com.bistro.sagg.sales.ui.views.ProductSelectionView";
 
-	private ProductServices productService = (ProductServices) SaggServiceLocator.getInstance()
+	private ListViewer productListViewer;
+	private org.eclipse.swt.widgets.List productList;
+	private Spinner productQuantitySpinner;
+	private Button addProductButton;
+	
+	private ProductServices productServices = (ProductServices) SaggServiceLocator.getInstance()
 			.lookup(ProductServices.class.getName());
 	
 	private List<ProductCategory> categories;
 	private List<MarketableProduct> products = new ArrayList<MarketableProduct>();
+	private Product selectedProduct;
+	private int selectedProductQuantity;
 
 	public ProductSelectionView() {
 		super();
-		this.categories = productService.getProductCategories();
-		this.products = productService.getMarketableProducts();
+//		this.categories = productService.getProductCategories();
+		this.products = productServices.getMarketableProducts();
 	}
 
 	/**
@@ -98,15 +105,49 @@ public class ProductSelectionView extends ViewPart {
 		Label productCategoryLabel = new Label(composite_1, SWT.NONE);
 		productCategoryLabel.setText("Categor\u00EDa");
 		
-		Combo combo = new Combo(composite_1, SWT.NONE);
-		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		ComboViewer productCategoryComboViewer = new ComboViewer(composite_1, SWT.NONE);
+		productCategoryComboViewer.setContentProvider(new ProductCategoryComboContentProvider());
+		productCategoryComboViewer.setLabelProvider(new ProductCategoryComboLabelProvider());
+		productCategoryComboViewer.setInput(productServices);
+		Combo productCategoryCombo = productCategoryComboViewer.getCombo();
+		productCategoryCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		productCategoryComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				ProductCategory category = (ProductCategory) ((StructuredSelection) event.getSelection()).getFirstElement();
+				ProductListContentProvider provider = (ProductListContentProvider) productListViewer.getContentProvider();
+				provider.setCategory(category);
+				productListViewer.refresh();
+				productList.setEnabled(true);
+				productQuantitySpinner.setEnabled(false);
+			}
+		});
 		
 		Label productLabel = new Label(composite_1, SWT.NONE);
 		productLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
 		productLabel.setText("Producto");
 		
-		org.eclipse.swt.widgets.List productList = new org.eclipse.swt.widgets.List(composite_1, SWT.BORDER);
+		productListViewer = new ListViewer(composite_1, SWT.BORDER);
+		productListViewer.setContentProvider(new ProductListContentProvider());
+		productListViewer.setLabelProvider(new ProductListLabelProvider());
+		productListViewer.setInput(productServices);
+		productList = productListViewer.getList();
+		productList.setEnabled(false);
 		productList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		productList.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				org.eclipse.swt.widgets.List source = (org.eclipse.swt.widgets.List) e.getSource();
+				if(source.getSelectionCount() > 0) {
+					productQuantitySpinner.setEnabled(true);
+					productQuantitySpinner.setSelection(0);
+					selectedProduct = (Product) ((StructuredSelection)productListViewer.getSelection()).getFirstElement();
+				} else {
+					productQuantitySpinner.setEnabled(false);
+					selectedProduct = null;
+				}
+			}
+		});
 		
 		Label quantityLabel = new Label(composite_1, SWT.NONE);
 		quantityLabel.setText("Cantidad");
@@ -118,12 +159,39 @@ public class ProductSelectionView extends ViewPart {
 		gl_composite.marginHeight = 0;
 		composite.setLayout(gl_composite);
 		
-		Spinner spinner = new Spinner(composite, SWT.BORDER);
+		productQuantitySpinner = new Spinner(composite, SWT.BORDER);
+		productQuantitySpinner.setEnabled(false);
+		productQuantitySpinner.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				Spinner source = (Spinner) e.getSource();
+				if(source.getSelection() > 0) {
+					addProductButton.setEnabled(true);
+				} else {
+					addProductButton.setEnabled(false);
+				}
+				selectedProductQuantity = source.getSelection();
+			}
+		});
 		
-		Button addButton = new Button(composite, SWT.NONE);
-		addButton.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
-		addButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		addButton.setText("Agregar");
+		addProductButton = new Button(composite, SWT.NONE);
+		addProductButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				BundleContext ctx = FrameworkUtil.getBundle(ProductSelectionView.class).getBundleContext();
+		        ServiceReference<EventAdmin> ref = ctx.getServiceReference(EventAdmin.class);
+		        EventAdmin eventAdmin = ctx.getService(ref);
+		        
+				Map<String,Object> properties = new HashMap<String, Object>();
+		        properties.put(SalesCommunicationConstants.ADD_PRODUCT_DATA, selectedProduct);
+		        properties.put(SalesCommunicationConstants.ADD_PRODUCT_QUANTITY_DATA, selectedProductQuantity);
+				Event event = new Event(SalesCommunicationConstants.ADD_PRODUCT_EVENT, properties);
+				eventAdmin.sendEvent(event);
+			}
+		});
+		addProductButton.setEnabled(false);
+		addProductButton.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
+		addProductButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		addProductButton.setText("Agregar");
 		
 		Composite composite_2 = new Composite(parent, SWT.NONE);
 		composite_2.setLayout(new GridLayout(1, false));
@@ -136,11 +204,13 @@ public class ProductSelectionView extends ViewPart {
 		composite_3.setLayout(gl_composite_3);
 		
 		Button btnCombo = new Button(composite_3, SWT.NONE);
+		btnCombo.setEnabled(false);
 		btnCombo.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD | SWT.ITALIC));
 		btnCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		btnCombo.setText("Promo 1");
 		
 		Button btnNewButton_2 = new Button(composite_3, SWT.NONE);
+		btnNewButton_2.setEnabled(false);
 		btnNewButton_2.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD | SWT.ITALIC));
 		btnNewButton_2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		btnNewButton_2.setText("Promo 2");
@@ -153,11 +223,13 @@ public class ProductSelectionView extends ViewPart {
 		composite_4.setLayout(gl_composite_4);
 		
 		Button btnPromo = new Button(composite_4, SWT.NONE);
+		btnPromo.setEnabled(false);
 		btnPromo.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD | SWT.ITALIC));
 		btnPromo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		btnPromo.setText("Promo 3");
 		
 		Button btnPromo_1 = new Button(composite_4, SWT.NONE);
+		btnPromo_1.setEnabled(false);
 		btnPromo_1.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD | SWT.ITALIC));
 		btnPromo_1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		btnPromo_1.setText("Promo 4");
@@ -170,11 +242,13 @@ public class ProductSelectionView extends ViewPart {
 		composite_5.setLayout(gl_composite_5);
 		
 		Button btnPromo_2 = new Button(composite_5, SWT.NONE);
+		btnPromo_2.setEnabled(false);
 		btnPromo_2.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD | SWT.ITALIC));
 		btnPromo_2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		btnPromo_2.setText("Promo 5");
 		
 		Button btnPromo_3 = new Button(composite_5, SWT.NONE);
+		btnPromo_3.setEnabled(false);
 		btnPromo_3.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD | SWT.ITALIC));
 		btnPromo_3.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		btnPromo_3.setText("Promo 6");
@@ -187,11 +261,13 @@ public class ProductSelectionView extends ViewPart {
 		composite_6.setLayout(gl_composite_6);
 		
 		Button btnPromo_4 = new Button(composite_6, SWT.NONE);
+		btnPromo_4.setEnabled(false);
 		btnPromo_4.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		btnPromo_4.setText("Promo 7");
 		btnPromo_4.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD | SWT.ITALIC));
 		
 		Button btnPromo_5 = new Button(composite_6, SWT.NONE);
+		btnPromo_5.setEnabled(false);
 		btnPromo_5.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		btnPromo_5.setText("Promo 8");
 		btnPromo_5.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD | SWT.ITALIC));
@@ -208,9 +284,11 @@ public class ProductSelectionView extends ViewPart {
 		lblOtros.setText("Otros");
 		
 		Combo combo_1 = new Combo(composite_7, SWT.NONE);
+		combo_1.setEnabled(false);
 		combo_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Button btnAgregar = new Button(composite_7, SWT.NONE);
+		btnAgregar.setEnabled(false);
 		btnAgregar.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
 		btnAgregar.setText("Agregar");
 		

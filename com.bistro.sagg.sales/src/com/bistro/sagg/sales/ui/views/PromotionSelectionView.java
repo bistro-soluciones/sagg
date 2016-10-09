@@ -78,7 +78,7 @@ public class PromotionSelectionView extends ViewPart {
 
 	public PromotionSelectionView() {
 		super();
-		this.categories = productService.getProductCategories();
+//		this.categories = productService.getProductCategories();
 		this.products = productService.getMarketableProducts();
 	}
 

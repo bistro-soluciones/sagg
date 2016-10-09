@@ -6,7 +6,6 @@ import org.eclipse.ui.IPerspectiveFactory;
 import com.bistro.sagg.sales.ui.views.ProductSelectionView;
 import com.bistro.sagg.sales.ui.views.SalesConfirmationDetailView;
 import com.bistro.sagg.sales.ui.views.SalesDetailView;
-import com.bistro.sagg.sales.ui.views.SalesView;
 
 public class SalesPerspective implements IPerspectiveFactory {
 
