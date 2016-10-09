@@ -2,7 +2,7 @@ package com.bistro.sagg.products.ui.viewers;
 
 import java.math.BigDecimal;
 
-import com.bistro.sagg.core.model.billing.BillingItem;
+import com.bistro.sagg.core.model.order.billing.BillingItem;
 import com.bistro.sagg.core.osgi.ui.viewers.SaggTableLabelProvider;
 import com.bistro.sagg.products.ui.utils.BillingItemColumnIndex;
 

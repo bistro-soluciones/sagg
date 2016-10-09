@@ -30,7 +30,7 @@ public class NewMarketableProductDialog extends Dialog {
 
 	private Text nameText;
 
-	private ProductServices productService = (ProductServices) SaggServiceLocator.getInstance()
+	private ProductServices productServices = (ProductServices) SaggServiceLocator.getInstance()
 			.lookup(ProductServices.class.getName());
 
 	private ProductCategory selectedCategory;
@@ -91,7 +91,7 @@ public class NewMarketableProductDialog extends Dialog {
 		ComboViewer productCategoryComboViewer = new ComboViewer(basicInfoGroup, SWT.NONE);
 		productCategoryComboViewer.setContentProvider(new ProductCategoryComboContentProvider());
 		productCategoryComboViewer.setLabelProvider(new ProductCategoryComboLabelProvider());
-		productCategoryComboViewer.setInput(productService);
+		productCategoryComboViewer.setInput(productServices);
 		Combo productCategoryCombo = productCategoryComboViewer.getCombo();
 		productCategoryCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		productCategoryComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -156,7 +156,7 @@ public class NewMarketableProductDialog extends Dialog {
 
 	@Override
 	protected void okPressed() {
-		productService.createMarketableProduct(nameText.getText(), selectedCategory,
+		productServices.createMarketableProduct(nameText.getText(), selectedCategory,
 				Integer.parseInt(minStockText.getText()), new BigDecimal(unitSalesPriceText.getText()));
 		super.okPressed();
 	}

@@ -29,9 +29,9 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 import com.bistro.sagg.core.builders.BillingItemBuilder;
-import com.bistro.sagg.core.model.billing.BillingItem;
-import com.bistro.sagg.core.model.billing.DocumentType;
 import com.bistro.sagg.core.model.company.FranchiseBranch;
+import com.bistro.sagg.core.model.order.billing.BillingItem;
+import com.bistro.sagg.core.model.order.billing.DocumentType;
 import com.bistro.sagg.core.model.products.Product;
 import com.bistro.sagg.core.model.products.ProductCategory;
 import com.bistro.sagg.core.model.suppliers.Supplier;
@@ -44,12 +44,12 @@ import com.bistro.sagg.core.services.SupplierServices;
 import com.bistro.sagg.products.ui.viewers.BillilngDocumentTypeComboLabelProvider;
 import com.bistro.sagg.products.ui.viewers.BillingDocumentTypeComboContentProvider;
 import com.bistro.sagg.products.ui.viewers.BillingItemListLabelProvider;
-import com.bistro.sagg.products.ui.viewers.ProductCategoryComboContentProvider;
 import com.bistro.sagg.products.ui.viewers.ProductCategoryComboLabelProvider;
 import com.bistro.sagg.products.ui.viewers.ProductComboContentProvider;
 import com.bistro.sagg.products.ui.viewers.ProductComboLabelProvider;
 import com.bistro.sagg.products.ui.viewers.SupplierComboContentProvider;
 import com.bistro.sagg.products.ui.viewers.SupplierComboLabelProvider;
+import com.bistro.sagg.products.ui.viewers.SupplierProductCategoryComboContentProvider;
 
 public class InventoryLoadingDialog extends Dialog {
 	
@@ -191,7 +191,7 @@ public class InventoryLoadingDialog extends Dialog {
 		productComposite.setLayoutData(gd_productComposite);
 		
 		ComboViewer productCategoryComboViewer = new ComboViewer(productComposite, SWT.NONE);
-		productCategoryComboViewer.setContentProvider(new ProductCategoryComboContentProvider());
+		productCategoryComboViewer.setContentProvider(new SupplierProductCategoryComboContentProvider());
 		productCategoryComboViewer.setLabelProvider(new ProductCategoryComboLabelProvider());
 		productCategoryComboViewer.setInput(selectedSupplier);
 		productCategoryCombo = productCategoryComboViewer.getCombo();
@@ -415,9 +415,9 @@ public class InventoryLoadingDialog extends Dialog {
 
 	@Override
 	protected void okPressed() {
-		billingServices.createBillingDocument(selectedBillingDocumentType, billingNumberText.getText(),
-				selectedSupplier, items, franchiseBranch);
-		productServices.increaseProductStock(items);
+//		billingServices.createBillingDocument(selectedBillingDocumentType, billingNumberText.getText(),
+//				selectedSupplier, items, franchiseBranch);
+//		productServices.increaseProductStock(items);
 		super.okPressed();
 	}
 	
