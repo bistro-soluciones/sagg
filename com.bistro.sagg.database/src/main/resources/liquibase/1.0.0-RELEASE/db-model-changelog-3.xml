@@ -119,5 +119,11 @@
             </column>
     	</addColumn>
     </changeSet>
+    
+    <changeSet id="11" author="sebastian.lavie">
+    	<addColumn tableName="sale_order_items">
+            <column name="amount" type="currency" afterColumn="quantity"/>
+    	</addColumn>
+    </changeSet>
         
 </databaseChangeLog>

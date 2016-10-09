@@ -60,6 +60,11 @@ ALTER TABLE billing_documents ADD payment_method_id BIGINT NOT NULL AFTER `docum
 
 INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('10', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-3.xml', NOW(), 46, '7:19a75502f38e58d3bc6b98e8276585f6', 'addColumn tableName=billing_documents', '', 'EXECUTED', NULL, NULL, '3.5.1', '5957578635');
 
+--  Changeset src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-3.xml::11::sebastian.lavie
+ALTER TABLE sale_order_items ADD amount DECIMAL NULL AFTER `quantity`;
+
+INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('11', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-3.xml', NOW(), 47, '7:fc0c6f84cafc90a1f9af21758fc3e495', 'addColumn tableName=sale_order_items', '', 'EXECUTED', NULL, NULL, '3.5.1', '6035213417');
+
 --  Release Database Lock
 UPDATE DATABASECHANGELOGLOCK SET LOCKED = 0, LOCKEDBY = NULL, LOCKGRANTED = NULL WHERE ID = 1;
 
