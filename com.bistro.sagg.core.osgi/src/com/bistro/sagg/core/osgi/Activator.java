@@ -4,6 +4,10 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import com.bistro.sagg.core.model.company.FranchiseBranch;
+import com.bistro.sagg.core.services.FranchiseServices;
+import com.bistro.sagg.core.services.SaggServiceLocator;
+import com.bistro.sagg.core.session.SaggSession;
 import com.bistro.sagg.core.spring.SaggApplicationContextInitializer;
 
 /**
@@ -16,6 +20,11 @@ public class Activator extends AbstractUIPlugin {
 
 	// The shared instance
 	private static Activator plugin;
+	
+//	private FranchiseServices franchiseService = (FranchiseServices) SaggServiceLocator.getInstance()
+//			.lookup(FranchiseServices.class.getName());
+//	private RefdataServices refdataService = (RefdataServices) SaggServiceLocator.getInstance()
+//			.lookup(RefdataServices.class.getName());
 	
 	/**
 	 * The constructor
@@ -30,7 +39,14 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		SaggApplicationContextInitializer.start();
+		initializeSaggSession();
 		plugin = this;
+	}
+
+	private void initializeSaggSession() {
+		FranchiseServices franchiseService = (FranchiseServices) SaggServiceLocator.getInstance()
+				.lookup(FranchiseServices.class.getName());
+		SaggSession.getCurrentSession().addSessionObject(FranchiseBranch.class.getName(), franchiseService.getById(1L));
 	}
 
 	/*
