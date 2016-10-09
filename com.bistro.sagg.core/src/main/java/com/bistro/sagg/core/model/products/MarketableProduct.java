@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 
 @Entity
 @DiscriminatorValue("MARKETABLE_PRODUCT")
-public class MarketableProduct extends Product {
+public class MarketableProduct extends Product implements SalableProduct {
 
 	@Column(name = "UNIT_SALES_PRICE")
 	private BigDecimal unitSalesPrice;

@@ -39,8 +39,8 @@ public class ProductServicesImpl implements ProductServices {
 		productCategoryRepository.save(category);
 	}
 
-	public List<ProductCategory> getProductCategories() {
-		return (List<ProductCategory>) productCategoryRepository.findAll();
+	public List<ProductCategory> getProductCategories(FranchiseBranch branch) {
+		return (List<ProductCategory>) productCategoryRepository.findByBranch(branch);
 	}
 
 	public void createSupply(String name, ProductCategory category, int minStock) {

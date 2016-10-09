@@ -3,6 +3,7 @@ package com.bistro.sagg.core.services;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.model.order.billing.BillingItem;
 import com.bistro.sagg.core.model.products.MarketableProduct;
 import com.bistro.sagg.core.model.products.Product;
@@ -13,7 +14,7 @@ public interface ProductServices extends ISaggService {
 
 	void createCategory(String name);
 
-	List<ProductCategory> getProductCategories();
+	List<ProductCategory> getProductCategories(FranchiseBranch branch);
 
 	void createSupply(String name, ProductCategory category, int minStock);
 
