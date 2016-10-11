@@ -1,13 +1,18 @@
 package com.bistro.sagg.core.osgi;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import com.bistro.sagg.core.model.company.FranchiseBranch;
+import com.bistro.sagg.core.services.EmployeeServices;
 import com.bistro.sagg.core.services.FranchiseServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.core.session.SaggSession;
+import com.bistro.sagg.core.session.SaggSessionConstants;
 import com.bistro.sagg.core.spring.SaggApplicationContextInitializer;
 
 /**
@@ -46,7 +51,14 @@ public class Activator extends AbstractUIPlugin {
 	private void initializeSaggSession() {
 		FranchiseServices franchiseService = (FranchiseServices) SaggServiceLocator.getInstance()
 				.lookup(FranchiseServices.class.getName());
-		SaggSession.getCurrentSession().addSessionObject(FranchiseBranch.class.getName(), franchiseService.getById(1L));
+		EmployeeServices employeeService = (EmployeeServices) SaggServiceLocator.getInstance()
+				.lookup(EmployeeServices.class.getName());
+		// TODO Get correct session objects
+		SaggSession.getCurrentSession().addSessionObject(SaggSessionConstants.CURRENT_FRANCHISE_BANCH, franchiseService.getById(1L));
+		SaggSession.getCurrentSession().addSessionObject(SaggSessionConstants.ACTIVE_USER, employeeService.getById(1L));
+		SimpleDateFormat formatter = new SimpleDateFormat("EEEE d 'de' MMMM 'de' yyyy HH:mm", new Locale("es","CL"));
+		SaggSession.getCurrentSession().addSessionObject(SaggSessionConstants.DATE_FORMATTER, formatter);
+		SaggSession.getCurrentSession().addSessionObject(SaggSessionConstants.CURRENCY, "CLP");
 	}
 
 	/*
