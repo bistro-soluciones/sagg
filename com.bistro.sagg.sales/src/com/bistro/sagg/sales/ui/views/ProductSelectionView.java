@@ -1,7 +1,9 @@
 package com.bistro.sagg.sales.ui.views;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +38,8 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
 
 import com.bistro.sagg.core.model.products.MarketableProduct;
 import com.bistro.sagg.core.model.products.Product;
@@ -73,6 +77,7 @@ public class ProductSelectionView extends ViewPart {
 	 */
 	public static final String ID = "com.bistro.sagg.sales.ui.views.ProductSelectionView";
 
+	private Combo productCategoryCombo;
 	private ListViewer productListViewer;
 	private org.eclipse.swt.widgets.List productList;
 	private Spinner productQuantitySpinner;
@@ -85,11 +90,18 @@ public class ProductSelectionView extends ViewPart {
 	private List<MarketableProduct> products = new ArrayList<MarketableProduct>();
 	private Product selectedProduct;
 	private int selectedProductQuantity;
+	
+    private BundleContext bundleContext;
+	private EventAdmin eventAdmin;
 
 	public ProductSelectionView() {
 		super();
 //		this.categories = productService.getProductCategories();
 		this.products = productServices.getMarketableProducts();
+		
+		this.bundleContext = FrameworkUtil.getBundle(ProductSelectionView.class).getBundleContext();
+        ServiceReference<EventAdmin> ref = bundleContext.getServiceReference(EventAdmin.class);
+        this.eventAdmin = bundleContext.getService(ref);
 	}
 
 	/**
@@ -99,6 +111,9 @@ public class ProductSelectionView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
+		createConfirmSaleOrderEventHandler(parent);
+		createResetViewEventHandler(parent);
+	    
 		Composite composite_1 = new Composite(parent, SWT.NONE);
 		composite_1.setLayout(new GridLayout(2, false));
 		
@@ -109,7 +124,7 @@ public class ProductSelectionView extends ViewPart {
 		productCategoryComboViewer.setContentProvider(new ProductCategoryComboContentProvider());
 		productCategoryComboViewer.setLabelProvider(new ProductCategoryComboLabelProvider());
 		productCategoryComboViewer.setInput(productServices);
-		Combo productCategoryCombo = productCategoryComboViewer.getCombo();
+		productCategoryCombo = productCategoryComboViewer.getCombo();
 		productCategoryCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		productCategoryComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
@@ -177,10 +192,6 @@ public class ProductSelectionView extends ViewPart {
 		addProductButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				BundleContext ctx = FrameworkUtil.getBundle(ProductSelectionView.class).getBundleContext();
-		        ServiceReference<EventAdmin> ref = ctx.getServiceReference(EventAdmin.class);
-		        EventAdmin eventAdmin = ctx.getService(ref);
-		        
 				Map<String,Object> properties = new HashMap<String, Object>();
 		        properties.put(SalesCommunicationConstants.ADD_PRODUCT_DATA, selectedProduct);
 		        properties.put(SalesCommunicationConstants.ADD_PRODUCT_QUANTITY_DATA, selectedProductQuantity);
@@ -296,6 +307,57 @@ public class ProductSelectionView extends ViewPart {
 		hookContextMenu();
 		hookDoubleClickAction();
 		contributeToActionBars();
+	}
+
+	private void createConfirmSaleOrderEventHandler(Composite parent) {
+		EventHandler handler = new EventHandler() {
+			public void handleEvent(final Event event) {
+				if (parent.getDisplay().getThread() == Thread.currentThread()) {
+					productQuantitySpinner.setEnabled(false);
+					addProductButton.setEnabled(false);
+					resetDefaultValues();
+				} else {
+					parent.getDisplay().syncExec(new Runnable() {
+						public void run() {
+							productQuantitySpinner.setEnabled(false);
+							addProductButton.setEnabled(false);
+							resetDefaultValues();
+						}
+					});
+				}
+			}
+	    };
+	    Dictionary<String,String> properties = new Hashtable<String, String>();
+	    properties.put(EventConstants.EVENT_TOPIC, SalesCommunicationConstants.CONFIRM_SALE_ORDER_EVENT);
+	    bundleContext.registerService(EventHandler.class, handler, properties);
+	}
+	
+	private void createResetViewEventHandler(Composite parent) {
+		EventHandler handler = new EventHandler() {
+			public void handleEvent(final Event event) {
+				if (parent.getDisplay().getThread() == Thread.currentThread()) {
+					resetDefaultValues();
+				} else {
+					parent.getDisplay().syncExec(new Runnable() {
+						public void run() {
+							resetDefaultValues();
+						}
+					});
+				}
+			}
+	    };
+	    Dictionary<String,String> properties = new Hashtable<String, String>();
+	    properties.put(EventConstants.EVENT_TOPIC, SalesCommunicationConstants.RESET_SALE_ORDER_EVENT);
+	    bundleContext.registerService(EventHandler.class, handler, properties);
+	}
+	
+	protected void resetDefaultValues() {
+		productCategoryCombo.setText("");
+		productList.removeAll();
+		selectedProduct = null;
+		productQuantitySpinner.setSelection(0);
+//		productQuantitySpinner.setEnabled(false);
+//		addProductButton.setEnabled(false);
 	}
 
 	private void fillProductCategories(Composite productCategoriesComposite) {

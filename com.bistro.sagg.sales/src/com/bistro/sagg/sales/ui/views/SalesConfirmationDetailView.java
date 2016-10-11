@@ -1,43 +1,58 @@
 package com.bistro.sagg.sales.ui.views;
 
-import org.eclipse.jface.action.Action;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
+
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.ViewPart;
-
-import com.bistro.sagg.core.services.EmployeeServices;
-import com.bistro.sagg.core.services.SaggServiceLocator;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.part.ViewPart;
 import org.eclipse.wb.swt.SWTResourceManager;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
+
+import com.bistro.sagg.core.model.company.employees.Employee;
+import com.bistro.sagg.core.model.order.SaleOrder;
+import com.bistro.sagg.core.model.order.billing.BillingDocument;
+import com.bistro.sagg.core.model.order.billing.DocumentType;
+import com.bistro.sagg.core.model.order.payment.PaymentMethod;
+import com.bistro.sagg.core.services.BillingServices;
+import com.bistro.sagg.core.services.OrderServices;
+import com.bistro.sagg.core.services.SaggServiceLocator;
+import com.bistro.sagg.core.session.SaggSession;
+import com.bistro.sagg.core.session.SaggSessionConstants;
+import com.bistro.sagg.core.util.TransactionUtils;
+import com.bistro.sagg.sales.ui.utils.SalesCommunicationConstants;
+import com.bistro.sagg.sales.ui.viewers.BillilngDocumentTypeComboLabelProvider;
+import com.bistro.sagg.sales.ui.viewers.BillingDocumentTypeComboContentProvider;
+import com.bistro.sagg.sales.ui.viewers.PaymentMethodComboContentProvider;
+import com.bistro.sagg.sales.ui.viewers.PaymentMethodComboLabelProvider;
 
 /**
  * This sample class demonstrates how to plug-in a new
@@ -63,14 +78,47 @@ public class SalesConfirmationDetailView extends ViewPart {
 	 * The ID of the view as specified by the extension.
 	 */
 	public static final String ID = "com.bistro.sagg.sales.ui.views.SalesConfirmationDetailView";
-	private Text text;
-	private Text text_2;
-	private Text text_3;
-	private Text text_1;
+	
+	private Text orderNumberText;
+	private Text orderDateText;
+	private Text sellerText;
+	private Text couponNumberText;
+	private Text cashAmountText;
+	private Combo documentTypeCombo;
+	private Combo couponCombo;
+//	private Combo cardTypeCombo;
+	private Combo saleTypeCombo;
+	private Button calculateCashReturnAmountButton;
+	private Button cancelTransactionButton;
+	private Button confirmTransactionButton;
+	private Label subtotalAmountTextLabel;
+	private Label discountsAmountTextLabel;
+	private Label totalDiscountsAmountTextLabel;
+	private Label promotionsAmountTextLabel;
+	private Label totalAmountTextLabel;
+	private Label cashAmountTextLabel;
+	private Label cashReturnAmountTextLabel;
 
+	private BillingServices billingServices = (BillingServices) SaggServiceLocator.getInstance()
+			.lookup(BillingServices.class.getName());
+	private OrderServices orderServices = (OrderServices) SaggServiceLocator.getInstance()
+			.lookup(OrderServices.class.getName());
+//	private EmployeeServices employeeServices = (EmployeeServices) SaggServiceLocator.getInstance()
+//			.lookup(EmployeeServices.class.getName());
+	
+	private SaleOrder order;
+	private BigDecimal subtotalAmount = BigDecimal.ZERO;
+	private PaymentMethod selectedPaymentMethod;
+	private DocumentType selectedDocumentType;
+	
+	private BundleContext bundleContext;
+	private EventAdmin eventAdmin;
 
 	public SalesConfirmationDetailView() {
 		super();
+		this.bundleContext = FrameworkUtil.getBundle(ProductSelectionView.class).getBundleContext();
+        ServiceReference<EventAdmin> ref = bundleContext.getServiceReference(EventAdmin.class);
+        this.eventAdmin = bundleContext.getService(ref);
 	}
 
 	/**
@@ -80,43 +128,72 @@ public class SalesConfirmationDetailView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new GridLayout(1, false));
 		
+	    createConfirmSaleOrderEventHandler(parent);
+	    
 		Composite paymentDetailComposite = new Composite(parent, SWT.NONE);
 		paymentDetailComposite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, true, 1, 1));
 		paymentDetailComposite.setLayout(new GridLayout(2, false));
 		
-		Label lblNmero = new Label(paymentDetailComposite, SWT.NONE);
-		lblNmero.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblNmero.setText("N\u00FAmero");
+		Label orderNumberLabel = new Label(paymentDetailComposite, SWT.NONE);
+		orderNumberLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		orderNumberLabel.setText("N\u00FAmero");
 		
-		text = new Text(paymentDetailComposite, SWT.BORDER);
-		text.setEditable(false);
-		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		orderNumberText = new Text(paymentDetailComposite, SWT.BORDER | SWT.RIGHT);
+		orderNumberText.setEditable(false);
+		orderNumberText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		Label lblFecha = new Label(paymentDetailComposite, SWT.NONE);
-		lblFecha.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblFecha.setText("Fecha");
+		Label documentTypeLabel = new Label(paymentDetailComposite, SWT.NONE);
+		documentTypeLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		documentTypeLabel.setText("Tipo de Documento");
 		
-		text_2 = new Text(paymentDetailComposite, SWT.BORDER);
-		text_2.setEditable(false);
-		text_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		ComboViewer documentTypeComboViewer = new ComboViewer(paymentDetailComposite, SWT.NONE);
+		documentTypeComboViewer.setContentProvider(new BillingDocumentTypeComboContentProvider());
+		documentTypeComboViewer.setLabelProvider(new BillilngDocumentTypeComboLabelProvider());
+		documentTypeComboViewer.setInput(billingServices);
+		documentTypeCombo = documentTypeComboViewer.getCombo();
+		documentTypeCombo.setEnabled(false);
+		documentTypeCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		documentTypeComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				selectedDocumentType = (DocumentType) ((StructuredSelection) event.getSelection()).getFirstElement();
+			}
+		});
 		
-		Label lblVendedor = new Label(paymentDetailComposite, SWT.NONE);
-		lblVendedor.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblVendedor.setText("Vendedor");
+		Label orderDateLabel = new Label(paymentDetailComposite, SWT.NONE);
+		orderDateLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		orderDateLabel.setText("Fecha");
 		
-		Combo combo = new Combo(paymentDetailComposite, SWT.NONE);
-		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		orderDateText = new Text(paymentDetailComposite, SWT.BORDER | SWT.RIGHT);
+		orderDateText.setEditable(false);
+		orderDateText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		Label lblDescuento = new Label(paymentDetailComposite, SWT.NONE);
-		lblDescuento.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblDescuento.setText("Cup\u00F3n de Descuento");
+		Label sellerLabel = new Label(paymentDetailComposite, SWT.NONE);
+		sellerLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		sellerLabel.setText("Vendedor");
 		
-		Combo combo_3 = new Combo(paymentDetailComposite, SWT.NONE);
-		combo_3.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		sellerText = new Text(paymentDetailComposite, SWT.BORDER | SWT.RIGHT);
+		sellerText.setEditable(false);
+		sellerText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		Label lblCupnDeDescuento = new Label(paymentDetailComposite, SWT.NONE);
-		lblCupnDeDescuento.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblCupnDeDescuento.setText("N\u00FAmero de Cup\u00F3n");
+//		ComboViewer sellerComboViewer = new ComboViewer(paymentDetailComposite, SWT.NONE);
+//		sellerComboViewer.setContentProvider(new EmployeeComboContentProvider());
+//		sellerComboViewer.setLabelProvider(new EmployeeComboLabelProvider());
+//		sellerComboViewer.setInput(employeeServices);
+//		Combo sellerCombo = sellerComboViewer.getCombo();
+//		sellerCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		Label couponLabel = new Label(paymentDetailComposite, SWT.NONE);
+		couponLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		couponLabel.setText("Cup\u00F3n de Descuento");
+		
+		couponCombo = new Combo(paymentDetailComposite, SWT.NONE);
+		couponCombo.setEnabled(false);
+		couponCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		Label couponNumberLabel = new Label(paymentDetailComposite, SWT.NONE);
+		couponNumberLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		couponNumberLabel.setText("N\u00FAmero de Cup\u00F3n");
 		
 		Composite composite_2 = new Composite(paymentDetailComposite, SWT.NONE);
 		composite_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
@@ -125,33 +202,54 @@ public class SalesConfirmationDetailView extends ViewPart {
 		gl_composite_2.marginHeight = 0;
 		composite_2.setLayout(gl_composite_2);
 		
-		text_3 = new Text(composite_2, SWT.BORDER);
-		text_3.setEditable(false);
-		text_3.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		couponNumberText = new Text(composite_2, SWT.BORDER | SWT.RIGHT);
+		couponNumberText.setEditable(false);
+		couponNumberText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		Button btnAplicar = new Button(composite_2, SWT.NONE);
-		btnAplicar.setEnabled(false);
-		btnAplicar.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.BOLD));
-		btnAplicar.setText("Aplicar");
+		Button applyCouponButton = new Button(composite_2, SWT.NONE);
+		applyCouponButton.setEnabled(false);
+		applyCouponButton.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.BOLD));
+		applyCouponButton.setText("Aplicar");
 		
-		Label lblTipoDeVenta = new Label(paymentDetailComposite, SWT.NONE);
-		lblTipoDeVenta.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblTipoDeVenta.setText("Tipo de Venta");
+		Label saleTypeLabel = new Label(paymentDetailComposite, SWT.NONE);
+		saleTypeLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		saleTypeLabel.setText("Tipo de Venta");
 		
-		Combo combo_1 = new Combo(paymentDetailComposite, SWT.NONE);
-		combo_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		ComboViewer saleTypeComboViewer = new ComboViewer(paymentDetailComposite, SWT.NONE);
+		saleTypeComboViewer.setContentProvider(new PaymentMethodComboContentProvider());
+		saleTypeComboViewer.setLabelProvider(new PaymentMethodComboLabelProvider());
+		saleTypeComboViewer.setInput(billingServices);
+		saleTypeCombo = saleTypeComboViewer.getCombo();
+		saleTypeCombo.setEnabled(false);
+		saleTypeCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		saleTypeComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				selectedPaymentMethod = (PaymentMethod) ((StructuredSelection) event.getSelection()).getFirstElement();
+				if(selectedPaymentMethod.isCashPayment()) {
+					cashAmountText.setEditable(true);
+					calculateCashReturnAmountButton.setEnabled(true);
+//					cardTypeCombo.setEnabled(false);
+				}
+				if(selectedPaymentMethod.isCreditCardPayment() || selectedPaymentMethod.isDebitCardPayment()) {
+					cashAmountText.setEditable(false);
+					calculateCashReturnAmountButton.setEnabled(false);
+//					cardTypeCombo.setEnabled(true);
+				}
+			}
+		});
 		
-		Label lblTarjeta = new Label(paymentDetailComposite, SWT.NONE);
-		lblTarjeta.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblTarjeta.setText("Tarjeta");
+//		Label cardTypeLabel = new Label(paymentDetailComposite, SWT.NONE);
+//		cardTypeLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+//		cardTypeLabel.setText("Tarjeta");
+//		
+//		cardTypeCombo = new Combo(paymentDetailComposite, SWT.NONE);
+//		cardTypeCombo.setEnabled(false);
+//		cardTypeCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		Combo combo_2 = new Combo(paymentDetailComposite, SWT.NONE);
-		combo_2.setEnabled(false);
-		combo_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
-		Label lblEfectivo = new Label(paymentDetailComposite, SWT.NONE);
-		lblEfectivo.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblEfectivo.setText("Efectivo");
+		Label cashAmountLabel = new Label(paymentDetailComposite, SWT.NONE);
+		cashAmountLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		cashAmountLabel.setText("Efectivo");
 		
 		Composite composite_1 = new Composite(paymentDetailComposite, SWT.NONE);
 		composite_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
@@ -160,14 +258,27 @@ public class SalesConfirmationDetailView extends ViewPart {
 		gl_composite_1.marginWidth = 0;
 		composite_1.setLayout(gl_composite_1);
 		
-		text_1 = new Text(composite_1, SWT.BORDER);
-		text_1.setEditable(false);
-		text_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		cashAmountText = new Text(composite_1, SWT.BORDER | SWT.RIGHT);
+		cashAmountText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				cashAmountTextLabel.setText(cashAmountText.getText());
+			}
+		});
+		cashAmountText.setEditable(false);
+		cashAmountText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		Button btnCalcularVuelto = new Button(composite_1, SWT.NONE);
-		btnCalcularVuelto.setEnabled(false);
-		btnCalcularVuelto.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.BOLD));
-		btnCalcularVuelto.setText("Calcular Vuelto");
+		calculateCashReturnAmountButton = new Button(composite_1, SWT.NONE);
+		calculateCashReturnAmountButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				BigDecimal cashAmount = new BigDecimal(cashAmountText.getText());
+				BigDecimal cashReturnAmount = cashAmount.subtract(subtotalAmount);
+				cashReturnAmountTextLabel.setText(cashReturnAmount.toString());
+			}
+		});
+		calculateCashReturnAmountButton.setEnabled(false);
+		calculateCashReturnAmountButton.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.BOLD));
+		calculateCashReturnAmountButton.setText("Calcular Vuelto");
 		
 		Composite composite = new Composite(parent, SWT.NONE);
 		GridData gd_composite = new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1);
@@ -175,75 +286,189 @@ public class SalesConfirmationDetailView extends ViewPart {
 		composite.setLayoutData(gd_composite);
 		composite.setLayout(null);
 		
-		Label lblSubtotal = new Label(composite, SWT.RIGHT);
-		lblSubtotal.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
-		lblSubtotal.setBounds(-19, 0, 155, 20);
-		lblSubtotal.setText("Subtotal");
+		Label subtotalLabel = new Label(composite, SWT.RIGHT);
+		subtotalLabel.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
+		subtotalLabel.setBounds(-19, 0, 155, 20);
+		subtotalLabel.setText("Subtotal");
 		
-		Label lblDescuentos = new Label(composite, SWT.RIGHT);
-		lblDescuentos.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
-		lblDescuentos.setBounds(-19, 26, 155, 20);
-		lblDescuentos.setText("Promociones");
+		Label promotionsLabel = new Label(composite, SWT.RIGHT);
+		promotionsLabel.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
+		promotionsLabel.setBounds(-19, 26, 155, 20);
+		promotionsLabel.setText("Promociones");
 		
-		Label lblTotal = new Label(composite, SWT.RIGHT);
-		lblTotal.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
-		lblTotal.setBounds(-19, 78, 155, 20);
-		lblTotal.setText("Total Descuentos");
+		Label totalDiscountsLabel = new Label(composite, SWT.RIGHT);
+		totalDiscountsLabel.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
+		totalDiscountsLabel.setBounds(-19, 78, 155, 20);
+		totalDiscountsLabel.setText("Total Descuentos");
 		
-		Label label = new Label(composite, SWT.RIGHT);
-		label.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
-		label.setBounds(140, 0, 100, 20);
-		label.setText("0");
+		subtotalAmountTextLabel = new Label(composite, SWT.RIGHT);
+		subtotalAmountTextLabel.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
+		subtotalAmountTextLabel.setBounds(140, 0, 100, 20);
+		subtotalAmountTextLabel.setText("0");
 		
-		Label label_1 = new Label(composite, SWT.RIGHT);
-		label_1.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
-		label_1.setText("0");
-		label_1.setBounds(140, 26, 100, 20);
+		promotionsAmountTextLabel= new Label(composite, SWT.RIGHT);
+		promotionsAmountTextLabel.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
+		promotionsAmountTextLabel.setText("0");
+		promotionsAmountTextLabel.setBounds(140, 26, 100, 20);
 		
-		Label label_2 = new Label(composite, SWT.RIGHT);
-		label_2.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
-		label_2.setText("0");
-		label_2.setBounds(140, 52, 100, 20);
+		discountsAmountTextLabel = new Label(composite, SWT.RIGHT);
+		discountsAmountTextLabel.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
+		discountsAmountTextLabel.setText("0");
+		discountsAmountTextLabel.setBounds(140, 52, 100, 20);
 		
-		Label lblCambio = new Label(composite, SWT.RIGHT);
-		lblCambio.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
-		lblCambio.setBounds(-19, 52, 155, 20);
-		lblCambio.setText("Descuentos");
+		Label discountsLabel = new Label(composite, SWT.RIGHT);
+		discountsLabel.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
+		discountsLabel.setBounds(-19, 52, 155, 20);
+		discountsLabel.setText("Descuentos");
 		
-		Label label_3 = new Label(composite, SWT.RIGHT);
-		label_3.setText("0");
-		label_3.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
-		label_3.setBounds(140, 78, 100, 20);
+		totalDiscountsAmountTextLabel= new Label(composite, SWT.RIGHT);
+		totalDiscountsAmountTextLabel.setText("0");
+		totalDiscountsAmountTextLabel.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
+		totalDiscountsAmountTextLabel.setBounds(140, 78, 100, 20);
 		
-		Label label_4 = new Label(composite, SWT.RIGHT);
-		label_4.setText("0");
-		label_4.setFont(SWTResourceManager.getFont("Segoe UI", 13, SWT.BOLD));
-		label_4.setBounds(140, 104, 100, 30);
+		totalAmountTextLabel= new Label(composite, SWT.RIGHT);
+		totalAmountTextLabel.setText("0");
+		totalAmountTextLabel.setFont(SWTResourceManager.getFont("Segoe UI", 13, SWT.BOLD));
+		totalAmountTextLabel.setBounds(140, 104, 100, 30);
 		
-		Label lblTotal_1 = new Label(composite, SWT.RIGHT);
-		lblTotal_1.setText("Vuelto");
-		lblTotal_1.setFont(SWTResourceManager.getFont("Segoe UI", 12, SWT.BOLD));
-		lblTotal_1.setBounds(-19, 134, 155, 30);
+		Label cashLabel = new Label(composite, SWT.RIGHT);
+		cashLabel.setText("Efectivo");
+		cashLabel.setFont(SWTResourceManager.getFont("Segoe UI", 12, SWT.BOLD));
+		cashLabel.setBounds(-19, 134, 155, 30);
 		
-		Label label_5 = new Label(composite, SWT.RIGHT);
-		label_5.setText("Total");
-		label_5.setFont(SWTResourceManager.getFont("Segoe UI", 13, SWT.BOLD));
-		label_5.setBounds(-19, 104, 155, 30);
+		Label cashReturnLabel = new Label(composite, SWT.RIGHT);
+		cashReturnLabel.setText("Vuelto");
+		cashReturnLabel.setFont(SWTResourceManager.getFont("Segoe UI", 12, SWT.BOLD));
+		cashReturnLabel.setBounds(-19, 162, 155, 30);
 		
-		Label label_6 = new Label(composite, SWT.RIGHT);
-		label_6.setText("0");
-		label_6.setFont(SWTResourceManager.getFont("Segoe UI", 12, SWT.BOLD));
-		label_6.setBounds(140, 134, 100, 30);
+		Label totalLabel = new Label(composite, SWT.RIGHT);
+		totalLabel.setText("Total");
+		totalLabel.setFont(SWTResourceManager.getFont("Segoe UI", 13, SWT.BOLD));
+		totalLabel.setBounds(-19, 104, 155, 30);
 		
-		Button btnNewButton = new Button(parent, SWT.NONE);
-		btnNewButton.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD));
-		btnNewButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		btnNewButton.setText("Confirmar Venta");
+		cashAmountTextLabel= new Label(composite, SWT.RIGHT);
+		cashAmountTextLabel.setText("0");
+		cashAmountTextLabel.setFont(SWTResourceManager.getFont("Segoe UI", 12, SWT.BOLD));
+		cashAmountTextLabel.setBounds(140, 134, 100, 30);
+		
+		cashReturnAmountTextLabel = new Label(composite, SWT.RIGHT);
+		cashReturnAmountTextLabel.setText("0");
+		cashReturnAmountTextLabel.setFont(SWTResourceManager.getFont("Segoe UI", 12, SWT.BOLD));
+		cashReturnAmountTextLabel.setBounds(140, 162, 100, 30);
+		
+		Composite composite_3 = new Composite(parent, SWT.NONE);
+		GridLayout gl_composite_3 = new GridLayout(2, false);
+		gl_composite_3.marginHeight = 0;
+		gl_composite_3.marginWidth = 0;
+		composite_3.setLayout(gl_composite_3);
+		composite_3.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		
+		cancelTransactionButton = new Button(composite_3, SWT.NONE);
+		cancelTransactionButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				orderServices.cancelSaleOrder(order);
+				resetDefaultValues();
+				Event event = new Event(SalesCommunicationConstants.RESET_SALE_ORDER_EVENT, new HashMap<String, Object>());
+				eventAdmin.sendEvent(event);
+			}
+		});
+		cancelTransactionButton.setEnabled(false);
+		cancelTransactionButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		cancelTransactionButton.setText("Cancelar Venta");
+		cancelTransactionButton.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD));
+		
+		confirmTransactionButton = new Button(composite_3, SWT.NONE);
+		confirmTransactionButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				BillingDocument document = billingServices.createBillingDocument(order, selectedDocumentType, selectedPaymentMethod);
+				order.setDocument(document);
+				orderServices.deliverSaleOrder(order);
+				resetDefaultValues();
+				Event event = new Event(SalesCommunicationConstants.RESET_SALE_ORDER_EVENT, new HashMap<String, Object>());
+				eventAdmin.sendEvent(event);
+			}
+		});
+		confirmTransactionButton.setEnabled(false);
+		confirmTransactionButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		confirmTransactionButton.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD));
+		confirmTransactionButton.setText("Confirmar Venta");
 		
 		makeActions();
 		hookContextMenu();
 		hookDoubleClickAction();
 		contributeToActionBars();
+	}
+
+	private void createConfirmSaleOrderEventHandler(Composite parent) {
+		EventHandler handler = new EventHandler() {
+			public void handleEvent(final Event event) {
+				order = (SaleOrder) event.getProperty(SalesCommunicationConstants.SALE_ORDER_DATA);
+				SimpleDateFormat formatter = SaggSession.getCurrentSession().getSessionObject(SaggSessionConstants.DATE_FORMATTER);
+				Employee seller = SaggSession.getCurrentSession().getSessionObject(SaggSessionConstants.ACTIVE_USER);
+				subtotalAmount = TransactionUtils.addItemAmounts(order.getItems());
+				if (parent.getDisplay().getThread() == Thread.currentThread()) {
+					orderNumberText.setText(order.getOrderNumber());
+					orderDateText.setText(formatter.format(order.getDate()));
+					sellerText.setText(seller.getFullName());
+					subtotalAmountTextLabel.setText(subtotalAmount.toString());
+					totalAmountTextLabel.setText(subtotalAmount.toString());
+					documentTypeCombo.setEnabled(true);
+					saleTypeCombo.setEnabled(true);
+					cancelTransactionButton.setEnabled(true);
+					confirmTransactionButton.setEnabled(true);
+				} else {
+					parent.getDisplay().syncExec(new Runnable() {
+						public void run() {
+							orderNumberText.setText(order.getOrderNumber());
+							orderDateText.setText(formatter.format(order.getDate()));
+							sellerText.setText(seller.getFullName());
+							subtotalAmountTextLabel.setText(subtotalAmount.toString());
+							totalAmountTextLabel.setText(subtotalAmount.toString());
+							documentTypeCombo.setEnabled(true);
+							saleTypeCombo.setEnabled(true);
+							cancelTransactionButton.setEnabled(true);
+							confirmTransactionButton.setEnabled(true);
+						}
+					});
+				}
+			}
+	    };
+	    Dictionary<String,String> properties = new Hashtable<String, String>();
+	    properties.put(EventConstants.EVENT_TOPIC, SalesCommunicationConstants.CONFIRM_SALE_ORDER_EVENT);
+	    bundleContext.registerService(EventHandler.class, handler, properties);
+	}
+
+	protected void resetDefaultValues() {
+		orderNumberText.setText("");
+		documentTypeCombo.setText("");
+		documentTypeCombo.setEnabled(false);
+		orderDateText.setText("");
+		sellerText.setText("");
+		couponCombo.redraw();
+		couponNumberText.setText("");
+		saleTypeCombo.setText("");
+		saleTypeCombo.setEnabled(false);
+		cashAmountText.setText("");
+		cashAmountText.setEditable(false);
+		calculateCashReturnAmountButton.setEnabled(false);
+		
+		subtotalAmountTextLabel.setText("0");
+		promotionsAmountTextLabel.setText("0");
+		discountsAmountTextLabel.setText("0");
+		totalDiscountsAmountTextLabel.setText("0");
+		totalAmountTextLabel.setText("0");
+		cashAmountTextLabel.setText("0");
+		cashReturnAmountTextLabel.setText("0");
+		
+		cancelTransactionButton.setEnabled(false);
+		confirmTransactionButton.setEnabled(false);
+
+		order = null;
+		selectedPaymentMethod = null;
+		subtotalAmount = BigDecimal.ZERO;
+		selectedDocumentType = null;
 	}
 
 	private void hookContextMenu() {

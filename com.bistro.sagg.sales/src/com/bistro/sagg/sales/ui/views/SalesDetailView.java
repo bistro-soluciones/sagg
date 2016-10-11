@@ -1,35 +1,54 @@
 package com.bistro.sagg.sales.ui.views;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 
 import com.bistro.sagg.core.factory.OrderItemFactory;
+import com.bistro.sagg.core.model.company.FranchiseBranch;
+import com.bistro.sagg.core.model.company.employees.Employee;
+import com.bistro.sagg.core.model.order.SaleOrder;
 import com.bistro.sagg.core.model.order.SaleOrderItem;
 import com.bistro.sagg.core.model.products.Product;
+import com.bistro.sagg.core.services.OrderServices;
+import com.bistro.sagg.core.services.SaggServiceLocator;
+import com.bistro.sagg.core.session.SaggSession;
+import com.bistro.sagg.core.session.SaggSessionConstants;
 import com.bistro.sagg.sales.ui.utils.SalesCommunicationConstants;
 import com.bistro.sagg.sales.ui.viewers.OrderItemTableLabelProvider;
-import org.eclipse.swt.widgets.TableColumn;
 
 /**
  * This sample class demonstrates how to plug-in a new
@@ -55,11 +74,30 @@ public class SalesDetailView extends ViewPart {
 	 * The ID of the view as specified by the extension.
 	 */
 	public static final String ID = "com.bistro.sagg.sales.ui.views.SalesDetailView";
+	
 	private Table productsTable;
-
+	private Spinner updateItemCountSpinner;
+	private Button updateItemButton;
+	private Button removeItemButton;
+	private Button clearItemListButton;
+	private Button confirmItemListButton;
+	
+//	private ProductServices productServices = (ProductServices) SaggServiceLocator.getInstance()
+//			.lookup(ProductServices.class.getName());
+	private OrderServices orderServices = (OrderServices) SaggServiceLocator.getInstance()
+			.lookup(OrderServices.class.getName());
+	
+	private SaleOrderItem selectedItem;
+	private int selectedItemQuantity;
+	
+	private BundleContext bundleContext;
+	private EventAdmin eventAdmin;
 
 	public SalesDetailView() {
 		super();
+		this.bundleContext = FrameworkUtil.getBundle(ProductSelectionView.class).getBundleContext();
+        ServiceReference<EventAdmin> ref = bundleContext.getServiceReference(EventAdmin.class);
+        this.eventAdmin = bundleContext.getService(ref);
 	}
 
 	/**
@@ -69,12 +107,30 @@ public class SalesDetailView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new GridLayout(1, false));
 		
+		createResetViewEventHandler(parent);
+		
 		TableViewer productsTableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
 //		productsTableViewer.setContentProvider(new MarketableProductListContentProvider());
 		productsTableViewer.setLabelProvider(new OrderItemTableLabelProvider());
 //		productsTableViewer.setSorter(new MarketableProductListSorter());
 		
 		productsTable = productsTableViewer.getTable();
+		productsTable.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Table source = (Table) e.getSource();
+				if(source.getSelectionCount() > 0) {
+					removeItemButton.setEnabled(true);
+					updateItemCountSpinner.setEnabled(true);
+					selectedItem = (SaleOrderItem) ((StructuredSelection)productsTableViewer.getSelection()).getFirstElement();
+					updateItemCountSpinner.setSelection(selectedItem.getQuantity());
+				} else {
+					removeItemButton.setEnabled(false);
+					updateItemCountSpinner.setEnabled(false);
+					selectedItem = null;
+				}
+			}
+		});
 		productsTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		productsTable.setHeaderVisible(true);
 		productsTable.setLinesVisible(true);
@@ -106,6 +162,8 @@ public class SalesDetailView extends ViewPart {
 						}
 					});
 				}
+				clearItemListButton.setEnabled(true);
+				confirmItemListButton.setEnabled(true);
 			}
 	    };
 	    Dictionary<String,String> properties = new Hashtable<String, String>();
@@ -113,32 +171,160 @@ public class SalesDetailView extends ViewPart {
 	    ctx.registerService(EventHandler.class, handler, properties);
 	    
 		Composite composite = new Composite(parent, SWT.NONE);
-		GridLayout gl_composite = new GridLayout(3, false);
+		GridLayout gl_composite = new GridLayout(5, false);
 		gl_composite.marginWidth = 0;
 		gl_composite.marginHeight = 0;
 		composite.setLayout(gl_composite);
 		composite.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1));
 		
-		Spinner spinner = new Spinner(composite, SWT.BORDER);
+		updateItemCountSpinner = new Spinner(composite, SWT.BORDER);
+		updateItemCountSpinner.setEnabled(false);
+		updateItemCountSpinner.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				Spinner source = (Spinner) e.getSource();
+				if(source.getSelection() > 0) {
+					updateItemButton.setEnabled(true);
+				}
+				selectedItemQuantity = source.getSelection();
+			}
+		});
 		
-		Button btnModificar = new Button(composite, SWT.NONE);
-		GridData gd_btnModificar = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		gd_btnModificar.widthHint = 100;
-		btnModificar.setLayoutData(gd_btnModificar);
-		btnModificar.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
-		btnModificar.setText("Modificar");
+		updateItemButton = new Button(composite, SWT.NONE);
+		updateItemButton.setEnabled(false);
+		GridData gd_updateItemButton = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_updateItemButton.widthHint = 100;
+		updateItemButton.setLayoutData(gd_updateItemButton);
+		updateItemButton.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
+		updateItemButton.setText("Modificar");
+		updateItemButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if(selectedItemQuantity > 0) {
+					selectedItem.setQuantity(selectedItemQuantity);
+					selectedItem.recalculateAmount();
+					productsTableViewer.refresh(selectedItem, true);
+				} else {
+					productsTableViewer.remove(selectedItem);
+					updateItemButton.setEnabled(false);
+					updateItemCountSpinner.setSelection(0);
+					updateItemCountSpinner.setEnabled(false);
+					removeItemButton.setEnabled(false);
+					if(productsTable.getItemCount() == 0) {
+						clearItemListButton.setEnabled(false);
+						confirmItemListButton.setEnabled(false);
+					}
+					selectedItem = null;
+				}
+			}
+		});
 		
-		Button btnNewButton = new Button(composite, SWT.NONE);
-		GridData gd_btnNewButton = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		gd_btnNewButton.widthHint = 100;
-		btnNewButton.setLayoutData(gd_btnNewButton);
-		btnNewButton.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
-		btnNewButton.setText("Eliminar");
+		removeItemButton = new Button(composite, SWT.NONE);
+		removeItemButton.setEnabled(false);
+		GridData gd_removeItemButton = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_removeItemButton.widthHint = 100;
+		removeItemButton.setLayoutData(gd_removeItemButton);
+		removeItemButton.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
+		removeItemButton.setText("Eliminar");
+		removeItemButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				productsTableViewer.remove(selectedItem);
+				updateItemButton.setEnabled(false);
+				updateItemCountSpinner.setSelection(0);
+				updateItemCountSpinner.setEnabled(false);
+				removeItemButton.setEnabled(false);
+				if(productsTable.getItemCount() == 0) {
+					clearItemListButton.setEnabled(false);
+					confirmItemListButton.setEnabled(false);
+				}
+				selectedItem = null;
+			}
+		});
+		
+		clearItemListButton = new Button(composite, SWT.NONE);
+		clearItemListButton.setEnabled(false);
+		GridData gd_clearItemListButton = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_clearItemListButton.widthHint = 100;
+		clearItemListButton.setLayoutData(gd_clearItemListButton);
+		clearItemListButton.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
+		clearItemListButton.setText("Limpiar");
+		clearItemListButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				productsTable.removeAll();
+				updateItemButton.setEnabled(false);
+				updateItemCountSpinner.setSelection(0);
+				updateItemCountSpinner.setEnabled(false);
+				removeItemButton.setEnabled(false);
+				clearItemListButton.setEnabled(false);
+				confirmItemListButton.setEnabled(false);
+				selectedItem = null;
+			}
+		});
+		
+		confirmItemListButton = new Button(composite, SWT.NONE);
+		confirmItemListButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				FranchiseBranch branch = SaggSession.getCurrentSession().getSessionObject(SaggSessionConstants.CURRENT_FRANCHISE_BANCH);
+				Employee seller = SaggSession.getCurrentSession().getSessionObject(SaggSessionConstants.ACTIVE_USER);
+				List<SaleOrderItem> items = new ArrayList<SaleOrderItem>();
+				for (TableItem item : productsTable.getItems()) {
+					items.add((SaleOrderItem) item.getData());
+				}
+				SaleOrder order = orderServices.createSaleOrder(branch, seller, items);
+				
+				clearItemListButton.setEnabled(false);
+				confirmItemListButton.setEnabled(false);
+				
+				Map<String,Object> properties = new HashMap<String, Object>();
+		        properties.put(SalesCommunicationConstants.SALE_ORDER_DATA, order);
+				Event event = new Event(SalesCommunicationConstants.CONFIRM_SALE_ORDER_EVENT, properties);
+				eventAdmin.sendEvent(event);
+			}
+		});
+		confirmItemListButton.setEnabled(false);
+		GridData gd_confirmItemListButton = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_confirmItemListButton.widthHint = 100;
+		confirmItemListButton.setLayoutData(gd_confirmItemListButton);
+		confirmItemListButton.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
+		confirmItemListButton.setText("Confirmar");
 		
 		makeActions();
 		hookContextMenu();
 		hookDoubleClickAction();
 		contributeToActionBars();
+	}
+	
+	private void createResetViewEventHandler(Composite parent) {
+		EventHandler handler = new EventHandler() {
+			public void handleEvent(final Event event) {
+				if (parent.getDisplay().getThread() == Thread.currentThread()) {
+					resetDefaultValues();
+				} else {
+					parent.getDisplay().syncExec(new Runnable() {
+						public void run() {
+							resetDefaultValues();
+						}
+					});
+				}
+			}
+	    };
+	    Dictionary<String,String> properties = new Hashtable<String, String>();
+	    properties.put(EventConstants.EVENT_TOPIC, SalesCommunicationConstants.RESET_SALE_ORDER_EVENT);
+	    bundleContext.registerService(EventHandler.class, handler, properties);
+	}
+	
+	protected void resetDefaultValues() {
+		productsTable.removeAll();;
+//		updateItemCountSpinner.setSelection(0);
+//		updateItemCountSpinner.setEnabled(false);
+//		updateItemButton.setEnabled(false);
+//		removeItemButton.setEnabled(false);
+//		clearItemListButton.setEnabled(false);
+//		confirmItemListButton.setEnabled(false);
+		selectedItem = null;
+		selectedItemQuantity = 0;
 	}
 
 	private void hookContextMenu() {
