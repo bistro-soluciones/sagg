@@ -65,6 +65,45 @@ ALTER TABLE sale_order_items ADD amount DECIMAL NULL AFTER `quantity`;
 
 INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('11', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-3.xml', NOW(), 47, '7:fc0c6f84cafc90a1f9af21758fc3e495', 'addColumn tableName=sale_order_items', '', 'EXECUTED', NULL, NULL, '3.5.1', '6035213417');
 
+--  Changeset src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-3.xml::12::sebastian.lavie
+ALTER TABLE franchises ADD code VARCHAR(4) NOT NULL AFTER `name`;
+
+ALTER TABLE franchises ADD UNIQUE (code);
+
+INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('12', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-3.xml', NOW(), 48, '7:77d9e9c61436a96684dcba26a0fac7c8', 'addColumn tableName=franchises', '', 'EXECUTED', NULL, NULL, '3.5.1', '6053258132');
+
+--  Changeset src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-3.xml::13::sebastian.lavie
+ALTER TABLE franchise_branches ADD code VARCHAR(4) NOT NULL AFTER `name`;
+
+ALTER TABLE franchise_branches ADD UNIQUE (code);
+
+INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('13', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-3.xml', NOW(), 49, '7:ed758c34ae7dac7658f6dc8804ba26be', 'addColumn tableName=franchise_branches', '', 'EXECUTED', NULL, NULL, '3.5.1', '6053258132');
+
+--  Changeset src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-3.xml::14::sebastian.lavie
+CREATE TABLE branches_of_franchiseds (franchise_id BIGINT NOT NULL, franchised_id BIGINT NOT NULL, CONSTRAINT PK_BRANCHES_OF_FRANCHISEDS PRIMARY KEY (franchise_id, franchised_id));
+
+INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('14', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-3.xml', NOW(), 50, '7:7af0be3ea0ae5ef482370399408af40f', 'createTable tableName=branches_of_franchiseds', '', 'EXECUTED', NULL, NULL, '3.5.1', '6107445158');
+
+--  Changeset src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-3.xml::15::sebastian.lavie
+ALTER TABLE franchiseds DROP COLUMN franchise_id;
+
+INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('15', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-3.xml', NOW(), 51, '7:c9cb2ca41d650f90fafa2a7f9271b0df', 'dropColumn columnName=franchise_id, tableName=franchiseds', '', 'EXECUTED', NULL, NULL, '3.5.1', '6107445158');
+
+--  Changeset src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-3.xml::16::sebastian.lavie
+ALTER TABLE franchise_branches ADD franchise_id BIGINT NOT NULL AFTER `code`;
+
+INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('16', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-3.xml', NOW(), 52, '7:aacb903442961e394b5a6570c537cca1', 'addColumn tableName=franchise_branches', '', 'EXECUTED', NULL, NULL, '3.5.1', '6108713873');
+
+--  Changeset src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-3.xml::17::sebastian.lavie
+ALTER TABLE payment_methods ADD method_type VARCHAR(15) NULL AFTER `id`;
+
+INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('17', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-3.xml', NOW(), 53, '7:8ea52ef448aa536790f6c2826b5ad21d', 'addColumn tableName=payment_methods', '', 'EXECUTED', NULL, NULL, '3.5.1', '6126364071');
+
+--  Changeset src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-3.xml::18::sebastian.lavie
+ALTER TABLE billing_documents MODIFY document_number VARCHAR(18);
+
+INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('18', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-3.xml', NOW(), 54, '7:34b05808aa7c008c1be3f86158288e8b', 'modifyDataType columnName=document_number, tableName=billing_documents', '', 'EXECUTED', NULL, NULL, '3.5.1', '6141726865');
+
 --  Release Database Lock
 UPDATE DATABASECHANGELOGLOCK SET LOCKED = 0, LOCKEDBY = NULL, LOCKGRANTED = NULL WHERE ID = 1;
 

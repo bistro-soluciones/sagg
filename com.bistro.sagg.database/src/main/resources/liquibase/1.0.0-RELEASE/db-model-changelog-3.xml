@@ -125,5 +125,54 @@
             <column name="amount" type="currency" afterColumn="quantity"/>
     	</addColumn>
     </changeSet>
-        
+    
+    <changeSet id="12" author="sebastian.lavie">
+    	<addColumn tableName="franchises">
+            <column name="code" type="varchar(4)" afterColumn="name">
+                <constraints nullable="false" unique="true"/>
+            </column>
+    	</addColumn>
+    </changeSet>
+    
+    <changeSet id="13" author="sebastian.lavie">
+    	<addColumn tableName="franchise_branches">
+            <column name="code" type="varchar(4)" afterColumn="name">
+                <constraints nullable="false" unique="true"/>
+            </column>
+    	</addColumn>
+    </changeSet>
+
+    <changeSet id="14" author="sebastian.lavie">
+        <createTable tableName="branches_of_franchiseds">
+            <column name="franchise_id" type="bigint(20)">
+                <constraints primaryKey="true" foreignKeyName="id" referencedTableName="franchises" nullable="false"/>
+            </column>
+            <column name="franchised_id" type="bigint(20)">
+                <constraints primaryKey="true" foreignKeyName="id" referencedTableName="franchiseds" nullable="false"/>
+            </column>
+    	</createTable>
+    </changeSet>
+
+    <changeSet id="15" author="sebastian.lavie">
+    	<dropColumn tableName="franchiseds" columnName="franchise_id"/>
+    </changeSet>
+    
+    <changeSet id="16" author="sebastian.lavie">
+    	<addColumn tableName="franchise_branches">
+            <column name="franchise_id" type="bigint(20)" afterColumn="code">
+                <constraints foreignKeyName="id" referencedTableName="franchises" nullable="false"/>
+            </column>
+    	</addColumn>
+    </changeSet>
+    
+    <changeSet id="17" author="sebastian.lavie">
+    	<addColumn tableName="payment_methods">
+            <column name="method_type" type="varchar(15)" afterColumn="id"/>
+    	</addColumn>
+    </changeSet>
+    
+    <changeSet id="18" author="sebastian.lavie">
+    	<modifyDataType tableName="billing_documents" columnName="document_number" newDataType="varchar(18)"/>
+    </changeSet>
+    
 </databaseChangeLog>
