@@ -14,7 +14,7 @@ import javax.persistence.Table;
 import com.bistro.sagg.core.model.location.City;
 
 @Entity
-@Table(name = "FANCHISEDS")
+@Table(name = "FRANCHISEDS")
 public class Franchised {
 
 	@Id
@@ -44,12 +44,12 @@ public class Franchised {
 	@JoinColumn(name = "CITY_ID")
 	private City city;
 	// Franchise information
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "FRANCHISE_ID")
-	private Franchise franchise;
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "FRANCHISE_ID")
+//	private Franchise franchise;
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FRANCHISE_BRANCH_ID")
-	private FranchiseBranch franchiseeBranch;
+	private FranchiseBranch branch;
 
 	public Franchised() {
 		super();
@@ -135,20 +135,12 @@ public class Franchised {
 		this.city = city;
 	}
 
-	public Franchise getFranchise() {
-		return franchise;
+	public FranchiseBranch getBranch() {
+		return branch;
 	}
 
-	public void setFranchise(Franchise franchise) {
-		this.franchise = franchise;
-	}
-
-	public FranchiseBranch getFranchiseeBranch() {
-		return franchiseeBranch;
-	}
-
-	public void setFranchiseeBranch(FranchiseBranch franchiseeBranch) {
-		this.franchiseeBranch = franchiseeBranch;
+	public void setBranch(FranchiseBranch branch) {
+		this.branch = branch;
 	}
 
 }

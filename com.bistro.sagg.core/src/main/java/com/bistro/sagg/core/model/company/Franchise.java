@@ -16,7 +16,7 @@ import javax.persistence.Table;
 import com.bistro.sagg.core.model.location.Country;
 
 @Entity
-@Table(name = "FANCHISES")
+@Table(name = "FRANCHISES")
 public class Franchise {
 
 	@Id
@@ -25,13 +25,20 @@ public class Franchise {
 	private Long id;
 	@Column(name = "NAME")
 	private String name;
-	@OneToMany(mappedBy = "franchise")
+	@Column(name = "CODE")
+	private String code;
+	@ManyToMany
+	@JoinTable(name = "FRANCHISES_OF_FRANCHISEDS", 
+	joinColumns = @JoinColumn(name = "FRANCHISE_ID", referencedColumnName = "ID"), 
+	inverseJoinColumns = @JoinColumn(name = "FRANCHISED_ID", referencedColumnName = "ID"))
 	private List<Franchised> franchiseds;
 	@ManyToMany
 	@JoinTable(name = "FRANCHISES_BY_COUNTIES", 
 	joinColumns = @JoinColumn(name = "FRANCHISE_ID", referencedColumnName = "ID"), 
 	inverseJoinColumns = @JoinColumn(name = "COUNTRY_ID", referencedColumnName = "ID"))
 	private List<Country> cuontries;
+	@OneToMany(mappedBy = "franchise")
+	private List<FranchiseBranch> branches;
 
 	public Franchise() {
 		super();
@@ -53,6 +60,14 @@ public class Franchise {
 		this.name = name;
 	}
 
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
 	public List<Franchised> getFranchiseds() {
 		return franchiseds;
 	}
@@ -67,6 +82,14 @@ public class Franchise {
 
 	public void setCuontries(List<Country> cuontries) {
 		this.cuontries = cuontries;
+	}
+
+	public List<FranchiseBranch> getBranches() {
+		return branches;
+	}
+
+	public void setBranches(List<FranchiseBranch> branches) {
+		this.branches = branches;
 	}
 
 }

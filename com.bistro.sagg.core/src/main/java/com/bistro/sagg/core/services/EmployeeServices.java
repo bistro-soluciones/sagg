@@ -14,6 +14,8 @@ public interface EmployeeServices extends ISaggService {
 			FranchiseBranch franchiseBranch, String email, String phone, String cellphone, String addressL1,
 			String addressL2, City city);
 
+	Employee getById(Long employeeId);
+	
 	List<Employee> getEmployees();
 
 }

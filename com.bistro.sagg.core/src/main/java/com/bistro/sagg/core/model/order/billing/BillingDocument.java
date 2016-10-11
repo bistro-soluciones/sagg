@@ -91,7 +91,15 @@ public class BillingDocument {
 		this.items = items;
 	}
 	
+	public void addItem(BillingItem item) {
+		item.setBillingDocument(this);
+		this.items.add(item);
+	}
+	
 	public void addItems(List<BillingItem> items) {
+		for (BillingItem item : items) {
+			item.setBillingDocument(this);
+		}
 		this.items.addAll(items);
 	}
 

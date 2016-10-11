@@ -21,5 +21,25 @@ public class SaleOrder extends Order {
 	private Employee seller;
 	@OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
 	private List<SaleOrderItem> items;
-	
+
+	public SaleOrder() {
+		super();
+	}
+
+	public Employee getSeller() {
+		return seller;
+	}
+
+	public void setSeller(Employee seller) {
+		this.seller = seller;
+	}
+
+	public List<SaleOrderItem> getItems() {
+		return items;
+	}
+
+	public void setItems(List<SaleOrderItem> items) {
+		this.items = items;
+	}
+
 }

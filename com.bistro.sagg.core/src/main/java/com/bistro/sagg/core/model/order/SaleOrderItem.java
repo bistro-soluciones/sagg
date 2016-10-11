@@ -17,7 +17,7 @@ public class SaleOrderItem extends OrderItem {
 
 	@Column(name = "AMOUNT")
 	private BigDecimal amount = BigDecimal.ZERO;
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ORDER_ID")
 	private SaleOrder order;
 
@@ -46,7 +46,7 @@ public class SaleOrderItem extends OrderItem {
 	}
 
 	public void recalculateAmount() {
-		this.amount = this.amount.add(getSalableProduct().getUnitSalesPrice().multiply(new BigDecimal(getQuantity())));
+		this.amount = getSalableProduct().getUnitSalesPrice().multiply(new BigDecimal(getQuantity()));
 	}
 
 }

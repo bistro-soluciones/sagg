@@ -29,6 +29,10 @@ public class EmployeeServicesImpl implements EmployeeServices {
 		employeeRepository.save(employee);
 	}
 
+	public Employee getById(Long employeeId) {
+		return employeeRepository.findOne(employeeId);
+	}
+
 	public List<Employee> getEmployees() {
 		return (List<Employee>) employeeRepository.findAll();
 	}

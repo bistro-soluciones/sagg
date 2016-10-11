@@ -1,15 +1,20 @@
 package com.bistro.sagg.core.model.order.payment;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "METHOD_TYPE")
 @Table(name = "PAYMENT_METHODS")
-public class PaymentMethod {
+public abstract class PaymentMethod {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,4 +43,16 @@ public class PaymentMethod {
 		this.name = name;
 	}
 
+	public boolean isCashPayment() {
+		return false;
+	}
+	
+	public boolean isCreditCardPayment() {
+		return false;
+	}
+	
+	public boolean isDebitCardPayment() {
+		return false;
+	}
+	
 }
