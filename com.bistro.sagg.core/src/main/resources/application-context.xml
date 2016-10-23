@@ -66,6 +66,9 @@
 				<entry key="com.bistro.sagg.core.services.RefdataServices">
 					<bean class="com.bistro.sagg.core.services.RefdataServicesImpl"/>
 				</entry>
+				<entry key="com.bistro.sagg.core.services.ReportServices">
+					<bean class="com.bistro.sagg.core.services.ReportServicesImpl"/>
+				</entry>
 				<entry key="com.bistro.sagg.core.services.SupplierServices">
 					<bean class="com.bistro.sagg.core.services.SupplierServicesImpl"/>
 				</entry>

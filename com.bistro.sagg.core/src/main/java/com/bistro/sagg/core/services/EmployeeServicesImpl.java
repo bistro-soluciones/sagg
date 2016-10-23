@@ -33,8 +33,8 @@ public class EmployeeServicesImpl implements EmployeeServices {
 		return employeeRepository.findOne(employeeId);
 	}
 
-	public List<Employee> getEmployees() {
-		return (List<Employee>) employeeRepository.findAll();
+	public List<Employee> getEmployees(FranchiseBranch branch) {
+		return (List<Employee>) employeeRepository.findByFranchiseBranch(branch);
 	}
 
 }

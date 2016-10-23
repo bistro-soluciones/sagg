@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.bistro.sagg.core.builders.SupplierBuilder;
+import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.model.products.ProductCategory;
 import com.bistro.sagg.core.model.suppliers.Supplier;
 import com.bistro.sagg.core.repository.SupplierRepository;
@@ -25,8 +26,8 @@ public class SupplierServicesImpl implements SupplierServices {
 		supplierRepository.save(supplier);
 	}
 
-	public List<Supplier> getSuppliers() {
-		return (List<Supplier>) supplierRepository.findAll();
+	public List<Supplier> getSuppliers(FranchiseBranch branch) {
+		return (List<Supplier>) supplierRepository.findByFranchiseBranch(branch);
 	}
 
 }

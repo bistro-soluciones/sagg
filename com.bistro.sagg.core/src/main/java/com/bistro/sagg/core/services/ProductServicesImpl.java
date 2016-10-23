@@ -11,12 +11,10 @@ import com.bistro.sagg.core.builders.ProductCategoryBuilder;
 import com.bistro.sagg.core.builders.SupplyBuilder;
 import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.model.order.billing.BillingItem;
-import com.bistro.sagg.core.model.order.billing.DocumentType;
 import com.bistro.sagg.core.model.products.MarketableProduct;
 import com.bistro.sagg.core.model.products.Product;
 import com.bistro.sagg.core.model.products.ProductCategory;
 import com.bistro.sagg.core.model.products.Supply;
-import com.bistro.sagg.core.model.suppliers.Supplier;
 import com.bistro.sagg.core.repository.MarketableProductRepository;
 import com.bistro.sagg.core.repository.ProductCategoryRepository;
 import com.bistro.sagg.core.repository.SupplyRepository;
@@ -78,12 +76,12 @@ public class ProductServicesImpl implements ProductServices {
 	}
 
 	private List<Product> addSuppliers(List<Product> products, ProductCategory category) {
-		products.addAll(supplyRepository.findAllByCategory(category.getId()));
+		products.addAll(supplyRepository.findByCategory(category));
 		return products;
 	}
 
 	private List<Product> addMarketableProducts(List<Product> products, ProductCategory category) {
-		products.addAll(marketableProductRepository.findAllByCategory(category.getId()));
+		products.addAll(marketableProductRepository.findByCategory(category));
 		return products;
 	}
 

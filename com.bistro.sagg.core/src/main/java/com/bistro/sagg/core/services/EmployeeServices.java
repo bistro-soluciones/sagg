@@ -16,6 +16,6 @@ public interface EmployeeServices extends ISaggService {
 
 	Employee getById(Long employeeId);
 	
-	List<Employee> getEmployees();
+	List<Employee> getEmployees(FranchiseBranch branch);
 
 }

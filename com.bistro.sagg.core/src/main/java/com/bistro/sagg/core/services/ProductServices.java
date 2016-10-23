@@ -27,5 +27,5 @@ public interface ProductServices extends ISaggService {
 	List<Product> getProductsByCategory(ProductCategory category);
 	
 	void increaseProductStock(List<BillingItem> items);
-
+	
 }

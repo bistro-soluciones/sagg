@@ -12,9 +12,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.model.products.ProductCategory;
 
 @Entity
@@ -38,7 +40,10 @@ public class Supplier {
 		joinColumns = @JoinColumn(name = "SUPPLIER_ID", referencedColumnName = "ID"), 
 		inverseJoinColumns = @JoinColumn(name = "PRODUCT_CATEGORY_ID", referencedColumnName = "ID"))
 	private List<ProductCategory> categories;
-
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "FRANCHISE_BRANCH_ID")
+	private FranchiseBranch franchiseBranch; 
+	
 	public Supplier() {
 		super();
 	}
