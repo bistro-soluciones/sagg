@@ -49,7 +49,7 @@ import com.bistro.sagg.core.session.SaggSession;
 import com.bistro.sagg.core.session.SaggSessionConstants;
 import com.bistro.sagg.core.util.TransactionUtils;
 import com.bistro.sagg.sales.ui.utils.SalesCommunicationConstants;
-import com.bistro.sagg.sales.ui.viewers.BillilngDocumentTypeComboLabelProvider;
+import com.bistro.sagg.sales.ui.viewers.BillingDocumentTypeComboLabelProvider;
 import com.bistro.sagg.sales.ui.viewers.BillingDocumentTypeComboContentProvider;
 import com.bistro.sagg.sales.ui.viewers.PaymentMethodComboContentProvider;
 import com.bistro.sagg.sales.ui.viewers.PaymentMethodComboLabelProvider;
@@ -116,7 +116,7 @@ public class SalesConfirmationDetailView extends ViewPart {
 
 	public SalesConfirmationDetailView() {
 		super();
-		this.bundleContext = FrameworkUtil.getBundle(ProductSelectionView.class).getBundleContext();
+		this.bundleContext = FrameworkUtil.getBundle(SalesConfirmationDetailView.class).getBundleContext();
         ServiceReference<EventAdmin> ref = bundleContext.getServiceReference(EventAdmin.class);
         this.eventAdmin = bundleContext.getService(ref);
 	}
@@ -148,7 +148,7 @@ public class SalesConfirmationDetailView extends ViewPart {
 		
 		ComboViewer documentTypeComboViewer = new ComboViewer(paymentDetailComposite, SWT.NONE);
 		documentTypeComboViewer.setContentProvider(new BillingDocumentTypeComboContentProvider());
-		documentTypeComboViewer.setLabelProvider(new BillilngDocumentTypeComboLabelProvider());
+		documentTypeComboViewer.setLabelProvider(new BillingDocumentTypeComboLabelProvider());
 		documentTypeComboViewer.setInput(billingServices);
 		documentTypeCombo = documentTypeComboViewer.getCombo();
 		documentTypeCombo.setEnabled(false);
@@ -440,7 +440,7 @@ public class SalesConfirmationDetailView extends ViewPart {
 	    bundleContext.registerService(EventHandler.class, handler, properties);
 	}
 
-	protected void resetDefaultValues() {
+	private void resetDefaultValues() {
 		orderNumberText.setText("");
 		documentTypeCombo.setText("");
 		documentTypeCombo.setEnabled(false);

@@ -95,7 +95,7 @@ public class SalesDetailView extends ViewPart {
 
 	public SalesDetailView() {
 		super();
-		this.bundleContext = FrameworkUtil.getBundle(ProductSelectionView.class).getBundleContext();
+		this.bundleContext = FrameworkUtil.getBundle(SalesDetailView.class).getBundleContext();
         ServiceReference<EventAdmin> ref = bundleContext.getServiceReference(EventAdmin.class);
         this.eventAdmin = bundleContext.getService(ref);
 	}
@@ -147,7 +147,6 @@ public class SalesDetailView extends ViewPart {
 		amountColumn.setWidth(100);
 		amountColumn.setText("Monto");
 		
-		BundleContext ctx = FrameworkUtil.getBundle(SalesDetailView.class).getBundleContext();
 	    EventHandler handler = new EventHandler() {
 			public void handleEvent(final Event event) {
 				SaleOrderItem item = OrderItemFactory.createSaleOrderItem(
@@ -168,7 +167,7 @@ public class SalesDetailView extends ViewPart {
 	    };
 	    Dictionary<String,String> properties = new Hashtable<String, String>();
 	    properties.put(EventConstants.EVENT_TOPIC, SalesCommunicationConstants.ADD_PRODUCT_EVENT);
-	    ctx.registerService(EventHandler.class, handler, properties);
+	    bundleContext.registerService(EventHandler.class, handler, properties);
 	    
 		Composite composite = new Composite(parent, SWT.NONE);
 		GridLayout gl_composite = new GridLayout(5, false);
