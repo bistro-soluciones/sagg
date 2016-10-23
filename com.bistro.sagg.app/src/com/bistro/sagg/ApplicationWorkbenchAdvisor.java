@@ -4,7 +4,7 @@ import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
-import com.bistro.sagg.employees.ui.perspectives.EmployeesPerspective;
+import com.bistro.sagg.sales.ui.perspectives.SalesPerspective;
 
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
@@ -13,7 +13,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
     }
 
 	public String getInitialWindowPerspectiveId() {
-		return EmployeesPerspective.ID;
+		return SalesPerspective.ID;
 //		return SuppliersPerspective.ID;
 	}
 }
