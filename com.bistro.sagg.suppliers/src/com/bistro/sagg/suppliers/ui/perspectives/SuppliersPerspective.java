@@ -3,7 +3,7 @@ package com.bistro.sagg.suppliers.ui.perspectives;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
-import com.bistro.sagg.suppliers.ui.views.SupplierFilterView;
+import com.bistro.sagg.suppliers.ui.views.SupplierDetailView;
 import com.bistro.sagg.suppliers.ui.views.SupplierListView;
 
 public class SuppliersPerspective implements IPerspectiveFactory {
@@ -17,7 +17,8 @@ public class SuppliersPerspective implements IPerspectiveFactory {
     	
     	String editorArea = layout.getEditorArea();
 //    	layout.addStandaloneView(SupplierFilterView.ID, true, IPageLayout.TOP, 0.25f, editorArea);
-    	layout.addStandaloneView(SupplierListView.ID, true, IPageLayout.TOP, 1f, editorArea);
+    	layout.addStandaloneView(SupplierDetailView.ID, true, IPageLayout.RIGHT, 0.65f, editorArea);
+    	layout.addStandaloneView(SupplierListView.ID, true, IPageLayout.RIGHT, 0.35f, editorArea);
 
     }
 //	private void addViewShortcuts(IPageLayout layout) {

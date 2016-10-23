@@ -7,7 +7,8 @@ Bundle-Activator: com.bistro.sagg.suppliers.Activator
 Bundle-Vendor: BISTRO
 Require-Bundle: com.bistro.sagg.core.osgi;bundle-version="1.0.0",
  org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.eclipse.osgi.services;bundle-version="3.5.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: com.bistro.sagg.suppliers.ui.actions,

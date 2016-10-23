@@ -1,35 +1,30 @@
 package com.bistro.sagg.suppliers.ui.views;
 
 
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
+import java.util.Dictionary;
+import java.util.Hashtable;
+
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
 
 import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.core.services.SupplierServices;
-import com.bistro.sagg.suppliers.ui.actions.OpenNewSupplierDialogAction;
 import com.bistro.sagg.suppliers.ui.utils.SupplierColumnIndex;
+import com.bistro.sagg.suppliers.ui.utils.SuppliersCommunicationConstants;
 import com.bistro.sagg.suppliers.ui.viewers.SupplierListContentProvider;
 import com.bistro.sagg.suppliers.ui.viewers.SupplierListLabelProvider;
 import com.bistro.sagg.suppliers.ui.viewers.SupplierListSorter;
@@ -60,49 +55,21 @@ public class SupplierListView extends ViewPart {
 	 */
 	public static final String ID = "com.bistro.sagg.suppliers.ui.views.SupplierListView";
 
-	private OpenNewSupplierDialogAction openNewSupplierDialogAction;
+//	private OpenNewSupplierDialogAction openNewSupplierDialogAction;
+	private TableViewer suppliersTableViewer;
 	private Table suppliersTable;
 	
 	private SupplierServices supplierServices = (SupplierServices) SaggServiceLocator.getInstance()
 			.lookup(SupplierServices.class.getName());
 
-	/*
-	 * The content provider class is responsible for
-	 * providing objects to the view. It can wrap
-	 * existing objects in adapters or simply return
-	 * objects as-is. These objects may be sensitive
-	 * to the current input of the view, or ignore
-	 * it and always show the same content 
-	 * (like Task List, for example).
-	 */
-	class ViewContentProvider implements IStructuredContentProvider {
-		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-		}
-		public void dispose() {
-		}
-		public Object[] getElements(Object parent) {
-			return new String[] { "One", "Two", "Three" };
-		}
-	}
-	class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
-		public String getColumnText(Object obj, int index) {
-			return getText(obj);
-		}
-		public Image getColumnImage(Object obj, int index) {
-			return getImage(obj);
-		}
-		public Image getImage(Object obj) {
-			return PlatformUI.getWorkbench().
-					getSharedImages().getImage(ISharedImages.IMG_OBJ_ELEMENT);
-		}
-	}
-	class NameSorter extends ViewerSorter {
-	}
+	private BundleContext bundleContext;
+	private EventAdmin eventAdmin;
 
-	/**
-	 * The constructor.
-	 */
 	public SupplierListView() {
+		super();
+		this.bundleContext = FrameworkUtil.getBundle(SupplierListView.class).getBundleContext();
+		ServiceReference<EventAdmin> ref = bundleContext.getServiceReference(EventAdmin.class);
+		this.eventAdmin = bundleContext.getService(ref);
 	}
 
 	/**
@@ -112,7 +79,9 @@ public class SupplierListView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		TableViewer suppliersTableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
+		createAddEmplouyeeEventHandler(parent);
+		
+		suppliersTableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
 		suppliersTableViewer.setContentProvider(new SupplierListContentProvider());
 		suppliersTableViewer.setLabelProvider(new SupplierListLabelProvider());
 		suppliersTableViewer.setSorter(new SupplierListSorter());
@@ -205,44 +174,63 @@ public class SupplierListView extends ViewPart {
 		hookDoubleClickAction();
 		contributeToActionBars();
 	}
+	
+	private void createAddEmplouyeeEventHandler(Composite parent) {
+		EventHandler handler = new EventHandler() {
+			public void handleEvent(final Event event) {
+				if (parent.getDisplay().getThread() == Thread.currentThread()) {
+					suppliersTableViewer.refresh();
+				} else {
+					parent.getDisplay().syncExec(new Runnable() {
+						public void run() {
+							suppliersTableViewer.refresh();
+						}
+					});
+				}
+			}
+	    };
+	    Dictionary<String,String> properties = new Hashtable<String, String>();
+	    properties.put(EventConstants.EVENT_TOPIC, SuppliersCommunicationConstants.ADD_SUPPLIER_EVENT);
+	    bundleContext.registerService(EventHandler.class, handler, properties);
+	}
 
 	private void hookContextMenu() {
-		MenuManager menuMgr = new MenuManager("#PopupMenu");
-		menuMgr.setRemoveAllWhenShown(true);
-		menuMgr.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(IMenuManager manager) {
-				SupplierListView.this.fillContextMenu(manager);
-			}
-		});
+//		MenuManager menuMgr = new MenuManager("#PopupMenu");
+//		menuMgr.setRemoveAllWhenShown(true);
+//		menuMgr.addMenuListener(new IMenuListener() {
+//			public void menuAboutToShow(IMenuManager manager) {
+//				SupplierListView.this.fillContextMenu(manager);
+//			}
+//		});
 	}
 
 	private void contributeToActionBars() {
-		IActionBars bars = getViewSite().getActionBars();
-		fillLocalPullDown(bars.getMenuManager());
-		fillLocalToolBar(bars.getToolBarManager());
+//		IActionBars bars = getViewSite().getActionBars();
+//		fillLocalPullDown(bars.getMenuManager());
+//		fillLocalToolBar(bars.getToolBarManager());
 	}
 
-	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(openNewSupplierDialogAction);
-		manager.add(new Separator());
-	}
-
-	private void fillContextMenu(IMenuManager manager) {
-		manager.add(openNewSupplierDialogAction);
-		// Other plug-ins can contribute there actions here
-		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-	}
-	
-	private void fillLocalToolBar(IToolBarManager manager) {
-		manager.add(openNewSupplierDialogAction);
-	}
+//	private void fillLocalPullDown(IMenuManager manager) {
+//		manager.add(openNewSupplierDialogAction);
+//		manager.add(new Separator());
+//	}
+//
+//	private void fillContextMenu(IMenuManager manager) {
+//		manager.add(openNewSupplierDialogAction);
+//		// Other plug-ins can contribute there actions here
+//		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+//	}
+//	
+//	private void fillLocalToolBar(IToolBarManager manager) {
+//		manager.add(openNewSupplierDialogAction);
+//	}
 
 	private void makeActions() {
-		openNewSupplierDialogAction = new OpenNewSupplierDialogAction("Nuevo Proveedor",PlatformUI.getWorkbench().getActiveWorkbenchWindow());
-		openNewSupplierDialogAction.setText("Nuevo Proveedor");
-		openNewSupplierDialogAction.setToolTipText("Nuevo Proveedor");
-		openNewSupplierDialogAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+//		openNewSupplierDialogAction = new OpenNewSupplierDialogAction("Nuevo Proveedor",PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+//		openNewSupplierDialogAction.setText("Nuevo Proveedor");
+//		openNewSupplierDialogAction.setToolTipText("Nuevo Proveedor");
+//		openNewSupplierDialogAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+//			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 //		doubleClickAction = new Action() {
 //			public void run() {
 //				ISelection selection = viewer.getSelection();

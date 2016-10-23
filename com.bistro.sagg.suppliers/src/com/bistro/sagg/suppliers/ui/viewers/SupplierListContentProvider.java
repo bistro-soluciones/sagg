@@ -1,14 +1,18 @@
 package com.bistro.sagg.suppliers.ui.viewers;
 
+import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.osgi.ui.viewers.SaggStructuredContentProvider;
 import com.bistro.sagg.core.services.SupplierServices;
+import com.bistro.sagg.core.session.SaggSession;
+import com.bistro.sagg.core.session.SaggSessionConstants;
 
 public class SupplierListContentProvider extends SaggStructuredContentProvider {
 
 	@Override
 	public Object[] getElements(Object inputElement) {
 		SupplierServices supplierServices = (SupplierServices) inputElement;
-		return supplierServices.getSuppliers().toArray();
+		FranchiseBranch branch = SaggSession.getCurrentSession().getSessionObject(SaggSessionConstants.CURRENT_FRANCHISE_BANCH);
+		return supplierServices.getSuppliers(branch).toArray();
 	}
 
 }

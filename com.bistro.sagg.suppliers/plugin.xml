@@ -25,6 +25,13 @@
             name="Filtro de Proveedores"
             restorable="true">
       </view>
+      <view
+            allowMultiple="false"
+            class="com.bistro.sagg.suppliers.ui.views.SupplierDetailView"
+            id="com.bistro.sagg.suppliers.ui.views.SupplierDetailView"
+            name="Detalle de Proveedor"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
