@@ -175,4 +175,12 @@
     	<modifyDataType tableName="billing_documents" columnName="document_number" newDataType="varchar(18)"/>
     </changeSet>
     
+    <changeSet id="19" author="sebastian.lavie">
+    	<addColumn tableName="suppliers">
+            <column name="franchise_branch_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="franchise_branches" nullable="false"/>
+            </column>
+    	</addColumn>
+    </changeSet>
+    
 </databaseChangeLog>

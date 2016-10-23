@@ -104,6 +104,11 @@ ALTER TABLE billing_documents MODIFY document_number VARCHAR(18);
 
 INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('18', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-3.xml', NOW(), 54, '7:34b05808aa7c008c1be3f86158288e8b', 'modifyDataType columnName=document_number, tableName=billing_documents', '', 'EXECUTED', NULL, NULL, '3.5.1', '6141726865');
 
+--  Changeset src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-3.xml::19::sebastian.lavie
+ALTER TABLE suppliers ADD franchise_branch_id BIGINT NOT NULL;
+
+INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('19', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-3.xml', NOW(), 55, '7:b5cc974175d1d0a0bec6b6600f9e14cb', 'addColumn tableName=suppliers', '', 'EXECUTED', NULL, NULL, '3.5.1', '6566326526');
+
 --  Release Database Lock
 UPDATE DATABASECHANGELOGLOCK SET LOCKED = 0, LOCKEDBY = NULL, LOCKGRANTED = NULL WHERE ID = 1;
 
