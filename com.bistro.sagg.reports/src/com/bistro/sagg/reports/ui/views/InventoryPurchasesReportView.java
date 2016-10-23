@@ -1,4 +1,4 @@
-package com.bistro.sagg.reports.views;
+package com.bistro.sagg.reports.ui.views;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;

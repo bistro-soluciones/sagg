@@ -4,26 +4,49 @@
 
    <extension
          point="org.eclipse.ui.views">
-      <category
-            name="Reports"
-            id="com.bistro.sagg.reports">
-      </category>
       <view
             name="Reporte de Utilidad de Ventas"
             icon="icons/sample.gif"
             category="com.bistro.sagg.reports"
-            class="com.bistro.sagg.reports.views.UtilitySalesReportView"
+            class="com.bistro.sagg.reports.ui.views.UtilitySalesReportView"
             id="com.bistro.sagg.reports.views.BistroReportsView">
       </view>
       <view
-            class="com.bistro.sagg.reports.views.SalesReportView"
-            id="com.bistro.sagg.reports.views.SalesReportView"
-            name="Reporte de Ventas">
-      </view>
-      <view
-            class="com.bistro.sagg.reports.views.InventoryPurchasesReportView"
+            class="com.bistro.sagg.reports.ui.views.InventoryPurchasesReportView"
             id="com.bistro.sagg.reports.views.StockReportView"
             name="Reporte de Compras de Inventario">
+      </view>
+      <view
+            allowMultiple="false"
+            category="com.bistro.sagg.category.views"
+            class="com.bistro.sagg.reports.ui.views.ReportConfigurationView"
+            id="com.bistro.sagg.reports.ui.views.ReportConfigurationView"
+            name="Configuración de Reporte"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="true"
+            category="com.bistro.sagg.category.views"
+            class="com.bistro.sagg.reports.ui.views.SuppliesBySupplierListView"
+            id="com.bistro.sagg.reports.ui.views.SuppliesBySupplierListView"
+            name="Productos por Proveedor"
+            restorable="false">
+      </view>
+      <view
+            allowMultiple="true"
+            category="com.bistro.sagg.category.views"
+            class="com.bistro.sagg.reports.ui.views.SalesReportView"
+            id="com.bistro.sagg.reports.ui.views.SalesReportView"
+            name="Reporte de Ventas"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="true"
+            category="com.bistro.sagg.category.views"
+            class="com.bistro.sagg.reports.ui.views.DetailedSalesReportView"
+            id="com.bistro.sagg.reports.ui.views.DetailedSalesReportView"
+            name="Reporte de Ventas Detallado"
+            restorable="true">
       </view>
    </extension>
    <extension
@@ -43,6 +66,14 @@
       <contexts
             file="contexts.xml">
       </contexts>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="com.bistro.sagg.reports.ui.perspectives.ReportsPerspective"
+            id="com.bistro.sagg.reports.ui.perspectives.ReportsPerspective"
+            name="Reportes">
+      </perspective>
    </extension>
 
 </plugin>
