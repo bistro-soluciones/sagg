@@ -1,35 +1,29 @@
 package com.bistro.sagg.employees.ui.views;
 
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
+import java.util.Dictionary;
+import java.util.Hashtable;
+
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
 
 import com.bistro.sagg.core.services.EmployeeServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
-import com.bistro.sagg.employees.ui.actions.OpenNewEmployeeDialogAction;
 import com.bistro.sagg.employees.ui.utils.EmployeeColumnIndex;
+import com.bistro.sagg.employees.ui.utils.EmployeesCommunicationConstants;
 import com.bistro.sagg.employees.ui.viewers.EmployeeListContentProvider;
 import com.bistro.sagg.employees.ui.viewers.EmployeeListLabelProvider;
 import com.bistro.sagg.employees.ui.viewers.EmployeeListSorter;
@@ -59,49 +53,21 @@ public class EmployeeListView extends ViewPart {
 	 */
 	public static final String ID = "com.bistro.sagg.employees.ui.views.EmployeeListView";
 
-	private Action openNewEmployeeDialogAction;
+//	private Action openNewEmployeeDialogAction;
+	private TableViewer employeesTableViewer;
 	private Table employeesTable;
 	
 	private EmployeeServices employeeService = (EmployeeServices) SaggServiceLocator.getInstance()
 			.lookup(EmployeeServices.class.getName());
 
-	/*
-	 * The content provider class is responsible for
-	 * providing objects to the view. It can wrap
-	 * existing objects in adapters or simply return
-	 * objects as-is. These objects may be sensitive
-	 * to the current input of the view, or ignore
-	 * it and always show the same content 
-	 * (like Task List, for example).
-	 */
-	class ViewContentProvider implements IStructuredContentProvider {
-		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-		}
-		public void dispose() {
-		}
-		public Object[] getElements(Object parent) {
-			return new String[] { "One", "Two", "Three" };
-		}
-	}
-	class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
-		public String getColumnText(Object obj, int index) {
-			return getText(obj);
-		}
-		public Image getColumnImage(Object obj, int index) {
-			return getImage(obj);
-		}
-		public Image getImage(Object obj) {
-			return PlatformUI.getWorkbench().
-					getSharedImages().getImage(ISharedImages.IMG_OBJ_ELEMENT);
-		}
-	}
-	class NameSorter extends ViewerSorter {
-	}
-	
-	/**
-	 * The constructor.
-	 */
+	private BundleContext bundleContext;
+	private EventAdmin eventAdmin;
+
 	public EmployeeListView() {
+		super();
+		this.bundleContext = FrameworkUtil.getBundle(EmployeeListView.class).getBundleContext();
+        ServiceReference<EventAdmin> ref = bundleContext.getServiceReference(EventAdmin.class);
+        this.eventAdmin = bundleContext.getService(ref);
 	}
 
 	/**
@@ -111,7 +77,9 @@ public class EmployeeListView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		TableViewer employeesTableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
+		createAddEmplouyeeEventHandler(parent);
+		
+		employeesTableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
 		employeesTableViewer.setContentProvider(new EmployeeListContentProvider());
 		employeesTableViewer.setLabelProvider(new EmployeeListLabelProvider());
 		employeesTableViewer.setSorter(new EmployeeListSorter());
@@ -216,44 +184,63 @@ public class EmployeeListView extends ViewPart {
 		hookDoubleClickAction();
 		contributeToActionBars();
 	}
+	
+	private void createAddEmplouyeeEventHandler(Composite parent) {
+		EventHandler handler = new EventHandler() {
+			public void handleEvent(final Event event) {
+				if (parent.getDisplay().getThread() == Thread.currentThread()) {
+					employeesTableViewer.refresh();
+				} else {
+					parent.getDisplay().syncExec(new Runnable() {
+						public void run() {
+							employeesTableViewer.refresh();
+						}
+					});
+				}
+			}
+	    };
+	    Dictionary<String,String> properties = new Hashtable<String, String>();
+	    properties.put(EventConstants.EVENT_TOPIC, EmployeesCommunicationConstants.ADD_EMPLOYEE_EVENT);
+	    bundleContext.registerService(EventHandler.class, handler, properties);
+	}
 
 	private void hookContextMenu() {
-		MenuManager menuMgr = new MenuManager("#PopupMenu");
-		menuMgr.setRemoveAllWhenShown(true);
-		menuMgr.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(IMenuManager manager) {
-				EmployeeListView.this.fillContextMenu(manager);
-			}
-		});
+//		MenuManager menuMgr = new MenuManager("#PopupMenu");
+//		menuMgr.setRemoveAllWhenShown(true);
+//		menuMgr.addMenuListener(new IMenuListener() {
+//			public void menuAboutToShow(IMenuManager manager) {
+//				EmployeeListView.this.fillContextMenu(manager);
+//			}
+//		});
 	}
 
 	private void contributeToActionBars() {
-		IActionBars bars = getViewSite().getActionBars();
-		fillLocalPullDown(bars.getMenuManager());
-		fillLocalToolBar(bars.getToolBarManager());
+//		IActionBars bars = getViewSite().getActionBars();
+//		fillLocalPullDown(bars.getMenuManager());
+//		fillLocalToolBar(bars.getToolBarManager());
 	}
 
-	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(openNewEmployeeDialogAction);
-		manager.add(new Separator());
-	}
+//	private void fillLocalPullDown(IMenuManager manager) {
+//		manager.add(openNewEmployeeDialogAction);
+//		manager.add(new Separator());
+//	}
 
-	private void fillContextMenu(IMenuManager manager) {
-		manager.add(openNewEmployeeDialogAction);
-		// Other plug-ins can contribute there actions here
-		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-	}
+//	private void fillContextMenu(IMenuManager manager) {
+//		manager.add(openNewEmployeeDialogAction);
+//		// Other plug-ins can contribute there actions here
+//		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+//	}
 	
-	private void fillLocalToolBar(IToolBarManager manager) {
-		manager.add(openNewEmployeeDialogAction);
-	}
+//	private void fillLocalToolBar(IToolBarManager manager) {
+//		manager.add(openNewEmployeeDialogAction);
+//	}
 
 	private void makeActions() {
-		openNewEmployeeDialogAction = new OpenNewEmployeeDialogAction("Nuevo Empleado",PlatformUI.getWorkbench().getActiveWorkbenchWindow());
-		openNewEmployeeDialogAction.setText("Nuevo Empleado");
-		openNewEmployeeDialogAction.setToolTipText("Nuevo Empleado");
-		openNewEmployeeDialogAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+//		openNewEmployeeDialogAction = new OpenNewEmployeeDialogAction("Nuevo Empleado",PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+//		openNewEmployeeDialogAction.setText("Nuevo Empleado");
+//		openNewEmployeeDialogAction.setToolTipText("Nuevo Empleado");
+//		openNewEmployeeDialogAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+//			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 //		doubleClickAction = new Action() {
 //			public void run() {
 //				ISelection selection = viewer.getSelection();

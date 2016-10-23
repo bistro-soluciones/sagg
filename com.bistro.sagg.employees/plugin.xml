@@ -27,6 +27,13 @@
             name="Filtro de Empleados"
             restorable="true">
       </view>
+      <view
+            allowMultiple="false"
+            class="com.bistro.sagg.employees.ui.views.EmployeeDetailView"
+            id="com.bistro.sagg.employees.ui.views.EmployeeDetailView"
+            name="Detalle de Empleado"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
