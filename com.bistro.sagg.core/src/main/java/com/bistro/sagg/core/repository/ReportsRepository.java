@@ -72,5 +72,47 @@ public interface ReportsRepository extends JpaRepository<Franchise, Long> {
 			   "		so.employee_id = e.id AND " +
 			   "		bd.payment_method_id = pm.id", nativeQuery = true)
 	List<Object> findSales(@Param("branchId") Long branchId);
+	
+	
+	@Query(value = "SELECT " +
+			   "		po.order_number AS NRO_ORDEN," +
+			   "		po.order_datetime AS FECHA, " +
+			   "		po.order_status AS ESTADO, " +
+			   "		s.business_name AS PROVEEDOR, " +
+			   "		concat(es.firstname, ' ', es.lastname) AS SOLICITANTE, " +
+			   "		concat(er.firstname, ' ', er.lastname) AS RECPTOR " +
+			   "	FROM " +
+			   "		purchase_orders po, " +
+			   "		employees es, " +
+			   "		employees er, " +
+			   "		suppliers s " +
+			   "	WHERE " +
+			   "		po.franchise_branch_id = :branchId AND " +
+			   "		po.supplier_id = s.id AND " +
+			   "		po.receiver_id = er.id AND " +
+			   "		po.requestor_id = es.id", nativeQuery = true)
+	List<Object> findPurchaseOrders(@Param("branchId") Long branchId);
 
+	@Query(value = "SELECT " +
+			   "		po.order_number AS NRO_ORDEN, " +
+			   "		p.name AS PRODUCTO, " +
+			   "		pc.name AS CATEGORIA, " +
+			   "		poi.purchase_unit_price AS PRECIO_UNITARIO, " +
+			   "		poi.quantity AS CANTIDAD, " +
+			   "		poi.amount AS TOTAL " +
+			   "	FROM " +
+			   "		purchase_orders po, " +
+			   "		purchase_order_items poi, " +
+			   "		product_categories pc, " +
+			   "		products p " +
+			   "	WHERE " +
+			   "		po.franchise_branch_id = :branchId AND " +
+			   "		po.id = poi.order_id AND " +
+			   "		pc.franchise_branch_id = :branchId AND " +
+			   "		pc.id = p.product_category_id AND " +
+			   "		p.id = poi.product_id " +
+			   "	ORDER BY " +
+			   "		po.order_number ASC", nativeQuery = true)
+	List<Object> findPurchaseOrdersDetailedByProducts(@Param("branchId") Long branchId);
+	
 }

@@ -1,5 +1,7 @@
 package com.bistro.sagg.core.model.order;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -26,6 +28,8 @@ public abstract class OrderItem {
 	private Product product;
 	@Column(name = "QUANTITY")
 	private int quantity = 0;
+	@Column(name = "AMOUNT")
+	private BigDecimal amount = BigDecimal.ZERO;
 
 	public OrderItem() {
 		super();
@@ -53,6 +57,14 @@ public abstract class OrderItem {
 
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
+	}
+
+	public BigDecimal getAmount() {
+		return amount;
+	}
+
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
 	}
 
 }

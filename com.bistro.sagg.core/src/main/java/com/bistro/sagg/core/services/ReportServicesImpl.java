@@ -19,16 +19,28 @@ public class ReportServicesImpl implements ReportServices {
 	@Autowired
 	private ReportsRepository reportsRepository;
 
-	public List<Object> getProductsBySupplierAndCategory(FranchiseBranch branch, Supplier supplier, ProductCategory category, Product product) {
+	public List<Object> getProductsBySupplierAndCategory(FranchiseBranch branch, Supplier supplier,
+			ProductCategory category, Product product) {
 		return reportsRepository.findProductsBySupplierAndCategory(branch.getId());
 	}
 
-	public List<Object> getSales(FranchiseBranch branch, Date fromDate, Date toDate, DocumentType documentType, PaymentMethod paymentMethod, Employee employee) {
+	public List<Object> getSales(FranchiseBranch branch, Date fromDate, Date toDate, DocumentType documentType,
+			PaymentMethod paymentMethod, Employee employee) {
 		return reportsRepository.findSales(branch.getId());
 	}
-	
-	public List<Object> getSalesDetailedByProduct(FranchiseBranch branch, Date fromDate, Date toDate, ProductCategory category, Product product) {
+
+	public List<Object> getSalesDetailedByProduct(FranchiseBranch branch, Date fromDate, Date toDate,
+			ProductCategory category, Product product) {
 		return reportsRepository.findSalesDetailedByProduct(branch.getId());
+	}
+
+	public List<Object> getPurchaseOrders(FranchiseBranch branch, Date fromDate, Date toDate, Supplier supplier) {
+		return reportsRepository.findPurchaseOrders(branch.getId());
+	}
+
+	public List<Object> getPurchaseOrdersDetailedByProducts(FranchiseBranch branch, Date fromDate, Date toDate,
+			Supplier supplier, ProductCategory category, Product product) {
+		return reportsRepository.findPurchaseOrdersDetailedByProducts(branch.getId());
 	}
 
 }

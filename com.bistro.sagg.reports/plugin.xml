@@ -30,7 +30,7 @@
             class="com.bistro.sagg.reports.ui.views.SuppliesBySupplierListView"
             id="com.bistro.sagg.reports.ui.views.SuppliesBySupplierListView"
             name="Productos por Proveedor"
-            restorable="false">
+            restorable="true">
       </view>
       <view
             allowMultiple="true"
@@ -46,6 +46,22 @@
             class="com.bistro.sagg.reports.ui.views.DetailedSalesReportView"
             id="com.bistro.sagg.reports.ui.views.DetailedSalesReportView"
             name="Reporte de Ventas Detallado"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="true"
+            category="com.bistro.sagg.category.views"
+            class="com.bistro.sagg.reports.ui.views.PurchaseOrdersReportView"
+            id="com.bistro.sagg.reports.ui.views.PurchaseOrdersReportView"
+            name="Reporte de Ordenes de Compra"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="true"
+            category="com.bistro.sagg.category.views"
+            class="com.bistro.sagg.reports.ui.views.DetailedPurchaseOrdersReportView"
+            id="com.bistro.sagg.reports.ui.views.DetailedPurchaseOrdersReportView"
+            name="Reporte de Ordenes de Compra Detallado"
             restorable="true">
       </view>
    </extension>

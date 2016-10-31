@@ -77,7 +77,7 @@ public class DetailedSalesReportView extends ViewPart {
 				detailedSalesTableViewer.refresh();
 			}
 		});
-		documentNumberColumn.setWidth(130);
+		documentNumberColumn.setWidth(150);
 		documentNumberColumn.setText("Nro. de Venta");
 		
 		TableColumn productColumn = new TableColumn(detailedSalesTable, SWT.NONE);

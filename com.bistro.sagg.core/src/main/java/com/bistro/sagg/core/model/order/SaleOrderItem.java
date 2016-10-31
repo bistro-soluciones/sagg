@@ -2,7 +2,6 @@ package com.bistro.sagg.core.model.order;
 
 import java.math.BigDecimal;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -15,22 +14,12 @@ import com.bistro.sagg.core.model.products.SalableProduct;
 @Table(name = "SALE_ORDER_ITEMS")
 public class SaleOrderItem extends OrderItem {
 
-	@Column(name = "AMOUNT")
-	private BigDecimal amount = BigDecimal.ZERO;
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ORDER_ID")
 	private SaleOrder order;
 
 	public SaleOrderItem() {
 		super();
-	}
-
-	public BigDecimal getAmount() {
-		return amount;
-	}
-
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
 	}
 
 	public SaleOrder getOrder() {
@@ -46,7 +35,7 @@ public class SaleOrderItem extends OrderItem {
 	}
 
 	public void recalculateAmount() {
-		this.amount = getSalableProduct().getUnitSalesPrice().multiply(new BigDecimal(getQuantity()));
+		setAmount(getSalableProduct().getUnitSalesPrice().multiply(new BigDecimal(getQuantity())));
 	}
 
 }

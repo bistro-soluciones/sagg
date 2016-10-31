@@ -13,10 +13,18 @@ import com.bistro.sagg.core.model.suppliers.Supplier;
 
 public interface ReportServices extends ISaggService {
 
-	List<Object> getProductsBySupplierAndCategory(FranchiseBranch branch, Supplier supplier, ProductCategory category, Product product);
+	List<Object> getProductsBySupplierAndCategory(FranchiseBranch branch, Supplier supplier, ProductCategory category,
+			Product product);
 
-	List<Object> getSales(FranchiseBranch branch, Date fromDate, Date toDate, DocumentType documentType, PaymentMethod paymentMethod, Employee employee);
+	List<Object> getSales(FranchiseBranch branch, Date fromDate, Date toDate, DocumentType documentType,
+			PaymentMethod paymentMethod, Employee employee);
 
-	List<Object> getSalesDetailedByProduct(FranchiseBranch branch, Date fromDate, Date toDate, ProductCategory category, Product product);
+	List<Object> getSalesDetailedByProduct(FranchiseBranch branch, Date fromDate, Date toDate, ProductCategory category,
+			Product product);
+
+	List<Object> getPurchaseOrders(FranchiseBranch branch, Date fromDate, Date toDate, Supplier supplier);
+
+	List<Object> getPurchaseOrdersDetailedByProducts(FranchiseBranch branch, Date fromDate, Date toDate,
+			Supplier supplier, ProductCategory category, Product product);
 
 }

@@ -38,5 +38,9 @@ public class PurchaseOrderItem extends OrderItem {
 	public void setOrder(PurchaseOrder order) {
 		this.order = order;
 	}
+	
+	public void recalculateAmount() {
+		setAmount(getPurchaseUnitPrice().multiply(new BigDecimal(getQuantity())));
+	}
 
 }

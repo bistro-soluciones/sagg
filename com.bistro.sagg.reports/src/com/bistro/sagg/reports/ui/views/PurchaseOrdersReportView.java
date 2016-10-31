@@ -21,23 +21,21 @@ import org.osgi.service.event.EventAdmin;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 
-import com.bistro.sagg.core.model.company.employees.Employee;
-import com.bistro.sagg.core.model.order.billing.DocumentType;
-import com.bistro.sagg.core.model.order.payment.PaymentMethod;
+import com.bistro.sagg.core.model.suppliers.Supplier;
 import com.bistro.sagg.core.services.ReportServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
+import com.bistro.sagg.reports.ui.utils.PurchaseOrdersReportColumnIndex;
 import com.bistro.sagg.reports.ui.utils.ReportsCommunicationConstants;
-import com.bistro.sagg.reports.ui.utils.SalesReportColumnIndex;
 import com.bistro.sagg.reports.ui.viewers.GenericReportsSorter;
 import com.bistro.sagg.reports.ui.viewers.GenerigReportsLabelProvider;
-import com.bistro.sagg.reports.ui.viewers.SalesReportViewContentProvider;
+import com.bistro.sagg.reports.ui.viewers.PurchaseOrdersReportViewContentProvider;
 
-public class SalesReportView extends ViewPart {
+public class PurchaseOrdersReportView extends ViewPart {
 
-	public static final String ID = "com.bistro.sagg.reports.ui.views.SalesReportView"; //$NON-NLS-1$
+	public static final String ID = "com.bistro.sagg.reports.ui.views.PurchaseOrdersReportView"; //$NON-NLS-1$
 
-	private TableViewer salesTableViewer;
-	private Table salesTable;
+	private TableViewer purchaseOrdersTableViewer;
+	private Table purchaseOrdersTable;
 	
 	private ReportServices reportServices = (ReportServices) SaggServiceLocator.getInstance()
 			.lookup(ReportServices.class.getName());
@@ -45,7 +43,7 @@ public class SalesReportView extends ViewPart {
 	private BundleContext bundleContext;
 	private EventAdmin eventAdmin;
 	
-	public SalesReportView() {
+	public PurchaseOrdersReportView() {
 		super();
 		this.bundleContext = FrameworkUtil.getBundle(SuppliesBySupplierListView.class).getBundleContext();
         ServiceReference<EventAdmin> ref = bundleContext.getServiceReference(EventAdmin.class);
@@ -61,90 +59,79 @@ public class SalesReportView extends ViewPart {
 		
 		createGenerateReportViewEventHandler(parent);
 		
-		salesTableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
-		salesTableViewer.setLabelProvider(new GenerigReportsLabelProvider());
-		salesTableViewer.setSorter(new GenericReportsSorter());
+		purchaseOrdersTableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
+		purchaseOrdersTableViewer.setLabelProvider(new GenerigReportsLabelProvider());
+		purchaseOrdersTableViewer.setSorter(new GenericReportsSorter());
 		
-		salesTable = salesTableViewer.getTable();
-		salesTable.setLinesVisible(true);
-		salesTable.setHeaderVisible(true);
+		purchaseOrdersTable = purchaseOrdersTableViewer.getTable();
+		purchaseOrdersTable.setLinesVisible(true);
+		purchaseOrdersTable.setHeaderVisible(true);
 		
-		TableColumn documentNumberColumn = new TableColumn(salesTable, SWT.NONE);
-		documentNumberColumn.addSelectionListener(new SelectionAdapter() {
+		TableColumn orderNumberColumn = new TableColumn(purchaseOrdersTable, SWT.NONE);
+		orderNumberColumn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				((GenericReportsSorter) salesTableViewer.getSorter()).doSort(SalesReportColumnIndex.DOCUMENT_NUMBER_COLUMN_IDX);
-				salesTableViewer.refresh();
+				((GenericReportsSorter) purchaseOrdersTableViewer.getSorter()).doSort(PurchaseOrdersReportColumnIndex.ORDER_NUMBER_COLUMN_IDX);
+				purchaseOrdersTableViewer.refresh();
 			}
 		});
-		documentNumberColumn.setWidth(150);
-		documentNumberColumn.setText("Nro. de Venta");
+		orderNumberColumn.setWidth(150);
+		orderNumberColumn.setText("Nro. de Orden");
 		
-		TableColumn documentTypeColumn = new TableColumn(salesTable, SWT.NONE);
-		documentTypeColumn.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				((GenericReportsSorter) salesTableViewer.getSorter()).doSort(SalesReportColumnIndex.DOCUMENT_TYPE_COLUMN_IDX);
-				salesTableViewer.refresh();
-			}
-		});
-		documentTypeColumn.setWidth(130);
-		documentTypeColumn.setText("Documento");
-		
-		TableColumn paymentMethodColumn = new TableColumn(salesTable, SWT.NONE);
-		paymentMethodColumn.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				((GenericReportsSorter) salesTableViewer.getSorter()).doSort(SalesReportColumnIndex.PAYMENT_METHOD_COLUMN_IDX);
-				salesTableViewer.refresh();
-			}
-		});
-		paymentMethodColumn.setWidth(130);
-		paymentMethodColumn.setText("Forma de Pago");
-		
-		TableColumn dateColumn = new TableColumn(salesTable, SWT.NONE);
+		TableColumn dateColumn = new TableColumn(purchaseOrdersTable, SWT.NONE);
 		dateColumn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				((GenericReportsSorter) salesTableViewer.getSorter()).doSort(SalesReportColumnIndex.DATE_COLUMN_IDX);
-				salesTableViewer.refresh();
+				((GenericReportsSorter) purchaseOrdersTableViewer.getSorter()).doSort(PurchaseOrdersReportColumnIndex.DATE_COLUMN_IDX);
+				purchaseOrdersTableViewer.refresh();
 			}
 		});
 		dateColumn.setWidth(130);
 		dateColumn.setText("Fecha");
 		
-		TableColumn employeeColumn = new TableColumn(salesTable, SWT.NONE);
-		employeeColumn.addSelectionListener(new SelectionAdapter() {
+		TableColumn statusColumn = new TableColumn(purchaseOrdersTable, SWT.NONE);
+		statusColumn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				((GenericReportsSorter) salesTableViewer.getSorter()).doSort(SalesReportColumnIndex.EMPLOYEE_COLUMN_IDX);
-				salesTableViewer.refresh();
+				((GenericReportsSorter) purchaseOrdersTableViewer.getSorter()).doSort(PurchaseOrdersReportColumnIndex.STATUS_COLUMN_IDX);
+				purchaseOrdersTableViewer.refresh();
 			}
 		});
-		employeeColumn.setWidth(340);
-		employeeColumn.setText("Vendedor");
+		statusColumn.setWidth(130);
+		statusColumn.setText("Estado");
 		
-		TableColumn orderStateColumn = new TableColumn(salesTable, SWT.NONE);
-		orderStateColumn.addSelectionListener(new SelectionAdapter() {
+		TableColumn supplierColumn = new TableColumn(purchaseOrdersTable, SWT.NONE);
+		supplierColumn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				((GenericReportsSorter) salesTableViewer.getSorter()).doSort(SalesReportColumnIndex.ORDER_STATE_COLUMN_IDX);
-				salesTableViewer.refresh();
+				((GenericReportsSorter) purchaseOrdersTableViewer.getSorter()).doSort(PurchaseOrdersReportColumnIndex.SUPPLIER_COLUMN_IDX);
+				purchaseOrdersTableViewer.refresh();
 			}
 		});
-		orderStateColumn.setWidth(130);
-		orderStateColumn.setText("Estado");
+		supplierColumn.setWidth(300);
+		supplierColumn.setText("Proveedor");
 		
-		TableColumn totalAmount = new TableColumn(salesTable, SWT.NONE);
-		totalAmount.addSelectionListener(new SelectionAdapter() {
+		TableColumn requestorColumn = new TableColumn(purchaseOrdersTable, SWT.NONE);
+		requestorColumn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				((GenericReportsSorter) salesTableViewer.getSorter()).doSort(SalesReportColumnIndex.TOTAL_AMOUNT_COLUMN_IDX);
-				salesTableViewer.refresh();
+				((GenericReportsSorter) purchaseOrdersTableViewer.getSorter()).doSort(PurchaseOrdersReportColumnIndex.EMPLOYEE_REQUESTOR_COLUMN_IDX);
+				purchaseOrdersTableViewer.refresh();
 			}
 		});
-		totalAmount.setWidth(130);
-		totalAmount.setText("Total");
+		requestorColumn.setWidth(300);
+		requestorColumn.setText("Solicitado Por");
+		
+		TableColumn receiverColumn = new TableColumn(purchaseOrdersTable, SWT.NONE);
+		receiverColumn.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				((GenericReportsSorter) purchaseOrdersTableViewer.getSorter()).doSort(PurchaseOrdersReportColumnIndex.EMPLOYEE_RECEIVER_COLUMN_IDX);
+				purchaseOrdersTableViewer.refresh();
+			}
+		});
+		receiverColumn.setWidth(300);
+		receiverColumn.setText("Recibido Por");
 		
 		makeActions();
 		hookContextMenu();
@@ -155,27 +142,25 @@ public class SalesReportView extends ViewPart {
 	private void createGenerateReportViewEventHandler(Composite parent) {
 		EventHandler handler = new EventHandler() {
 			public void handleEvent(final Event event) {
-				SalesReportViewContentProvider provider = new SalesReportViewContentProvider();
+				PurchaseOrdersReportViewContentProvider provider = new PurchaseOrdersReportViewContentProvider();
 				provider.setFromDate((Date) event.getProperty(ReportsCommunicationConstants.FROM_DATE_DATA));
 				provider.setToDate((Date) event.getProperty(ReportsCommunicationConstants.TO_DATE_DATA));
-				provider.setDocumentType((DocumentType) event.getProperty(ReportsCommunicationConstants.DOCUMENT_TYPE_DATA));;
-				provider.setPaymentMethod((PaymentMethod) event.getProperty(ReportsCommunicationConstants.PAYMENT_METHOD_DATA));
-				provider.setEmployee((Employee) event.getProperty(ReportsCommunicationConstants.EMPLOYEE_DATA));
+				provider.setSupplier((Supplier) event.getProperty(ReportsCommunicationConstants.SUPPLIER_DATA));
 				if (parent.getDisplay().getThread() == Thread.currentThread()) {
-					salesTableViewer.setContentProvider(provider);
-					salesTableViewer.setInput(reportServices);
+					purchaseOrdersTableViewer.setContentProvider(provider);
+					purchaseOrdersTableViewer.setInput(reportServices);
 				} else {
 					parent.getDisplay().syncExec(new Runnable() {
 						public void run() {
-							salesTableViewer.setContentProvider(provider);
-							salesTableViewer.setInput(reportServices);
+							purchaseOrdersTableViewer.setContentProvider(provider);
+							purchaseOrdersTableViewer.setInput(reportServices);
 						}
 					});
 				}
 			}
 	    };
 	    Dictionary<String,String> properties = new Hashtable<String, String>();
-	    properties.put(EventConstants.EVENT_TOPIC, ReportsCommunicationConstants.GENERATE_SALES_REPORT_EVENT);
+	    properties.put(EventConstants.EVENT_TOPIC, ReportsCommunicationConstants.GENERATE_PURCHASE_ORDERS_REPORT_EVENT);
 	    bundleContext.registerService(EventHandler.class, handler, properties);
 	}
 

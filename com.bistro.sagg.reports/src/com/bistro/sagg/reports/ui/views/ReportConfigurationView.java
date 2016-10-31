@@ -36,7 +36,6 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 
-import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.model.company.employees.Employee;
 import com.bistro.sagg.core.model.order.billing.DocumentType;
 import com.bistro.sagg.core.model.order.payment.PaymentMethod;
@@ -48,10 +47,10 @@ import com.bistro.sagg.core.services.EmployeeServices;
 import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.core.services.SupplierServices;
-import com.bistro.sagg.core.session.SaggSession;
-import com.bistro.sagg.core.session.SaggSessionConstants;
+import com.bistro.sagg.reports.ui.commands.DetailedPurchaseOrdersReportCommand;
 import com.bistro.sagg.reports.ui.commands.DetailedSalesReportCommand;
 import com.bistro.sagg.reports.ui.commands.IReportCommand;
+import com.bistro.sagg.reports.ui.commands.PurchaseOrdersReportCommand;
 import com.bistro.sagg.reports.ui.commands.SalesReportCommand;
 import com.bistro.sagg.reports.ui.commands.SuppliesBySupplierReportCommand;
 import com.bistro.sagg.reports.ui.utils.ReportsCommunicationConstants;
@@ -96,6 +95,8 @@ public class ReportConfigurationView extends ViewPart {
 	private static final String REPORTE_DE_VENTAS = "Reporte de Ventas";
 	private static final String REPORTE_DE_VENTAS_DETALLADO = "Reporte de Ventas Detallado";
 	private static final String REPORTE_DE_PRODUCTOS_POR_PROVEEDOR = "Reporte de Productos por Proveedor";
+	private static final String REPORTE_DE_ORDENES_DE_COMPRA = "Reporte de Ordenes de Compra";
+	private static final String REPORTE_DE_ORDENES_DE_COMPRA_DETALLADO = "Reporte de Ordenes de Compra Detallado";
 	
 	private DateTime fromDateDateTime;
 	private DateTime toDateDateTime;
@@ -120,7 +121,6 @@ public class ReportConfigurationView extends ViewPart {
 	private SupplierServices supplierServices = (SupplierServices) SaggServiceLocator.getInstance()
 			.lookup(SupplierServices.class.getName());
 	
-	private FranchiseBranch franchiseBranch;
 	private DocumentType selectedDocumentType;
 	private PaymentMethod selectedPaymentMethod;
 	private ProductCategory selectedProductCategory;
@@ -138,7 +138,6 @@ public class ReportConfigurationView extends ViewPart {
 		this.bundleContext = FrameworkUtil.getBundle(ReportConfigurationView.class).getBundleContext();
 		ServiceReference<EventAdmin> ref = bundleContext.getServiceReference(EventAdmin.class);
 		this.eventAdmin = bundleContext.getService(ref);
-		this.franchiseBranch = SaggSession.getCurrentSession().getSessionObject(SaggSessionConstants.CURRENT_FRANCHISE_BANCH);
 	}
 
 	/**
@@ -164,6 +163,8 @@ public class ReportConfigurationView extends ViewPart {
 		reportsCombo.add(REPORTE_DE_VENTAS);
 		reportsCombo.add(REPORTE_DE_VENTAS_DETALLADO);
 		reportsCombo.add(REPORTE_DE_PRODUCTOS_POR_PROVEEDOR);
+		reportsCombo.add(REPORTE_DE_ORDENES_DE_COMPRA);
+		reportsCombo.add(REPORTE_DE_ORDENES_DE_COMPRA_DETALLADO);
 		reportsCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		reportsCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -394,6 +395,12 @@ public class ReportConfigurationView extends ViewPart {
 		if(REPORTE_DE_PRODUCTOS_POR_PROVEEDOR.equals(reportsCombo.getText())) {
 			reportCommand = new SuppliesBySupplierReportCommand();
 		}
+		if(REPORTE_DE_ORDENES_DE_COMPRA.equals(reportsCombo.getText())) {
+			reportCommand = new PurchaseOrdersReportCommand();
+		}
+		if(REPORTE_DE_ORDENES_DE_COMPRA_DETALLADO.equals(reportsCombo.getText())) {
+			reportCommand = new DetailedPurchaseOrdersReportCommand();
+		}
 	}
 	
 	private void enableReportFilters(String selectedReport) {
@@ -412,6 +419,18 @@ public class ReportConfigurationView extends ViewPart {
 			productCombo.setEnabled(true);
 		}
 		if(REPORTE_DE_PRODUCTOS_POR_PROVEEDOR.equals(selectedReport)) {
+			supplierCombo.setEnabled(true);
+			productCategoryCombo.setEnabled(true);
+			productCombo.setEnabled(true);
+		}
+		if(REPORTE_DE_ORDENES_DE_COMPRA.equals(selectedReport)) {
+			fromDateDateTime.setEnabled(true);
+			toDateDateTime.setEnabled(true);
+			supplierCombo.setEnabled(true);
+		}
+		if(REPORTE_DE_ORDENES_DE_COMPRA_DETALLADO.equals(selectedReport)) {
+			fromDateDateTime.setEnabled(true);
+			toDateDateTime.setEnabled(true);
 			supplierCombo.setEnabled(true);
 			productCategoryCombo.setEnabled(true);
 			productCombo.setEnabled(true);

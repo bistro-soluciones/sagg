@@ -114,6 +114,11 @@ ALTER TABLE purchase_order_items ADD purchase_unit_price DECIMAL NULL AFTER `qua
 
 INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('20', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-3.xml', NOW(), 56, '7:c61f2ed8eb2456798d89edd22bfd4bae', 'addColumn tableName=purchase_order_items', '', 'EXECUTED', NULL, NULL, '3.5.1', '7748390894');
 
+--  Changeset src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-3.xml::21::sebastian.lavie
+ALTER TABLE purchase_order_items ADD amount DECIMAL NULL AFTER `quantity`;
+
+INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('21', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-3.xml', NOW(), 57, '7:06dc6c02f119bddb9eec0d11c96aba83', 'addColumn tableName=purchase_order_items', '', 'EXECUTED', NULL, NULL, '3.5.1', '7934363793');
+
 --  Release Database Lock
 UPDATE DATABASECHANGELOGLOCK SET LOCKED = 0, LOCKEDBY = NULL, LOCKGRANTED = NULL WHERE ID = 1;
 

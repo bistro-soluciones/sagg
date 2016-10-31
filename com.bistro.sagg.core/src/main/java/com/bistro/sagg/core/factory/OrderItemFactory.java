@@ -12,6 +12,7 @@ public class OrderItemFactory {
 	public static PurchaseOrderItem createPurchaseOrderItem(Product product, int quantity, BigDecimal purchaseUnitPrice) {
 		PurchaseOrderItem item = (PurchaseOrderItem) fillItem(new PurchaseOrderItem(), product, quantity);
 		item.setPurchaseUnitPrice(purchaseUnitPrice);
+		item.recalculateAmount();
 		return item;
 	}
 

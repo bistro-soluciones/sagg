@@ -16,5 +16,7 @@ public interface ReportsCommunicationConstants {
 	String GENERATE_SALES_REPORT_EVENT = "ReportsCommunicationConstants/SalesReport";
 	String GENERATE_DETAILED_SALES_REPORT_EVENT = "ReportsCommunicationConstants/DetailedSalesReport";
 	String GENERATE_SUPPLIES_BY_SUPPLIER_REPORT_EVENT = "ReportsCommunicationConstants/SuppliesBySupplierReport";
+	String GENERATE_PURCHASE_ORDERS_REPORT_EVENT = "ReportsCommunicationConstants/PurchaseOrdersReport";
+	String GENERATE_DTAILED_PURCHASE_ORDERS_REPORT_EVENT = "ReportsCommunicationConstants/DetailedPurchaseOrdersReport";
 	
 }
