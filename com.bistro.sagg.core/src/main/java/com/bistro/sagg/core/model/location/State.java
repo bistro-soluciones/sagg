@@ -13,9 +13,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.bistro.sagg.core.model.Identificable;
+
 @Entity
 @Table(name = "STATES")
-public class State {
+public class State implements Identificable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

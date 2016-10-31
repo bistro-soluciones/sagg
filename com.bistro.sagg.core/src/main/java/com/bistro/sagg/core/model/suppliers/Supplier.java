@@ -16,12 +16,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.bistro.sagg.core.model.Identificable;
 import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.model.products.ProductCategory;
 
 @Entity
 @Table(name = "SUPPLIERS")
-public class Supplier {
+public class Supplier implements Identificable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

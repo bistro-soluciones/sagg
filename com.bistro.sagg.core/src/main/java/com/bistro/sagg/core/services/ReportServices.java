@@ -25,6 +25,6 @@ public interface ReportServices extends ISaggService {
 	List<Object> getPurchaseOrders(FranchiseBranch branch, Date fromDate, Date toDate, Supplier supplier);
 
 	List<Object> getPurchaseOrdersDetailedByProducts(FranchiseBranch branch, Date fromDate, Date toDate,
-			Supplier supplier, ProductCategory category, Product product);
+			ProductCategory category, Product product);
 
 }

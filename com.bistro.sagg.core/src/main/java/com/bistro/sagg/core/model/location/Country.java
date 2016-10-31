@@ -10,9 +10,11 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.bistro.sagg.core.model.Identificable;
+
 @Entity
 @Table(name = "COUNTIES")
-public class Country {
+public class Country implements Identificable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

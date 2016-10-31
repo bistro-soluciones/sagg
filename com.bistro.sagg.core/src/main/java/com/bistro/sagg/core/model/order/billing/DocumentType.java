@@ -7,9 +7,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.bistro.sagg.core.model.Identificable;
+
 @Entity
 @Table(name = "DOCUMENT_TYPES")
-public class DocumentType {
+public class DocumentType implements Identificable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

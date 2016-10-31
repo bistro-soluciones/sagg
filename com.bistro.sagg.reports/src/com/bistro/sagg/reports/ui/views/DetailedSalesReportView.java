@@ -80,6 +80,17 @@ public class DetailedSalesReportView extends ViewPart {
 		documentNumberColumn.setWidth(150);
 		documentNumberColumn.setText("Nro. de Venta");
 		
+		TableColumn dateColumn = new TableColumn(detailedSalesTable, SWT.NONE);
+		dateColumn.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				((GenericReportsSorter) detailedSalesTableViewer.getSorter()).doSort(DetailedSalesReportColumnIndex.DATE_COLUMN_IDX);
+				detailedSalesTableViewer.refresh();
+			}
+		});
+		dateColumn.setWidth(130);
+		dateColumn.setText("Fecha");
+		
 		TableColumn productColumn = new TableColumn(detailedSalesTable, SWT.NONE);
 		productColumn.addSelectionListener(new SelectionAdapter() {
 			@Override

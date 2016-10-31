@@ -14,12 +14,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 
+import com.bistro.sagg.core.model.Identificable;
 import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.model.order.billing.BillingDocument;
 
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @MappedSuperclass
-public abstract class Order {
+public abstract class Order implements Identificable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

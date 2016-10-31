@@ -10,11 +10,13 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 
+import com.bistro.sagg.core.model.Identificable;
+
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "METHOD_TYPE")
 @Table(name = "PAYMENT_METHODS")
-public abstract class PaymentMethod {
+public abstract class PaymentMethod implements Identificable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

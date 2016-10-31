@@ -11,11 +11,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.bistro.sagg.core.model.Identificable;
 import com.bistro.sagg.core.model.location.City;
 
 @Entity
 @Table(name = "FRANCHISEDS")
-public class Franchised {
+public class Franchised implements Identificable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

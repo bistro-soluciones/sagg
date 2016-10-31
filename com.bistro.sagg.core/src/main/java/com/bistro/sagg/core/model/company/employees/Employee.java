@@ -12,12 +12,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.bistro.sagg.core.model.Identificable;
 import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.model.location.City;
 
 @Entity
 @Table(name = "EMPLOYEES")
-public class Employee {
+public class Employee implements Identificable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -16,11 +16,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.bistro.sagg.core.model.Identificable;
+
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "PRODUCT_TYPE")
 @Table(name = "PRODUCTS")
-public abstract class Product {
+public abstract class Product implements Identificable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

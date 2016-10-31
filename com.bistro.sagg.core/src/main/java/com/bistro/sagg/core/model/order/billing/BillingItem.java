@@ -12,11 +12,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.bistro.sagg.core.model.Identificable;
 import com.bistro.sagg.core.model.products.Product;
 
 @Entity
 @Table(name = "BILLING_ITEMS")
-public class BillingItem {
+public class BillingItem implements Identificable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

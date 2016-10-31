@@ -5,7 +5,6 @@ import java.util.Date;
 import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.model.products.Product;
 import com.bistro.sagg.core.model.products.ProductCategory;
-import com.bistro.sagg.core.model.suppliers.Supplier;
 import com.bistro.sagg.core.osgi.ui.viewers.SaggStructuredContentProvider;
 import com.bistro.sagg.core.services.ReportServices;
 import com.bistro.sagg.core.session.SaggSession;
@@ -15,7 +14,6 @@ public class DetailedPurchaseOrdersReportViewContentProvider extends SaggStructu
 
 	private Date fromDate;
 	private Date toDate;
-	private Supplier supplier;
 	private ProductCategory productCategory;
 	private Product product;
 	
@@ -25,10 +23,6 @@ public class DetailedPurchaseOrdersReportViewContentProvider extends SaggStructu
 
 	public void setToDate(Date toDate) {
 		this.toDate = toDate;
-	}
-
-	public void setSupplier(Supplier supplier) {
-		this.supplier = supplier;
 	}
 
 	public void setProductCategory(ProductCategory productCategory) {
@@ -43,7 +37,7 @@ public class DetailedPurchaseOrdersReportViewContentProvider extends SaggStructu
 	public Object[] getElements(Object inputElement) {
 		ReportServices reportServices = (ReportServices) inputElement;
 		FranchiseBranch branch = SaggSession.getCurrentSession().getSessionObject(SaggSessionConstants.CURRENT_FRANCHISE_BANCH);
-		return reportServices.getPurchaseOrdersDetailedByProducts(branch, fromDate, toDate, supplier, productCategory, product).toArray();
+		return reportServices.getPurchaseOrdersDetailedByProducts(branch, fromDate, toDate, productCategory, product).toArray();
 	}
 
 }

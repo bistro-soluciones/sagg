@@ -23,7 +23,6 @@ import org.osgi.service.event.EventHandler;
 
 import com.bistro.sagg.core.model.products.Product;
 import com.bistro.sagg.core.model.products.ProductCategory;
-import com.bistro.sagg.core.model.suppliers.Supplier;
 import com.bistro.sagg.core.services.ReportServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.reports.ui.utils.DetailedPurchaseOrdersReportColumnIndex;
@@ -36,8 +35,8 @@ public class DetailedPurchaseOrdersReportView extends ViewPart {
 
 	public static final String ID = "com.bistro.sagg.reports.ui.views.DetailedPurchaseOrdersReportView"; //$NON-NLS-1$
 
-	private TableViewer purchaseOrdersTableViewer;
-	private Table purchaseOrdersTable;
+	private TableViewer detailedPurchaseOrdersTableViewer;
+	private Table detailedPurchaseOrdersTable;
 	
 	private ReportServices reportServices = (ReportServices) SaggServiceLocator.getInstance()
 			.lookup(ReportServices.class.getName());
@@ -61,75 +60,86 @@ public class DetailedPurchaseOrdersReportView extends ViewPart {
 		
 		createGenerateReportViewEventHandler(parent);
 		
-		purchaseOrdersTableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
-		purchaseOrdersTableViewer.setLabelProvider(new GenerigReportsLabelProvider());
-		purchaseOrdersTableViewer.setSorter(new GenericReportsSorter());
+		detailedPurchaseOrdersTableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
+		detailedPurchaseOrdersTableViewer.setLabelProvider(new GenerigReportsLabelProvider());
+		detailedPurchaseOrdersTableViewer.setSorter(new GenericReportsSorter());
 		
-		purchaseOrdersTable = purchaseOrdersTableViewer.getTable();
-		purchaseOrdersTable.setLinesVisible(true);
-		purchaseOrdersTable.setHeaderVisible(true);
+		detailedPurchaseOrdersTable = detailedPurchaseOrdersTableViewer.getTable();
+		detailedPurchaseOrdersTable.setLinesVisible(true);
+		detailedPurchaseOrdersTable.setHeaderVisible(true);
 		
-		TableColumn orderNumberColumn = new TableColumn(purchaseOrdersTable, SWT.NONE);
+		TableColumn orderNumberColumn = new TableColumn(detailedPurchaseOrdersTable, SWT.NONE);
 		orderNumberColumn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				((GenericReportsSorter) purchaseOrdersTableViewer.getSorter()).doSort(DetailedPurchaseOrdersReportColumnIndex.ORDER_NUMBER_COLUMN_IDX);
-				purchaseOrdersTableViewer.refresh();
+				((GenericReportsSorter) detailedPurchaseOrdersTableViewer.getSorter()).doSort(DetailedPurchaseOrdersReportColumnIndex.ORDER_NUMBER_COLUMN_IDX);
+				detailedPurchaseOrdersTableViewer.refresh();
 			}
 		});
 		orderNumberColumn.setWidth(150);
 		orderNumberColumn.setText("Nro. de Orden");
 		
-		TableColumn productColumn = new TableColumn(purchaseOrdersTable, SWT.NONE);
+		TableColumn dateColumn = new TableColumn(detailedPurchaseOrdersTable, SWT.NONE);
+		dateColumn.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				((GenericReportsSorter) detailedPurchaseOrdersTableViewer.getSorter()).doSort(DetailedPurchaseOrdersReportColumnIndex.DATE_COLUMN_IDX);
+				detailedPurchaseOrdersTableViewer.refresh();
+			}
+		});
+		dateColumn.setWidth(130);
+		dateColumn.setText("Fecha");
+		
+		TableColumn productColumn = new TableColumn(detailedPurchaseOrdersTable, SWT.NONE);
 		productColumn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				((GenericReportsSorter) purchaseOrdersTableViewer.getSorter()).doSort(DetailedPurchaseOrdersReportColumnIndex.PRODUCT_COLUMN_IDX);
-				purchaseOrdersTableViewer.refresh();
+				((GenericReportsSorter) detailedPurchaseOrdersTableViewer.getSorter()).doSort(DetailedPurchaseOrdersReportColumnIndex.PRODUCT_COLUMN_IDX);
+				detailedPurchaseOrdersTableViewer.refresh();
 			}
 		});
 		productColumn.setWidth(300);
 		productColumn.setText("Producto");
 		
-		TableColumn productCategoryColumn = new TableColumn(purchaseOrdersTable, SWT.NONE);
+		TableColumn productCategoryColumn = new TableColumn(detailedPurchaseOrdersTable, SWT.NONE);
 		productCategoryColumn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				((GenericReportsSorter) purchaseOrdersTableViewer.getSorter()).doSort(DetailedPurchaseOrdersReportColumnIndex.PRODUCT_CATEGORY_COLUMN_IDX);
-				purchaseOrdersTableViewer.refresh();
+				((GenericReportsSorter) detailedPurchaseOrdersTableViewer.getSorter()).doSort(DetailedPurchaseOrdersReportColumnIndex.PRODUCT_CATEGORY_COLUMN_IDX);
+				detailedPurchaseOrdersTableViewer.refresh();
 			}
 		});
 		productCategoryColumn.setWidth(300);
 		productCategoryColumn.setText("Categor\u00EDa");
 		
-		TableColumn unitPriceColumn = new TableColumn(purchaseOrdersTable, SWT.NONE);
+		TableColumn unitPriceColumn = new TableColumn(detailedPurchaseOrdersTable, SWT.NONE);
 		unitPriceColumn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				((GenericReportsSorter) purchaseOrdersTableViewer.getSorter()).doSort(DetailedPurchaseOrdersReportColumnIndex.UNIT_PRICE_COLUMN_IDX);
-				purchaseOrdersTableViewer.refresh();
+				((GenericReportsSorter) detailedPurchaseOrdersTableViewer.getSorter()).doSort(DetailedPurchaseOrdersReportColumnIndex.UNIT_PRICE_COLUMN_IDX);
+				detailedPurchaseOrdersTableViewer.refresh();
 			}
 		});
 		unitPriceColumn.setWidth(130);
 		unitPriceColumn.setText("Precio Unitario");
 		
-		TableColumn quantityColumn = new TableColumn(purchaseOrdersTable, SWT.NONE);
+		TableColumn quantityColumn = new TableColumn(detailedPurchaseOrdersTable, SWT.NONE);
 		quantityColumn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				((GenericReportsSorter) purchaseOrdersTableViewer.getSorter()).doSort(DetailedPurchaseOrdersReportColumnIndex.QUANTITY_COLUMN_IDX);
-				purchaseOrdersTableViewer.refresh();
+				((GenericReportsSorter) detailedPurchaseOrdersTableViewer.getSorter()).doSort(DetailedPurchaseOrdersReportColumnIndex.QUANTITY_COLUMN_IDX);
+				detailedPurchaseOrdersTableViewer.refresh();
 			}
 		});
 		quantityColumn.setWidth(80);
 		quantityColumn.setText("Cantidad");
 		
-		TableColumn totalAmountColumn = new TableColumn(purchaseOrdersTable, SWT.NONE);
+		TableColumn totalAmountColumn = new TableColumn(detailedPurchaseOrdersTable, SWT.NONE);
 		totalAmountColumn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				((GenericReportsSorter) purchaseOrdersTableViewer.getSorter()).doSort(DetailedPurchaseOrdersReportColumnIndex.TOTAL_AMOUNT_COLUMN_IDX);
-				purchaseOrdersTableViewer.refresh();
+				((GenericReportsSorter) detailedPurchaseOrdersTableViewer.getSorter()).doSort(DetailedPurchaseOrdersReportColumnIndex.TOTAL_AMOUNT_COLUMN_IDX);
+				detailedPurchaseOrdersTableViewer.refresh();
 			}
 		});
 		totalAmountColumn.setWidth(130);
@@ -147,17 +157,16 @@ public class DetailedPurchaseOrdersReportView extends ViewPart {
 				DetailedPurchaseOrdersReportViewContentProvider provider = new DetailedPurchaseOrdersReportViewContentProvider();
 				provider.setFromDate((Date) event.getProperty(ReportsCommunicationConstants.FROM_DATE_DATA));
 				provider.setToDate((Date) event.getProperty(ReportsCommunicationConstants.TO_DATE_DATA));
-				provider.setSupplier((Supplier) event.getProperty(ReportsCommunicationConstants.SUPPLIER_DATA));
 				provider.setProductCategory((ProductCategory) event.getProperty(ReportsCommunicationConstants.PRODUCT_CATEGORY_DATA));
 				provider.setProduct((Product) event.getProperty(ReportsCommunicationConstants.PRODUCT_DATA));
 				if (parent.getDisplay().getThread() == Thread.currentThread()) {
-					purchaseOrdersTableViewer.setContentProvider(provider);
-					purchaseOrdersTableViewer.setInput(reportServices);
+					detailedPurchaseOrdersTableViewer.setContentProvider(provider);
+					detailedPurchaseOrdersTableViewer.setInput(reportServices);
 				} else {
 					parent.getDisplay().syncExec(new Runnable() {
 						public void run() {
-							purchaseOrdersTableViewer.setContentProvider(provider);
-							purchaseOrdersTableViewer.setInput(reportServices);
+							detailedPurchaseOrdersTableViewer.setContentProvider(provider);
+							detailedPurchaseOrdersTableViewer.setInput(reportServices);
 						}
 					});
 				}

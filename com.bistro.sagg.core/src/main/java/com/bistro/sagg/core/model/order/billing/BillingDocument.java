@@ -16,11 +16,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.bistro.sagg.core.model.Identificable;
 import com.bistro.sagg.core.model.order.payment.PaymentMethod;
 
 @Entity
 @Table(name = "BILLING_DOCUMENTS")
-public class BillingDocument {
+public class BillingDocument implements Identificable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

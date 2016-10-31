@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.bistro.sagg.core.model.Identificable;
 import com.bistro.sagg.core.model.company.employees.Employee;
 import com.bistro.sagg.core.model.location.City;
 import com.bistro.sagg.core.model.order.PurchaseOrder;
@@ -24,7 +25,7 @@ import com.bistro.sagg.core.model.suppliers.Supplier;
 
 @Entity
 @Table(name = "FRANCHISE_BRANCHES")
-public class FranchiseBranch {
+public class FranchiseBranch implements Identificable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

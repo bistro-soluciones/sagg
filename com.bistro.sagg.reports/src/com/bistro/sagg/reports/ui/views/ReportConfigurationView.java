@@ -66,6 +66,8 @@ import com.bistro.sagg.reports.ui.viewers.ProductComboContentProvider;
 import com.bistro.sagg.reports.ui.viewers.ProductComboLabelProvider;
 import com.bistro.sagg.reports.ui.viewers.SupplierComboContentProvider;
 import com.bistro.sagg.reports.ui.viewers.SupplierComboLabelProvider;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.ModifyEvent;
 
 /**
  * This sample class demonstrates how to plug-in a new
@@ -105,6 +107,7 @@ public class ReportConfigurationView extends ViewPart {
 	private Combo paymentMethodCombo;
 	private Combo employeeCombo;
 	private Combo supplierCombo;
+	private ComboViewer productCategoryComboViewer;
 	private Combo productCategoryCombo;
 	private ComboViewer productComboViewer;
 	private Combo productCombo;
@@ -182,18 +185,21 @@ public class ReportConfigurationView extends ViewPart {
 		workingInfoGroup.setLayout(new GridLayout(2, false));
 		
 		Label fromDateLabel = new Label(workingInfoGroup, SWT.RIGHT);
-		GridData gd_startDateLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_startDateLabel.widthHint = 150;
-		fromDateLabel.setLayoutData(gd_startDateLabel);
+		GridData gd_fromDateLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
+		gd_fromDateLabel.widthHint = 150;
+		fromDateLabel.setLayoutData(gd_fromDateLabel);
 		fromDateLabel.setText("Fecha Inicio");
 		
 		fromDateDateTime = new DateTime(workingInfoGroup, SWT.DROP_DOWN);
 		fromDateDateTime.setEnabled(false);
+		Calendar instance = Calendar.getInstance();
+		instance.add(Calendar.MONTH, -1);
+		fromDateDateTime.setDate(instance.get(Calendar.YEAR), instance.get(Calendar.MONTH), instance.get(Calendar.DAY_OF_MONTH));
 		
 		Label toDateLabel = new Label(workingInfoGroup, SWT.RIGHT);
-		GridData gd_endDateLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_endDateLabel.widthHint = 150;
-		toDateLabel.setLayoutData(gd_endDateLabel);
+		GridData gd_toDateLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
+		gd_toDateLabel.widthHint = 150;
+		toDateLabel.setLayoutData(gd_toDateLabel);
 		toDateLabel.setText("Fecha Fin");
 		
 		toDateDateTime = new DateTime(workingInfoGroup, SWT.DROP_DOWN);
@@ -210,6 +216,13 @@ public class ReportConfigurationView extends ViewPart {
 		documentTypeComboViewer.setLabelProvider(new BillingDocumentTypeComboLabelProvider());
 		documentTypeComboViewer.setInput(billingServices);
 		documentTypeCombo = documentTypeComboViewer.getCombo();
+		documentTypeCombo.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				if ("".equals(documentTypeCombo.getText())) {
+					selectedDocumentType = null;
+				}
+			}
+		});
 		documentTypeCombo.setEnabled(false);
 		documentTypeCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		documentTypeComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -230,6 +243,13 @@ public class ReportConfigurationView extends ViewPart {
 		paymentMethodComboViewer.setLabelProvider(new PaymentMethodComboLabelProvider());
 		paymentMethodComboViewer.setInput(billingServices);
 		paymentMethodCombo = paymentMethodComboViewer.getCombo();
+		paymentMethodCombo.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				if ("".equals(paymentMethodCombo.getText())) {
+					selectedPaymentMethod = null;
+				}
+			}
+		});
 		paymentMethodCombo.setEnabled(false);
 		paymentMethodCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		paymentMethodComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -250,6 +270,13 @@ public class ReportConfigurationView extends ViewPart {
 		employeeComboViewer.setLabelProvider(new EmployeeComboLabelProvider());
 		employeeComboViewer.setInput(employeeServices);
 		employeeCombo = employeeComboViewer.getCombo();
+		employeeCombo.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				if ("".equals(employeeCombo.getText())) {
+					selectedEmployee = null;
+				}
+			}
+		});
 		employeeCombo.setEnabled(false);
 		employeeCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		employeeComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -270,12 +297,21 @@ public class ReportConfigurationView extends ViewPart {
 		supplierComboViewer.setLabelProvider(new SupplierComboLabelProvider());
 		supplierComboViewer.setInput(supplierServices);
 		supplierCombo = supplierComboViewer.getCombo();
+		supplierCombo.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				if ("".equals(supplierCombo.getText())) {
+					selectedSupplier = null;
+				}
+			}
+		});
 		supplierCombo.setEnabled(false);
 		supplierCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		supplierComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				selectedSupplier = (Supplier) ((StructuredSelection) event.getSelection()).getFirstElement();
+				productCategoryComboViewer.setInput(selectedSupplier);
+				productCategoryComboViewer.refresh();
 			}
 		});
 		
@@ -285,11 +321,18 @@ public class ReportConfigurationView extends ViewPart {
 		productCategoryLabel.setLayoutData(gd_productCategoryLabel);
 		productCategoryLabel.setText("Categor\u00EDa de Producto");
 		
-		ComboViewer productCategoryComboViewer = new ComboViewer(workingInfoGroup, SWT.NONE);
+		productCategoryComboViewer = new ComboViewer(workingInfoGroup, SWT.NONE);
 		productCategoryComboViewer.setContentProvider(new ProductCategoryComboContentProvider());
 		productCategoryComboViewer.setLabelProvider(new ProductCategoryComboLabelProvider());
 		productCategoryComboViewer.setInput(productServices);
 		productCategoryCombo = productCategoryComboViewer.getCombo();
+		productCategoryCombo.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				if ("".equals(productCategoryCombo.getText())) {
+					selectedProductCategory = null;
+				}
+			}
+		});
 		productCategoryCombo.setEnabled(false);
 		productCategoryCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		productCategoryComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -314,6 +357,13 @@ public class ReportConfigurationView extends ViewPart {
 		productComboViewer.setLabelProvider(new ProductComboLabelProvider());
 		productComboViewer.setInput(productServices);
 		productCombo = productComboViewer.getCombo();
+		productCombo.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				if ("".equals(productCombo.getText())) {
+					selectedProduct = null;
+				}
+			}
+		});
 		productCombo.setEnabled(false);
 		productCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		productComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -324,7 +374,7 @@ public class ReportConfigurationView extends ViewPart {
 		});
 		
 		Composite composite = new Composite(parent, SWT.NONE);
-		composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		composite.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, true, 1, 1));
 		composite.setLayout(new GridLayout(2, true));
 		
 		cancelButton = new Button(composite, SWT.NONE);
@@ -431,7 +481,6 @@ public class ReportConfigurationView extends ViewPart {
 		if(REPORTE_DE_ORDENES_DE_COMPRA_DETALLADO.equals(selectedReport)) {
 			fromDateDateTime.setEnabled(true);
 			toDateDateTime.setEnabled(true);
-			supplierCombo.setEnabled(true);
 			productCategoryCombo.setEnabled(true);
 			productCombo.setEnabled(true);
 		}
@@ -459,13 +508,18 @@ public class ReportConfigurationView extends ViewPart {
 		productCategoryCombo.setEnabled(false);
 		productCombo.setText("");
 		productCombo.setEnabled(false);
+		selectedDocumentType = null;
+		selectedPaymentMethod = null;
+		selectedProductCategory = null;
+		selectedProduct = null;
+		selectedEmployee = null;
+		selectedSupplier = null;
+		productCategoryComboViewer.setInput(productServices);
 	}
 	
 	private Date getDateFor(DateTime dateTime) {
 		Calendar instance = Calendar.getInstance();
-		instance.set(Calendar.DAY_OF_MONTH, dateTime.getDay());
-		instance.set(Calendar.MONTH, dateTime.getMonth());
-		instance.set(Calendar.YEAR, dateTime.getYear());
+		instance.set(dateTime.getYear(), dateTime.getMonth(), dateTime.getDay(), 0, 0, 0);
 		return instance.getTime();
 	}
 	
