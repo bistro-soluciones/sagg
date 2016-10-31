@@ -28,21 +28,24 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.wb.swt.SWTResourceManager;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 
+import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.model.products.ProductCategory;
 import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.core.services.SupplierServices;
+import com.bistro.sagg.core.session.SaggSession;
+import com.bistro.sagg.core.session.SaggSessionConstants;
 import com.bistro.sagg.suppliers.ui.utils.SuppliersCommunicationConstants;
 import com.bistro.sagg.suppliers.ui.viewers.ProductCategoryComboContentProvider;
 import com.bistro.sagg.suppliers.ui.viewers.ProductCategoryComboLabelProvider;
 import com.bistro.sagg.suppliers.ui.viewers.ProductCategoryListContentProvider;
-import org.eclipse.wb.swt.SWTResourceManager;
 
 /**
  * This sample class demonstrates how to plug-in a new
@@ -244,7 +247,7 @@ public class SupplierDetailView extends ViewPart {
 		productsCategoryList.setLayoutData(gd_productsCategoryList);
 		
 		Composite composite = new Composite(parent, SWT.NONE);
-		composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		composite.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, true, 1, 1));
 		composite.setLayout(new GridLayout(2, false));
 		
 		Button cancelButton = new Button(composite, SWT.NONE);
@@ -262,9 +265,10 @@ public class SupplierDetailView extends ViewPart {
 		saveButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				FranchiseBranch branch = SaggSession.getCurrentSession().getSessionObject(SaggSessionConstants.CURRENT_FRANCHISE_BANCH);
 				supplierServices.createSupplier(businessNameText.getText(), supplierIdText.getText(), contactFirstnameText.getText(),
 						contactLastnameText.getText(), contactEmailText.getText(), contactPhoneText.getText(), contactCellphoneText.getText(),
-						selectedProductCategories);
+						selectedProductCategories, branch);
 				Event event = new Event(SuppliersCommunicationConstants.ADD_SUPPLIER_EVENT, new HashMap<String, Object>());
 				eventAdmin.sendEvent(event);
 				resetDefaultValues();

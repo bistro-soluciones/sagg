@@ -3,7 +3,7 @@ package com.bistro.sagg.products.ui.viewers;
 import com.bistro.sagg.core.model.order.billing.DocumentType;
 import com.bistro.sagg.core.osgi.ui.viewers.SaggLabelProvider;
 
-public class BillilngDocumentTypeComboLabelProvider extends SaggLabelProvider {
+public class BillingDocumentTypeComboLabelProvider extends SaggLabelProvider {
 
 	@Override
 	public String getText(Object element) {

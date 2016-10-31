@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.bistro.sagg.core.builders.SupplierBuilder;
+import com.bistro.sagg.core.factory.SupplierFactory;
 import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.model.products.ProductCategory;
 import com.bistro.sagg.core.model.suppliers.Supplier;
@@ -16,12 +16,11 @@ public class SupplierServicesImpl implements SupplierServices {
 	private SupplierRepository supplierRepository;
 
 	public void createSupplier(String businessName, String supplierId, String contactFirstname, String contactLastname,
-			String contactEmail, String contactPhone, String contactCellphone, List<ProductCategory> categories) {
+			String contactEmail, String contactPhone, String contactCellphone, List<ProductCategory> categories,
+			FranchiseBranch branch) {
 		// Create supplier object
-		SupplierBuilder builder = new SupplierBuilder();
-		builder.build(businessName, supplierId, contactFirstname, contactLastname, contactEmail, contactPhone,
-				contactCellphone, categories);
-		Supplier supplier = builder.getSupplier();
+		Supplier supplier = SupplierFactory.createSupplier(businessName, supplierId, contactFirstname, contactLastname,
+				contactEmail, contactPhone, contactCellphone, categories, branch);
 		// Save supplier
 		supplierRepository.save(supplier);
 	}

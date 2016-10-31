@@ -27,6 +27,54 @@
             name="Insumos"
             restorable="true">
       </view>
+      <view
+            allowMultiple="false"
+            category="com.bistro.sagg.category.views"
+            class="com.bistro.sagg.products.ui.views.SupplyDetailView"
+            id="com.bistro.sagg.products.ui.views.SupplyDetailView"
+            name="Detalle de Insumo"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            category="com.bistro.sagg.category.views"
+            class="com.bistro.sagg.products.ui.views.MarketableProductDetailView"
+            id="com.bistro.sagg.products.ui.views.MarketableProductDetailView"
+            name="Detalle de Producto"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            category="com.bistro.sagg.category.views"
+            class="com.bistro.sagg.products.ui.views.ProductCategoryDetailView"
+            id="com.bistro.sagg.products.ui.views.ProductCategoryDetailView"
+            name="Detalle de Categoría de Producto"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            category="com.bistro.sagg.category.views"
+            class="com.bistro.sagg.products.ui.views.ProductSelectionView"
+            id="com.bistro.sagg.products.ui.views.ProductSelectionView"
+            name="Productos"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            category="com.bistro.sagg.category.views"
+            class="com.bistro.sagg.products.ui.views.InventoryLoadingDetailView"
+            id="com.bistro.sagg.products.ui.views.InventoryLoadingDetailView"
+            name="Detalle de Inventario"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            category="com.bistro.sagg.category.views"
+            class="com.bistro.sagg.products.ui.views.InventoryLoadingConfirmationDetailView"
+            id="com.bistro.sagg.products.ui.views.InventoryLoadingConfirmationDetailView"
+            name="Confirmación de Inventario"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -74,6 +122,46 @@
             id="com.bistro.sagg.products.ui.perspectives.ProductsPerspective"
             name="Productos">
       </perspective>
+      <perspective
+            class="com.bistro.sagg.products.ui.perspectives.InventoryLoadingPerspective"
+            id="com.bistro.sagg.products.ui.perspectives.InventoryLoadingPerspective"
+            name="Carga de Inventario">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="com.bistro.sagg.products.ui.perspectives.ProductsPerspective">
+         <view
+               closeable="false"
+               id="com.bistro.sagg.products.ui.views.MarketableProductDetailView"
+               minimized="false"
+               ratio="0.55"
+               relationship="bottom"
+               relative="com.bistro.sagg.products.ui.views.ProductCategoryDetailView"
+               showTitle="true"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="com.bistro.sagg.products.ui.views.SupplyDetailView"
+               minimized="false"
+               relationship="stack"
+               relative="com.bistro.sagg.products.ui.views.MarketableProductDetailView"
+               showTitle="true"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="com.bistro.sagg.products.ui.views.ProductCategoryDetailView"
+               minimized="false"
+               ratio="0.58"
+               relationship="bottom"
+               relative="com.bistro.sagg.products.ui.views.ProductCategoryListView"
+               showTitle="true"
+               visible="true">
+         </view>
+      </perspectiveExtension>
    </extension>
 
 </plugin>

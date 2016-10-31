@@ -241,9 +241,9 @@ public class NewSupplierDialog extends Dialog {
 
 	@Override
 	protected void okPressed() {
-		supplierServices.createSupplier(businessNameText.getText(), supplierIdText.getText(), firstnameText.getText(),
-				lastnameText.getText(), emailText.getText(), phoneText.getText(), cellphoneText.getText(),
-				selectedProductCategories);
+//		supplierServices.createSupplier(businessNameText.getText(), supplierIdText.getText(), firstnameText.getText(),
+//				lastnameText.getText(), emailText.getText(), phoneText.getText(), cellphoneText.getText(),
+//				selectedProductCategories);
 		super.okPressed();
 	}
 	

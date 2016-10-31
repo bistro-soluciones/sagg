@@ -1,11 +1,9 @@
 package com.bistro.sagg.products.ui.views;
 
 
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
+import java.util.Dictionary;
+import java.util.Hashtable;
+
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -14,17 +12,19 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
 
 import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
-import com.bistro.sagg.products.ui.actions.OpenInventoryLoadingDialogAction;
-import com.bistro.sagg.products.ui.actions.OpenNewMarketableProductDialogAction;
 import com.bistro.sagg.products.ui.utils.MarketableProductColumnIndex;
+import com.bistro.sagg.products.ui.utils.ProductsCommunicationConstants;
 import com.bistro.sagg.products.ui.viewers.MarketableProductListContentProvider;
 import com.bistro.sagg.products.ui.viewers.MarketableProductListLabelProvider;
 import com.bistro.sagg.products.ui.viewers.MarketableProductListSorter;
@@ -55,15 +55,20 @@ public class MarketableProductListView extends ViewPart {
 	 */
 	public static final String ID = "com.bistro.sagg.products.ui.views.MarketableProductListView";
 
-	private OpenNewMarketableProductDialogAction openNewMarketableProductDialogAction;
-	private OpenInventoryLoadingDialogAction openInventoryLoadingDialogAction;
+	private TableViewer productsTableViewer;
 	private Table productsTable;
 	
 	private ProductServices productServices = (ProductServices) SaggServiceLocator.getInstance()
 			.lookup(ProductServices.class.getName());
 
+	private BundleContext bundleContext;
+	private EventAdmin eventAdmin;
+	
 	public MarketableProductListView() {
 		super();
+		this.bundleContext = FrameworkUtil.getBundle(ProductCategoryDetailView.class).getBundleContext();
+		ServiceReference<EventAdmin> ref = bundleContext.getServiceReference(EventAdmin.class);
+		this.eventAdmin = bundleContext.getService(ref);
 	}
 
 	/**
@@ -73,7 +78,9 @@ public class MarketableProductListView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		TableViewer productsTableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
+		createAddProductEventHandler(parent);
+		
+		productsTableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
 		productsTableViewer.setContentProvider(new MarketableProductListContentProvider());
 		productsTableViewer.setLabelProvider(new MarketableProductListLabelProvider());
 		productsTableViewer.setSorter(new MarketableProductListSorter());
@@ -144,53 +151,72 @@ public class MarketableProductListView extends ViewPart {
 		hookDoubleClickAction();
 		contributeToActionBars();
 	}
+	
+	private void createAddProductEventHandler(Composite parent) {
+		EventHandler handler = new EventHandler() {
+			public void handleEvent(final Event event) {
+				if (parent.getDisplay().getThread() == Thread.currentThread()) {
+					productsTableViewer.refresh();
+				} else {
+					parent.getDisplay().syncExec(new Runnable() {
+						public void run() {
+							productsTableViewer.refresh();
+						}
+					});
+				}
+			}
+	    };
+	    Dictionary<String,String> properties = new Hashtable<String, String>();
+	    properties.put(EventConstants.EVENT_TOPIC, ProductsCommunicationConstants.ADD_MARKETABLE_PRODUCT_EVENT);
+	    bundleContext.registerService(EventHandler.class, handler, properties);
+	}
 
 	private void hookContextMenu() {
-		MenuManager menuMgr = new MenuManager("#PopupMenu");
-		menuMgr.setRemoveAllWhenShown(true);
-		menuMgr.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(IMenuManager manager) {
-				MarketableProductListView.this.fillContextMenu(manager);
-			}
-		});
+//		MenuManager menuMgr = new MenuManager("#PopupMenu");
+//		menuMgr.setRemoveAllWhenShown(true);
+//		menuMgr.addMenuListener(new IMenuListener() {
+//			public void menuAboutToShow(IMenuManager manager) {
+//				MarketableProductListView.this.fillContextMenu(manager);
+//			}
+//		});
 	}
 
 	private void contributeToActionBars() {
-		IActionBars bars = getViewSite().getActionBars();
-		fillLocalPullDown(bars.getMenuManager());
-		fillLocalToolBar(bars.getToolBarManager());
+//		IActionBars bars = getViewSite().getActionBars();
+//		fillLocalPullDown(bars.getMenuManager());
+//		fillLocalToolBar(bars.getToolBarManager());
 	}
 
-	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(openNewMarketableProductDialogAction);
-		manager.add(openInventoryLoadingDialogAction);
-		manager.add(new Separator());
-	}
-
-	private void fillContextMenu(IMenuManager manager) {
-		manager.add(openNewMarketableProductDialogAction);
-		manager.add(openInventoryLoadingDialogAction);
-		// Other plug-ins can contribute there actions here
-		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-	}
+//	private void fillLocalPullDown(IMenuManager manager) {
+//		manager.add(openNewMarketableProductDialogAction);
+//		manager.add(openInventoryLoadingDialogAction);
+//		manager.add(new Separator());
+//	}
+//
+//	private void fillContextMenu(IMenuManager manager) {
+//		manager.add(openNewMarketableProductDialogAction);
+//		manager.add(openInventoryLoadingDialogAction);
+//		// Other plug-ins can contribute there actions here
+//		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+//	}
 	
-	private void fillLocalToolBar(IToolBarManager manager) {
-		manager.add(openNewMarketableProductDialogAction);
-		manager.add(openInventoryLoadingDialogAction);
-	}
+//	private void fillLocalToolBar(IToolBarManager manager) {
+//		manager.add(openNewMarketableProductDialogAction);
+//		manager.add(openInventoryLoadingDialogAction);
+//	}
 
 	private void makeActions() {
-		openNewMarketableProductDialogAction = new OpenNewMarketableProductDialogAction("Nuevo Producto",PlatformUI.getWorkbench().getActiveWorkbenchWindow());
-		openNewMarketableProductDialogAction.setText("Nuevo Producto");
-		openNewMarketableProductDialogAction.setToolTipText("Nuevo Producto");
-		openNewMarketableProductDialogAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
-		
-		openInventoryLoadingDialogAction = new OpenInventoryLoadingDialogAction("Carga de Inventario",PlatformUI.getWorkbench().getActiveWorkbenchWindow());
-		openInventoryLoadingDialogAction.setText("Carga de Inventario");
-		openInventoryLoadingDialogAction.setToolTipText("Carga de Inventario");
-		openInventoryLoadingDialogAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+//		openNewMarketableProductDialogAction = new OpenNewMarketableProductDialogAction("Nuevo Producto",PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+//		openNewMarketableProductDialogAction.setText("Nuevo Producto");
+//		openNewMarketableProductDialogAction.setToolTipText("Nuevo Producto");
+//		openNewMarketableProductDialogAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+//			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+//		
+//		openInventoryLoadingDialogAction = new OpenInventoryLoadingDialogAction("Carga de Inventario",PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+//		openInventoryLoadingDialogAction.setText("Carga de Inventario");
+//		openInventoryLoadingDialogAction.setToolTipText("Carga de Inventario");
+//		openInventoryLoadingDialogAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+//			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 	}
 
 	private void hookDoubleClickAction() {

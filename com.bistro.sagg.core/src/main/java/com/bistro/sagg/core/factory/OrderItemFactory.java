@@ -1,5 +1,7 @@
 package com.bistro.sagg.core.factory;
 
+import java.math.BigDecimal;
+
 import com.bistro.sagg.core.model.order.OrderItem;
 import com.bistro.sagg.core.model.order.PurchaseOrderItem;
 import com.bistro.sagg.core.model.order.SaleOrderItem;
@@ -7,8 +9,10 @@ import com.bistro.sagg.core.model.products.Product;
 
 public class OrderItemFactory {
 
-	public static PurchaseOrderItem createPurchaseOrderItem(Product product, int quantity) {
-		return (PurchaseOrderItem) fillItem(new PurchaseOrderItem(), product, quantity);
+	public static PurchaseOrderItem createPurchaseOrderItem(Product product, int quantity, BigDecimal purchaseUnitPrice) {
+		PurchaseOrderItem item = (PurchaseOrderItem) fillItem(new PurchaseOrderItem(), product, quantity);
+		item.setPurchaseUnitPrice(purchaseUnitPrice);
+		return item;
 	}
 
 	public static SaleOrderItem createSaleOrderItem(Product product, int quantity) {

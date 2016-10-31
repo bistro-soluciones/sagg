@@ -1,11 +1,9 @@
 package com.bistro.sagg.products.ui.views;
 
 
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
+import java.util.Dictionary;
+import java.util.Hashtable;
+
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -14,16 +12,19 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
 
 import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
-import com.bistro.sagg.products.ui.actions.OpenNewProductCategoryDialogAction;
 import com.bistro.sagg.products.ui.utils.ProductCategoryColumnIndex;
+import com.bistro.sagg.products.ui.utils.ProductsCommunicationConstants;
 import com.bistro.sagg.products.ui.viewers.ProductCategoryListContentProvider;
 import com.bistro.sagg.products.ui.viewers.ProductCategoryListLabelProvider;
 import com.bistro.sagg.products.ui.viewers.ProductCategoryListSorter;
@@ -54,14 +55,20 @@ public class ProductCategoryListView extends ViewPart {
 	 */
 	public static final String ID = "com.bistro.sagg.products.ui.views.ProductCategoryListView";
 
-	private OpenNewProductCategoryDialogAction openNewSupplierDialogAction;
+	private TableViewer productCategoriesTableViewer;
 	private Table productCategoriesTable;
 	
 	private ProductServices productServices = (ProductServices) SaggServiceLocator.getInstance()
 			.lookup(ProductServices.class.getName());
 
+	private BundleContext bundleContext;
+	private EventAdmin eventAdmin;
+	
 	public ProductCategoryListView() {
 		super();
+		this.bundleContext = FrameworkUtil.getBundle(ProductCategoryDetailView.class).getBundleContext();
+		ServiceReference<EventAdmin> ref = bundleContext.getServiceReference(EventAdmin.class);
+		this.eventAdmin = bundleContext.getService(ref);
 	}
 
 	/**
@@ -71,7 +78,9 @@ public class ProductCategoryListView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		TableViewer productCategoriesTableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
+		createAddCategoryEventHandler(parent);
+		
+		productCategoriesTableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
 		productCategoriesTableViewer.setContentProvider(new ProductCategoryListContentProvider());
 		productCategoriesTableViewer.setLabelProvider(new ProductCategoryListLabelProvider());
 		productCategoriesTableViewer.setSorter(new ProductCategoryListSorter());
@@ -98,44 +107,63 @@ public class ProductCategoryListView extends ViewPart {
 		hookDoubleClickAction();
 		contributeToActionBars();
 	}
+	
+	private void createAddCategoryEventHandler(Composite parent) {
+		EventHandler handler = new EventHandler() {
+			public void handleEvent(final Event event) {
+				if (parent.getDisplay().getThread() == Thread.currentThread()) {
+					productCategoriesTableViewer.refresh();
+				} else {
+					parent.getDisplay().syncExec(new Runnable() {
+						public void run() {
+							productCategoriesTableViewer.refresh();
+						}
+					});
+				}
+			}
+	    };
+	    Dictionary<String,String> properties = new Hashtable<String, String>();
+	    properties.put(EventConstants.EVENT_TOPIC, ProductsCommunicationConstants.ADD_PRODUCT_CATEGORY_EVENT);
+	    bundleContext.registerService(EventHandler.class, handler, properties);
+	}
 
 	private void hookContextMenu() {
-		MenuManager menuMgr = new MenuManager("#PopupMenu");
-		menuMgr.setRemoveAllWhenShown(true);
-		menuMgr.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(IMenuManager manager) {
-				ProductCategoryListView.this.fillContextMenu(manager);
-			}
-		});
+//		MenuManager menuMgr = new MenuManager("#PopupMenu");
+//		menuMgr.setRemoveAllWhenShown(true);
+//		menuMgr.addMenuListener(new IMenuListener() {
+//			public void menuAboutToShow(IMenuManager manager) {
+//				ProductCategoryListView.this.fillContextMenu(manager);
+//			}
+//		});
 	}
 
 	private void contributeToActionBars() {
-		IActionBars bars = getViewSite().getActionBars();
-		fillLocalPullDown(bars.getMenuManager());
-		fillLocalToolBar(bars.getToolBarManager());
+//		IActionBars bars = getViewSite().getActionBars();
+//		fillLocalPullDown(bars.getMenuManager());
+//		fillLocalToolBar(bars.getToolBarManager());
 	}
 
-	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(openNewSupplierDialogAction);
-		manager.add(new Separator());
-	}
+//	private void fillLocalPullDown(IMenuManager manager) {
+//		manager.add(openNewSupplierDialogAction);
+//		manager.add(new Separator());
+//	}
 
-	private void fillContextMenu(IMenuManager manager) {
-		manager.add(openNewSupplierDialogAction);
+//	private void fillContextMenu(IMenuManager manager) {
+//		manager.add(openNewSupplierDialogAction);
 		// Other plug-ins can contribute there actions here
-		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-	}
+//		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+//	}
 	
-	private void fillLocalToolBar(IToolBarManager manager) {
-		manager.add(openNewSupplierDialogAction);
-	}
+//	private void fillLocalToolBar(IToolBarManager manager) {
+//		manager.add(openNewSupplierDialogAction);
+//	}
 
 	private void makeActions() {
-		openNewSupplierDialogAction = new OpenNewProductCategoryDialogAction("Nueva Categoría de Productos",PlatformUI.getWorkbench().getActiveWorkbenchWindow());
-		openNewSupplierDialogAction.setText("Nueva Categoría de Productos");
-		openNewSupplierDialogAction.setToolTipText("Nueva Categoría de Productos");
-		openNewSupplierDialogAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+//		openNewSupplierDialogAction = new OpenNewProductCategoryDialogAction("Nueva Categoría de Productos",PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+//		openNewSupplierDialogAction.setText("Nueva Categoría de Productos");
+//		openNewSupplierDialogAction.setToolTipText("Nueva Categoría de Productos");
+//		openNewSupplierDialogAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+//			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 	}
 
 	private void hookDoubleClickAction() {

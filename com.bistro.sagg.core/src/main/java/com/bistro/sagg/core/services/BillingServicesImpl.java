@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.bistro.sagg.core.builders.BillingDocumentBuilder;
+import com.bistro.sagg.core.model.order.PurchaseOrder;
 import com.bistro.sagg.core.model.order.SaleOrder;
 import com.bistro.sagg.core.model.order.billing.BillingDocument;
 import com.bistro.sagg.core.model.order.billing.BillingItem;
@@ -13,6 +14,7 @@ import com.bistro.sagg.core.model.order.payment.PaymentMethod;
 import com.bistro.sagg.core.repository.BillingDocumentRepository;
 import com.bistro.sagg.core.repository.DocumentTypeRepository;
 import com.bistro.sagg.core.repository.PaymentMethodRepository;
+import com.bistro.sagg.core.transformer.PurchaseOrderToBillindDocumentTransformer;
 import com.bistro.sagg.core.transformer.SaleOrderToBillindDocumentTransformer;
 
 public class BillingServicesImpl implements BillingServices {
@@ -34,6 +36,14 @@ public class BillingServicesImpl implements BillingServices {
 	
 	public BillingDocument createBillingDocument(SaleOrder order, DocumentType documentType, PaymentMethod paymentMethod) {
 		BillingDocument document = new SaleOrderToBillindDocumentTransformer().transform(order);
+		document.setPaymentMethod(paymentMethod);
+		document.setDocumentType(documentType);
+		billilngDocumentRepository.save(document);
+		return document;
+	}
+	
+	public BillingDocument createBillingDocument(PurchaseOrder order, DocumentType documentType, PaymentMethod paymentMethod) {
+		BillingDocument document = new PurchaseOrderToBillindDocumentTransformer().transform(order);
 		document.setPaymentMethod(paymentMethod);
 		document.setDocumentType(documentType);
 		billilngDocumentRepository.save(document);

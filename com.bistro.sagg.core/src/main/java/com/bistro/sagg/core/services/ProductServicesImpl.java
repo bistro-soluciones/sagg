@@ -28,10 +28,10 @@ public class ProductServicesImpl implements ProductServices {
 	@Autowired
 	private MarketableProductRepository marketableProductRepository;
 
-	public void createCategory(String name) {
+	public void createCategory(FranchiseBranch branch, String name) {
 		// Create product category object
 		ProductCategoryBuilder builder = new ProductCategoryBuilder();
-		builder.build(name);
+		builder.build(branch, name);
 		ProductCategory category = builder.getCategory();
 		// Save product category
 		productCategoryRepository.save(category);

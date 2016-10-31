@@ -5,5 +5,6 @@ public interface OrderStatusConstants {
 	String READY = "Lista";
 	String CANCELLED = "Cancelada";
 	String DELIVERED = "Entregada";
+	String RECEIVED = "Recibida";
 	
 }

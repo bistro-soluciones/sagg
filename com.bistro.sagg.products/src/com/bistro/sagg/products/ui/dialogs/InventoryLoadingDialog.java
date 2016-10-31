@@ -41,7 +41,7 @@ import com.bistro.sagg.core.services.FranchiseServices;
 import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.core.services.SupplierServices;
-import com.bistro.sagg.products.ui.viewers.BillilngDocumentTypeComboLabelProvider;
+import com.bistro.sagg.products.ui.viewers.BillingDocumentTypeComboLabelProvider;
 import com.bistro.sagg.products.ui.viewers.BillingDocumentTypeComboContentProvider;
 import com.bistro.sagg.products.ui.viewers.BillingItemListLabelProvider;
 import com.bistro.sagg.products.ui.viewers.ProductCategoryComboLabelProvider;
@@ -141,7 +141,7 @@ public class InventoryLoadingDialog extends Dialog {
 		});
 		billingDocumentCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		billingDocumentComboViewer.setContentProvider(new BillingDocumentTypeComboContentProvider());
-		billingDocumentComboViewer.setLabelProvider(new BillilngDocumentTypeComboLabelProvider());
+		billingDocumentComboViewer.setLabelProvider(new BillingDocumentTypeComboLabelProvider());
 		billingDocumentComboViewer.setInput(billingServices);
 		billingDocumentComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override

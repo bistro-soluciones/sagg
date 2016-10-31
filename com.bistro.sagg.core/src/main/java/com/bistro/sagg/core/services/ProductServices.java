@@ -12,10 +12,10 @@ import com.bistro.sagg.core.model.products.Supply;
 
 public interface ProductServices extends ISaggService {
 
-	void createCategory(String name);
+	void createCategory(FranchiseBranch branch, String name);
 
 	List<ProductCategory> getProductCategories(FranchiseBranch branch);
-
+	
 	void createSupply(String name, ProductCategory category, int minStock);
 
 	List<Supply> getSupplies();

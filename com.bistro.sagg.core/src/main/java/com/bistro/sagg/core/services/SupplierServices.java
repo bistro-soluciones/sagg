@@ -9,7 +9,8 @@ import com.bistro.sagg.core.model.suppliers.Supplier;
 public interface SupplierServices extends ISaggService {
 
 	void createSupplier(String businessName, String supplierId, String contactFirstname, String contactLastname,
-			String contactEmail, String contactPhone, String contactCellphone, List<ProductCategory> categories);
+			String contactEmail, String contactPhone, String contactCellphone, List<ProductCategory> categories,
+			FranchiseBranch branch);
 
 	List<Supplier> getSuppliers(FranchiseBranch branch);
 

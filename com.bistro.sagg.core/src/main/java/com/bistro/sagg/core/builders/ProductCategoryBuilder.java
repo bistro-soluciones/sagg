@@ -1,5 +1,6 @@
 package com.bistro.sagg.core.builders;
 
+import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.model.products.ProductCategory;
 
 public class ProductCategoryBuilder {
@@ -16,7 +17,8 @@ public class ProductCategoryBuilder {
 		this.category = category;
 	}
 
-	public void build(String name) {
+	public void build(FranchiseBranch branch, String name) {
+		this.category.setBranch(branch);
 		this.category.setName(name);
 	}
 

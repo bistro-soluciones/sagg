@@ -183,4 +183,10 @@
     	</addColumn>
     </changeSet>
     
+    <changeSet id="20" author="sebastian.lavie">
+    	<addColumn tableName="purchase_order_items">
+            <column name="purchase_unit_price" type="currency" afterColumn="quantity"/>
+    	</addColumn>
+    </changeSet>
+    
 </databaseChangeLog>

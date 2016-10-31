@@ -17,6 +17,7 @@ import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
 
 public class NewProductCategoryDialog extends Dialog {
+	
 	private Text nameText;
 
 	private ProductServices productService = (ProductServices) SaggServiceLocator.getInstance()
@@ -74,7 +75,7 @@ public class NewProductCategoryDialog extends Dialog {
 
 	@Override
 	protected void okPressed() {
-		productService.createCategory(nameText.getText());
+//		productService.createCategory(nameText.getText());
 		super.okPressed();
 	}
 	

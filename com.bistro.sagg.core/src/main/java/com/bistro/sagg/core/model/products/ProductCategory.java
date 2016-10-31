@@ -47,4 +47,12 @@ public class ProductCategory {
 		this.name = name;
 	}
 
+	public FranchiseBranch getBranch() {
+		return branch;
+	}
+
+	public void setBranch(FranchiseBranch branch) {
+		this.branch = branch;
+	}
+
 }

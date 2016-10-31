@@ -88,4 +88,12 @@ public class Supplier {
 		this.categories = categories;
 	}
 
+	public FranchiseBranch getFranchiseBranch() {
+		return franchiseBranch;
+	}
+
+	public void setFranchiseBranch(FranchiseBranch franchiseBranch) {
+		this.franchiseBranch = franchiseBranch;
+	}
+
 }

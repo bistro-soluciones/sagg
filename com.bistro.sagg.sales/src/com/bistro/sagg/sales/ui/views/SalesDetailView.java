@@ -147,27 +147,7 @@ public class SalesDetailView extends ViewPart {
 		amountColumn.setWidth(100);
 		amountColumn.setText("Monto");
 		
-	    EventHandler handler = new EventHandler() {
-			public void handleEvent(final Event event) {
-				SaleOrderItem item = OrderItemFactory.createSaleOrderItem(
-						(Product) event.getProperty(SalesCommunicationConstants.ADD_PRODUCT_DATA),
-						(int) event.getProperty(SalesCommunicationConstants.ADD_PRODUCT_QUANTITY_DATA));
-				if (parent.getDisplay().getThread() == Thread.currentThread()) {
-					productsTableViewer.add(item);
-				} else {
-					parent.getDisplay().syncExec(new Runnable() {
-						public void run() {
-							productsTableViewer.add(item);
-						}
-					});
-				}
-				clearItemListButton.setEnabled(true);
-				confirmItemListButton.setEnabled(true);
-			}
-	    };
-	    Dictionary<String,String> properties = new Hashtable<String, String>();
-	    properties.put(EventConstants.EVENT_TOPIC, SalesCommunicationConstants.ADD_PRODUCT_EVENT);
-	    bundleContext.registerService(EventHandler.class, handler, properties);
+	    createAddProductEventHandler(parent, productsTableViewer);
 	    
 		Composite composite = new Composite(parent, SWT.NONE);
 		GridLayout gl_composite = new GridLayout(5, false);
@@ -294,7 +274,7 @@ public class SalesDetailView extends ViewPart {
 		hookDoubleClickAction();
 		contributeToActionBars();
 	}
-	
+
 	private void createResetViewEventHandler(Composite parent) {
 		EventHandler handler = new EventHandler() {
 			public void handleEvent(final Event event) {
@@ -313,7 +293,7 @@ public class SalesDetailView extends ViewPart {
 	    properties.put(EventConstants.EVENT_TOPIC, SalesCommunicationConstants.RESET_SALE_ORDER_EVENT);
 	    bundleContext.registerService(EventHandler.class, handler, properties);
 	}
-	
+
 	protected void resetDefaultValues() {
 		productsTable.removeAll();;
 //		updateItemCountSpinner.setSelection(0);
@@ -324,6 +304,30 @@ public class SalesDetailView extends ViewPart {
 //		confirmItemListButton.setEnabled(false);
 		selectedItem = null;
 		selectedItemQuantity = 0;
+	}
+	
+	private void createAddProductEventHandler(Composite parent, TableViewer productsTableViewer) {
+		EventHandler handler = new EventHandler() {
+			public void handleEvent(final Event event) {
+				SaleOrderItem item = OrderItemFactory.createSaleOrderItem(
+						(Product) event.getProperty(SalesCommunicationConstants.ADD_PRODUCT_DATA),
+						(int) event.getProperty(SalesCommunicationConstants.ADD_PRODUCT_QUANTITY_DATA));
+				if (parent.getDisplay().getThread() == Thread.currentThread()) {
+					productsTableViewer.add(item);
+				} else {
+					parent.getDisplay().syncExec(new Runnable() {
+						public void run() {
+							productsTableViewer.add(item);
+						}
+					});
+				}
+				clearItemListButton.setEnabled(true);
+				confirmItemListButton.setEnabled(true);
+			}
+	    };
+	    Dictionary<String,String> properties = new Hashtable<String, String>();
+	    properties.put(EventConstants.EVENT_TOPIC, SalesCommunicationConstants.ADD_PRODUCT_EVENT);
+	    bundleContext.registerService(EventHandler.class, handler, properties);
 	}
 
 	private void hookContextMenu() {
