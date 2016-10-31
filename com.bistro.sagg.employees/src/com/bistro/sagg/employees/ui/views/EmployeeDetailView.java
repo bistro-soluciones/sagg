@@ -282,7 +282,7 @@ public class EmployeeDetailView extends ViewPart {
 		cityCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Composite composite = new Composite(parent, SWT.NONE);
-		composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		composite.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, true, 1, 1));
 		composite.setLayout(new GridLayout(2, false));
 		
 		Button cancelButton = new Button(composite, SWT.NONE);
