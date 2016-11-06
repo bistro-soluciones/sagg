@@ -94,11 +94,11 @@ public class ReportConfigurationView extends ViewPart {
 	 */
 	public static final String ID = "com.bistro.sagg.reports.ui.views.ReportConfigurationView";
 	
-	private static final String REPORTE_DE_VENTAS = "Reporte de Ventas";
-	private static final String REPORTE_DE_VENTAS_DETALLADO = "Reporte de Ventas Detallado";
-	private static final String REPORTE_DE_PRODUCTOS_POR_PROVEEDOR = "Reporte de Productos por Proveedor";
-	private static final String REPORTE_DE_ORDENES_DE_COMPRA = "Reporte de Ordenes de Compra";
-	private static final String REPORTE_DE_ORDENES_DE_COMPRA_DETALLADO = "Reporte de Ordenes de Compra Detallado";
+	private static final String SALES_REPORT = "Reporte de Ventas";
+	private static final String DTAILED_SALES_REPORT = "Reporte de Ventas Detallado";
+	private static final String SUPPLIES_BY_SUPPLIER_REPORT = "Reporte de Productos por Proveedor";
+	private static final String PURCHASE_ORDERS_REPORT = "Reporte de Ordenes de Compra";
+	private static final String DTAILED_PURCHASE_ORDERS_REPORT = "Reporte de Ordenes de Compra Detallado";
 	
 	private DateTime fromDateDateTime;
 	private DateTime toDateDateTime;
@@ -163,11 +163,11 @@ public class ReportConfigurationView extends ViewPart {
 		reportsLabel.setAlignment(SWT.RIGHT);
 		
 		reportsCombo = new Combo(reportsSelectionGroup, SWT.NONE);
-		reportsCombo.add(REPORTE_DE_VENTAS);
-		reportsCombo.add(REPORTE_DE_VENTAS_DETALLADO);
-		reportsCombo.add(REPORTE_DE_PRODUCTOS_POR_PROVEEDOR);
-		reportsCombo.add(REPORTE_DE_ORDENES_DE_COMPRA);
-		reportsCombo.add(REPORTE_DE_ORDENES_DE_COMPRA_DETALLADO);
+		reportsCombo.add(SALES_REPORT);
+		reportsCombo.add(DTAILED_SALES_REPORT);
+		reportsCombo.add(SUPPLIES_BY_SUPPLIER_REPORT);
+		reportsCombo.add(PURCHASE_ORDERS_REPORT);
+		reportsCombo.add(DTAILED_PURCHASE_ORDERS_REPORT);
 		reportsCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		reportsCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -436,49 +436,49 @@ public class ReportConfigurationView extends ViewPart {
 	}
 
 	private void createReportCommand() {
-		if(REPORTE_DE_VENTAS.equals(reportsCombo.getText())) {
+		if(SALES_REPORT.equals(reportsCombo.getText())) {
 			reportCommand = new SalesReportCommand();
 		}
-		if(REPORTE_DE_VENTAS_DETALLADO.equals(reportsCombo.getText())) {
+		if(DTAILED_SALES_REPORT.equals(reportsCombo.getText())) {
 			reportCommand = new DetailedSalesReportCommand();
 		}
-		if(REPORTE_DE_PRODUCTOS_POR_PROVEEDOR.equals(reportsCombo.getText())) {
+		if(SUPPLIES_BY_SUPPLIER_REPORT.equals(reportsCombo.getText())) {
 			reportCommand = new SuppliesBySupplierReportCommand();
 		}
-		if(REPORTE_DE_ORDENES_DE_COMPRA.equals(reportsCombo.getText())) {
+		if(PURCHASE_ORDERS_REPORT.equals(reportsCombo.getText())) {
 			reportCommand = new PurchaseOrdersReportCommand();
 		}
-		if(REPORTE_DE_ORDENES_DE_COMPRA_DETALLADO.equals(reportsCombo.getText())) {
+		if(DTAILED_PURCHASE_ORDERS_REPORT.equals(reportsCombo.getText())) {
 			reportCommand = new DetailedPurchaseOrdersReportCommand();
 		}
 	}
 	
 	private void enableReportFilters(String selectedReport) {
 		resetFiltersDefaultValues();
-		if(REPORTE_DE_VENTAS.equals(selectedReport)) {
+		if(SALES_REPORT.equals(selectedReport)) {
 			fromDateDateTime.setEnabled(true);
 			toDateDateTime.setEnabled(true);
 			documentTypeCombo.setEnabled(true);
 			paymentMethodCombo.setEnabled(true);
 			employeeCombo.setEnabled(true);
 		}
-		if(REPORTE_DE_VENTAS_DETALLADO.equals(selectedReport)) {
+		if(DTAILED_SALES_REPORT.equals(selectedReport)) {
 			fromDateDateTime.setEnabled(true);
 			toDateDateTime.setEnabled(true);
 			productCategoryCombo.setEnabled(true);
 			productCombo.setEnabled(true);
 		}
-		if(REPORTE_DE_PRODUCTOS_POR_PROVEEDOR.equals(selectedReport)) {
+		if(SUPPLIES_BY_SUPPLIER_REPORT.equals(selectedReport)) {
 			supplierCombo.setEnabled(true);
 			productCategoryCombo.setEnabled(true);
 			productCombo.setEnabled(true);
 		}
-		if(REPORTE_DE_ORDENES_DE_COMPRA.equals(selectedReport)) {
+		if(PURCHASE_ORDERS_REPORT.equals(selectedReport)) {
 			fromDateDateTime.setEnabled(true);
 			toDateDateTime.setEnabled(true);
 			supplierCombo.setEnabled(true);
 		}
-		if(REPORTE_DE_ORDENES_DE_COMPRA_DETALLADO.equals(selectedReport)) {
+		if(DTAILED_PURCHASE_ORDERS_REPORT.equals(selectedReport)) {
 			fromDateDateTime.setEnabled(true);
 			toDateDateTime.setEnabled(true);
 			productCategoryCombo.setEnabled(true);
