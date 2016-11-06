@@ -81,7 +81,7 @@ public abstract class Product implements Identificable {
 	public void setMinStock(int minStock) {
 		this.minStock = minStock;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		// self check
@@ -101,5 +101,5 @@ public abstract class Product implements Identificable {
 	public void addStock(int quantity) {
 		this.stock += quantity;
 	}
-
+	
 }

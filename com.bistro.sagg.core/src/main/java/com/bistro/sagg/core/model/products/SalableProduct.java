@@ -6,4 +6,6 @@ public interface SalableProduct {
 
 	BigDecimal getUnitSalesPrice();
 	
+	void addToComboItem(ComboItem item);
+
 }

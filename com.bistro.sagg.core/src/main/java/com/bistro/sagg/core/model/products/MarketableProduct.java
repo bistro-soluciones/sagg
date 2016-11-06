@@ -25,4 +25,8 @@ public class MarketableProduct extends Product implements SalableProduct {
 		this.unitSalesPrice = unitSalesPrice;
 	}
 
+	public void addToComboItem(ComboItem item) {
+		item.setProduct(this);
+	}
+
 }

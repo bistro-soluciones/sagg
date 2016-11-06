@@ -21,6 +21,7 @@ import com.bistro.sagg.core.model.location.City;
 import com.bistro.sagg.core.model.order.PurchaseOrder;
 import com.bistro.sagg.core.model.order.SaleOrder;
 import com.bistro.sagg.core.model.products.ProductCategory;
+import com.bistro.sagg.core.model.products.Recipe;
 import com.bistro.sagg.core.model.suppliers.Supplier;
 
 @Entity
@@ -56,14 +57,15 @@ public class FranchiseBranch implements Identificable {
 	private List<PurchaseOrder> purchaseOrders;
 	@OneToMany(mappedBy = "branch", cascade = CascadeType.PERSIST)
 	private List<SaleOrder> saleOrders;
+	@OneToMany(mappedBy = "branch", cascade = CascadeType.PERSIST)
+	private List<Recipe> recipes;
 
 	@OneToOne(fetch = FetchType.EAGER, mappedBy = "branch")
 	private Franchised franchised;
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "FRANCHISE_ID")
 	private Franchise franchise;
-	// Suppliers information
-	// private List<Supplier> suppliers;
+
 	public FranchiseBranch() {
 		super();
 	}
@@ -124,6 +126,14 @@ public class FranchiseBranch implements Identificable {
 		this.employees = employees;
 	}
 
+	public List<Supplier> getSuppliers() {
+		return suppliers;
+	}
+
+	public void setSuppliers(List<Supplier> suppliers) {
+		this.suppliers = suppliers;
+	}
+
 	public List<ProductCategory> getProductCategories() {
 		return productCategories;
 	}
@@ -139,23 +149,31 @@ public class FranchiseBranch implements Identificable {
 	public void setPurchaseOrders(List<PurchaseOrder> purchaseOrders) {
 		this.purchaseOrders = purchaseOrders;
 	}
-
+	
 	public List<SaleOrder> getSaleOrders() {
 		return saleOrders;
 	}
-
+	
 	public void setSaleOrders(List<SaleOrder> saleOrders) {
 		this.saleOrders = saleOrders;
 	}
-
+	
+	public List<Recipe> getRecipes() {
+		return recipes;
+	}
+	
+	public void setRecipes(List<Recipe> recipes) {
+		this.recipes = recipes;
+	}
+	
 	public Franchised getFranchised() {
 		return franchised;
 	}
-
+	
 	public void setFranchised(Franchised franchised) {
 		this.franchised = franchised;
 	}
-
+	
 	public Franchise getFranchise() {
 		return franchise;
 	}
