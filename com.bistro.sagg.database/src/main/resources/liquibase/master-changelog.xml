@@ -5,14 +5,10 @@
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
     
-    <!-- Version 1.0.0.qualifier -->
-    <!-- Domain model tables -->
-<!-- 	<include file="src/main/resources/liquibase/1.0.0.qualifier/db-model-changelog-1.xml" /> -->
-
-    <!-- Version 0.0.3.SNAPSHOT -->
     <!-- Domain model tables -->
 	<include file="src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-1.xml" />
 	<include file="src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-2.xml" />
 	<include file="src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-3.xml" />
+	<include file="src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-4.xml" />
 
 </databaseChangeLog>

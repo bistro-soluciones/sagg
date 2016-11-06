@@ -1,0 +1,107 @@
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="sebastian.lavie">
+        <createTable tableName="product_formats">
+            <column name="id" type="bigint(20)" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="varchar(10)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="sebastian.lavie">
+    	<addColumn tableName="products">
+            <column name="product_format_id" type="bigint(20)" afterColumn="product_category_id">
+                <constraints foreignKeyName="id" referencedTableName="product_formats"/>
+            </column>
+    	</addColumn>
+    </changeSet>
+    
+    <changeSet id="3" author="sebastian.lavie">
+    	<addColumn tableName="product_formats">
+            <column name="unit" type="int"/>
+    	</addColumn>
+    </changeSet>
+    
+    <changeSet id="4" author="sebastian.lavie">
+        <createTable tableName="recipes">
+            <column name="id" type="bigint(20)" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="varchar(30)"/>
+            <column name="description" type="varchar(500)"/>
+            <column name="product_category_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="product_categories" nullable="false"/>
+            </column>
+            <column name="unit_sales_price" type="currency"/>
+            <column name="franchise_branch_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="franchise_branches" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    
+    <changeSet id="5" author="sebastian.lavie">
+        <createTable tableName="recipe_lines">
+            <column name="id" type="bigint(20)" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="recipe_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="recipes" nullable="false"/>
+            </column>
+            <column name="supply_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="supplies" nullable="false"/>
+            </column>
+            <column name="portion" type="int"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="6" author="sebastian.lavie">
+        <createTable tableName="combos">
+            <column name="id" type="bigint(20)" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="varchar(30)"/>
+            <column name="description" type="varchar(500)"/>
+            <column name="unit_sales_price" type="currency"/>
+            <column name="franchise_branch_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="franchise_branches" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="7" author="sebastian.lavie">
+        <createTable tableName="combo_items">
+        	<column name="id" type="bigint(20)" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="combo_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="combos" nullable="false"/>
+            </column>
+            <column name="product_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="marketable_products" nullable="false"/>
+            </column>
+            <column name="recipe_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="recipes" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    
+    <changeSet id="8" author="sebastian.lavie">
+    	<addColumn tableName="combo_items">
+    		<column name="quantity" type="int"/>
+    	</addColumn>
+    </changeSet>
+    
+    <changeSet id="9" author="sebastian.lavie">
+    	<addColumn tableName="recipes">
+    		<column name="combo_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="combos"/>
+            </column>
+    	</addColumn>
+    </changeSet>
+
+</databaseChangeLog>
