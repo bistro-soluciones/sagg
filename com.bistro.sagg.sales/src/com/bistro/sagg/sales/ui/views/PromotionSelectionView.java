@@ -18,11 +18,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
 
+import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.model.products.MarketableProduct;
 import com.bistro.sagg.core.model.products.Product;
 import com.bistro.sagg.core.model.products.ProductCategory;
 import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
+import com.bistro.sagg.core.session.SaggSession;
+import com.bistro.sagg.core.session.SaggSessionConstants;
 
 /**
  * This sample class demonstrates how to plug-in a new
@@ -58,7 +61,8 @@ public class PromotionSelectionView extends ViewPart {
 	public PromotionSelectionView() {
 		super();
 //		this.categories = productService.getProductCategories();
-		this.products = productService.getMarketableProducts();
+		FranchiseBranch branch = SaggSession.getCurrentSession().getSessionObject(SaggSessionConstants.CURRENT_FRANCHISE_BANCH);
+		this.products = productService.getMarketableProducts(branch);
 	}
 
 	/**
