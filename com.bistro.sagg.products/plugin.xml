@@ -22,6 +22,14 @@
       <view
             allowMultiple="false"
             category="com.bistro.sagg.category.views"
+            class="com.bistro.sagg.products.ui.views.MarketableProductDetailView"
+            id="com.bistro.sagg.products.ui.views.MarketableProductDetailView"
+            name="Detalle de Producto"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            category="com.bistro.sagg.category.views"
             class="com.bistro.sagg.products.ui.views.SupplyListView"
             id="com.bistro.sagg.products.ui.views.SupplyListView"
             name="Insumos"
@@ -33,14 +41,6 @@
             class="com.bistro.sagg.products.ui.views.SupplyDetailView"
             id="com.bistro.sagg.products.ui.views.SupplyDetailView"
             name="Detalle de Insumo"
-            restorable="true">
-      </view>
-      <view
-            allowMultiple="false"
-            category="com.bistro.sagg.category.views"
-            class="com.bistro.sagg.products.ui.views.MarketableProductDetailView"
-            id="com.bistro.sagg.products.ui.views.MarketableProductDetailView"
-            name="Detalle de Producto"
             restorable="true">
       </view>
       <view
@@ -73,6 +73,38 @@
             class="com.bistro.sagg.products.ui.views.InventoryLoadingConfirmationDetailView"
             id="com.bistro.sagg.products.ui.views.InventoryLoadingConfirmationDetailView"
             name="Confirmación de Inventario"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            category="com.bistro.sagg.category.views"
+            class="com.bistro.sagg.products.ui.views.BuildRecipeView"
+            id="com.bistro.sagg.products.ui.views.BuildRecipeView"
+            name="Armar Receta"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            category="com.bistro.sagg.category.views"
+            class="com.bistro.sagg.products.ui.views.RecipeListView"
+            id="com.bistro.sagg.products.ui.views.RecipeListView"
+            name="Recetas"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            category="com.bistro.sagg.category.views"
+            class="com.bistro.sagg.products.ui.views.BuildComboView"
+            id="com.bistro.sagg.products.ui.views.BuildComboView"
+            name="Armar Combo"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            category="com.bistro.sagg.category.views"
+            class="com.bistro.sagg.products.ui.views.ComboListView"
+            id="com.bistro.sagg.products.ui.views.ComboListView"
+            name="Combos"
             restorable="true">
       </view>
    </extension>
@@ -127,6 +159,11 @@
             id="com.bistro.sagg.products.ui.perspectives.InventoryLoadingPerspective"
             name="Carga de Inventario">
       </perspective>
+      <perspective
+            class="com.bistro.sagg.products.ui.perspectives.CompositeProductsPerspective"
+            id="com.bistro.sagg.products.ui.perspectives.CompositeProductsPerspective"
+            name="Productos Compuestos">
+      </perspective>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
@@ -158,6 +195,28 @@
                ratio="0.58"
                relationship="bottom"
                relative="com.bistro.sagg.products.ui.views.ProductCategoryListView"
+               showTitle="true"
+               visible="true">
+         </view>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="com.bistro.sagg.products.ui.perspectives.CompositeProductsPerspective">
+         <view
+               closeable="false"
+               id="com.bistro.sagg.products.ui.views.BuildComboView"
+               minimized="false"
+               relationship="stack"
+               relative="com.bistro.sagg.products.ui.views.BuildRecipeView"
+               showTitle="true"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="com.bistro.sagg.products.ui.views.ComboListView"
+               minimized="false"
+               ratio="0.485"
+               relationship="bottom"
+               relative="com.bistro.sagg.products.ui.views.RecipeListView"
                showTitle="true"
                visible="true">
          </view>

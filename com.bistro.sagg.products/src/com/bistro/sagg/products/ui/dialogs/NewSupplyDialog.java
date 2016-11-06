@@ -135,7 +135,7 @@ public class NewSupplyDialog extends Dialog {
 
 	@Override
 	protected void okPressed() {
-		productService.createSupply(nameText.getText(), selectedCategory, Integer.parseInt(minStockText.getText()));
+//		productService.createSupply(nameText.getText(), selectedCategory, Integer.parseInt(minStockText.getText()));
 		super.okPressed();
 	}
 

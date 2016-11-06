@@ -23,11 +23,13 @@ import org.osgi.service.event.EventHandler;
 
 import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
+import com.bistro.sagg.products.ui.utils.MarketableProductColumnIndex;
 import com.bistro.sagg.products.ui.utils.ProductsCommunicationConstants;
-import com.bistro.sagg.products.ui.utils.SupplyColumnIndex;
-import com.bistro.sagg.products.ui.viewers.SupplyListContentProvider;
-import com.bistro.sagg.products.ui.viewers.SupplyListLabelProvider;
-import com.bistro.sagg.products.ui.viewers.SupplyListSorter;
+import com.bistro.sagg.products.ui.utils.RecipeColumnIndex;
+import com.bistro.sagg.products.ui.viewers.MarketableProductListSorter;
+import com.bistro.sagg.products.ui.viewers.RecipeListContentProvider;
+import com.bistro.sagg.products.ui.viewers.RecipeListLabelProvider;
+import com.bistro.sagg.products.ui.viewers.RecipeListSorter;
 
 
 /**
@@ -48,15 +50,15 @@ import com.bistro.sagg.products.ui.viewers.SupplyListSorter;
  * <p>
  */
 
-public class SupplyListView extends ViewPart {
+public class RecipeListView extends ViewPart {
 
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
-	public static final String ID = "com.bistro.sagg.products.ui.views.SupplyListView";
+	public static final String ID = "com.bistro.sagg.products.ui.views.RecipeListView";
 
-	private TableViewer suppliesTableViewer;
-	private Table suppliesTable;
+	private TableViewer recipesTableViewer;
+	private Table recipesTable;
 	
 	private ProductServices productServices = (ProductServices) SaggServiceLocator.getInstance()
 			.lookup(ProductServices.class.getName());
@@ -64,9 +66,9 @@ public class SupplyListView extends ViewPart {
 	private BundleContext bundleContext;
 	private EventAdmin eventAdmin;
 	
-	public SupplyListView() {
+	public RecipeListView() {
 		super();
-		this.bundleContext = FrameworkUtil.getBundle(ProductCategoryDetailView.class).getBundleContext();
+		this.bundleContext = FrameworkUtil.getBundle(RecipeListView.class).getBundleContext();
 		ServiceReference<EventAdmin> ref = bundleContext.getServiceReference(EventAdmin.class);
 		this.eventAdmin = bundleContext.getService(ref);
 	}
@@ -78,73 +80,63 @@ public class SupplyListView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		createAddProductEventHandler(parent);
+		createAddRecipeEventHandler(parent);
 		
-		suppliesTableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
-		suppliesTableViewer.setContentProvider(new SupplyListContentProvider());
-		suppliesTableViewer.setLabelProvider(new SupplyListLabelProvider());
-		suppliesTableViewer.setSorter(new SupplyListSorter());
+		recipesTableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
+		recipesTableViewer.setContentProvider(new RecipeListContentProvider());
+		recipesTableViewer.setLabelProvider(new RecipeListLabelProvider());
+		recipesTableViewer.setSorter(new RecipeListSorter());
 		
-		suppliesTable = suppliesTableViewer.getTable();
-		suppliesTable.setLinesVisible(true);
-		suppliesTable.setHeaderVisible(true);
+		recipesTable = recipesTableViewer.getTable();
+		recipesTable.setLinesVisible(true);
+		recipesTable.setHeaderVisible(true);
 		
-		TableColumn nameColumn = new TableColumn(suppliesTable, SWT.NONE);
+		TableColumn nameColumn = new TableColumn(recipesTable, SWT.NONE);
 		nameColumn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				((SupplyListSorter) suppliesTableViewer.getSorter()).doSort(SupplyColumnIndex.NAME_COLUMN_IDX);
-				suppliesTableViewer.refresh();
+				((RecipeListSorter) recipesTableViewer.getSorter()).doSort(RecipeColumnIndex.NAME_COLUMN_IDX);
+				recipesTableViewer.refresh();
 			}
 		});
-		nameColumn.setWidth(182);
+		nameColumn.setWidth(200);
 		nameColumn.setText("Nombre");
 		
-		TableColumn categoryColumn = new TableColumn(suppliesTable, SWT.NONE);
+		TableColumn descriptionColumn = new TableColumn(recipesTable, SWT.NONE);
+		descriptionColumn.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				((RecipeListSorter) recipesTableViewer.getSorter()).doSort(RecipeColumnIndex.DESCRIPTION_COLUMN_IDX);
+				recipesTableViewer.refresh();
+			}
+		});
+		descriptionColumn.setWidth(350);
+		descriptionColumn.setText("Descripci\u00F3n");
+
+		TableColumn categoryColumn = new TableColumn(recipesTable, SWT.NONE);
 		categoryColumn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				((SupplyListSorter) suppliesTableViewer.getSorter()).doSort(SupplyColumnIndex.CATEGORY_COLUMN_IDX);
-				suppliesTableViewer.refresh();
+				((RecipeListSorter) recipesTableViewer.getSorter()).doSort(RecipeColumnIndex.CATEGORY_COLUMN_IDX);
+				recipesTableViewer.refresh();
 			}
 		});
-		categoryColumn.setWidth(250);
+		categoryColumn.setWidth(200);
 		categoryColumn.setText("Categor\u00EDa");
 		
-		TableColumn stockColumn = new TableColumn(suppliesTable, SWT.NONE);
-		stockColumn.addSelectionListener(new SelectionAdapter() {
+		
+		TableColumn salesPriceColumn = new TableColumn(recipesTable, SWT.NONE);
+		salesPriceColumn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				((SupplyListSorter) suppliesTableViewer.getSorter()).doSort(SupplyColumnIndex.STOCK_COLUMN_IDX);
-				suppliesTableViewer.refresh();
+				((RecipeListSorter) recipesTableViewer.getSorter()).doSort(RecipeColumnIndex.SALES_PRICE_COLUMN_IDX);
+				recipesTableViewer.refresh();
 			}
 		});
-		stockColumn.setWidth(88);
-		stockColumn.setText("Stock");
+		salesPriceColumn.setWidth(100);
+		salesPriceColumn.setText("Precio de Venta");
 		
-		TableColumn minStockColumn = new TableColumn(suppliesTable, SWT.NONE);
-		minStockColumn.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				((SupplyListSorter) suppliesTableViewer.getSorter()).doSort(SupplyColumnIndex.STOCK_MIN_COLUMN_IDX);
-				suppliesTableViewer.refresh();
-			}
-		});
-		minStockColumn.setWidth(190);
-		minStockColumn.setText("Stock M\u00EDnimo Requerido");
-		
-		TableColumn formatColumn = new TableColumn(suppliesTable, SWT.NONE);
-		formatColumn.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				((SupplyListSorter) suppliesTableViewer.getSorter()).doSort(SupplyColumnIndex.FORMAT_COLUMN_IDX);
-				suppliesTableViewer.refresh();
-			}
-		});
-		formatColumn.setWidth(80);
-		formatColumn.setText("Formato");
-		
-		suppliesTableViewer.setInput(productServices);
+		recipesTableViewer.setInput(productServices);
 		
 		makeActions();
 		hookContextMenu();
@@ -152,22 +144,22 @@ public class SupplyListView extends ViewPart {
 		contributeToActionBars();
 	}
 	
-	private void createAddProductEventHandler(Composite parent) {
+	private void createAddRecipeEventHandler(Composite parent) {
 		EventHandler handler = new EventHandler() {
 			public void handleEvent(final Event event) {
 				if (parent.getDisplay().getThread() == Thread.currentThread()) {
-					suppliesTableViewer.refresh();
+					recipesTableViewer.refresh();
 				} else {
 					parent.getDisplay().syncExec(new Runnable() {
 						public void run() {
-							suppliesTableViewer.refresh();
+							recipesTableViewer.refresh();
 						}
 					});
 				}
 			}
 	    };
 	    Dictionary<String,String> properties = new Hashtable<String, String>();
-	    properties.put(EventConstants.EVENT_TOPIC, ProductsCommunicationConstants.ADD_SUPPLY_EVENT);
+	    properties.put(EventConstants.EVENT_TOPIC, ProductsCommunicationConstants.ADD_RECIPE_EVENT);
 	    bundleContext.registerService(EventHandler.class, handler, properties);
 	}
 
@@ -176,7 +168,7 @@ public class SupplyListView extends ViewPart {
 //		menuMgr.setRemoveAllWhenShown(true);
 //		menuMgr.addMenuListener(new IMenuListener() {
 //			public void menuAboutToShow(IMenuManager manager) {
-//				SupplyListView.this.fillContextMenu(manager);
+//				MarketableProductListView.this.fillContextMenu(manager);
 //			}
 //		});
 	}
@@ -188,25 +180,34 @@ public class SupplyListView extends ViewPart {
 	}
 
 //	private void fillLocalPullDown(IMenuManager manager) {
-//		manager.add(openNewSupplyDialogAction);
+//		manager.add(openNewMarketableProductDialogAction);
+//		manager.add(openInventoryLoadingDialogAction);
 //		manager.add(new Separator());
 //	}
 //
 //	private void fillContextMenu(IMenuManager manager) {
-//		manager.add(openNewSupplyDialogAction);
+//		manager.add(openNewMarketableProductDialogAction);
+//		manager.add(openInventoryLoadingDialogAction);
 //		// Other plug-ins can contribute there actions here
 //		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 //	}
 	
 //	private void fillLocalToolBar(IToolBarManager manager) {
-//		manager.add(openNewSupplyDialogAction);
+//		manager.add(openNewMarketableProductDialogAction);
+//		manager.add(openInventoryLoadingDialogAction);
 //	}
 
 	private void makeActions() {
-//		openNewSupplyDialogAction = new OpenNewSupplyDialogAction("Nuevo Insumo",PlatformUI.getWorkbench().getActiveWorkbenchWindow());
-//		openNewSupplyDialogAction.setText("Nuevo Insumo");
-//		openNewSupplyDialogAction.setToolTipText("Nuevo Insumo");
-//		openNewSupplyDialogAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+//		openNewMarketableProductDialogAction = new OpenNewMarketableProductDialogAction("Nuevo Producto",PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+//		openNewMarketableProductDialogAction.setText("Nuevo Producto");
+//		openNewMarketableProductDialogAction.setToolTipText("Nuevo Producto");
+//		openNewMarketableProductDialogAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+//			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+//		
+//		openInventoryLoadingDialogAction = new OpenInventoryLoadingDialogAction("Carga de Inventario",PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+//		openInventoryLoadingDialogAction.setText("Carga de Inventario");
+//		openInventoryLoadingDialogAction.setToolTipText("Carga de Inventario");
+//		openInventoryLoadingDialogAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 //			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 	}
 

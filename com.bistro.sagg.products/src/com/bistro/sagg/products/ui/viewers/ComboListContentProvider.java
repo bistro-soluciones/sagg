@@ -6,13 +6,13 @@ import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.session.SaggSession;
 import com.bistro.sagg.core.session.SaggSessionConstants;
 
-public class MarketableProductListContentProvider extends SaggStructuredContentProvider {
+public class ComboListContentProvider extends SaggStructuredContentProvider {
 
 	@Override
 	public Object[] getElements(Object inputElement) {
 		ProductServices productServices = (ProductServices) inputElement;
 		FranchiseBranch branch = SaggSession.getCurrentSession().getSessionObject(SaggSessionConstants.CURRENT_FRANCHISE_BANCH);
-		return productServices.getMarketableProducts(branch).toArray();
+		return productServices.getCombos(branch).toArray();
 	}
 
 }

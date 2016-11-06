@@ -44,6 +44,7 @@ import org.osgi.service.event.EventAdmin;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 
+import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.model.products.MarketableProduct;
 import com.bistro.sagg.core.model.products.Product;
 import com.bistro.sagg.core.model.products.ProductCategory;
@@ -51,6 +52,8 @@ import com.bistro.sagg.core.model.suppliers.Supplier;
 import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.core.services.SupplierServices;
+import com.bistro.sagg.core.session.SaggSession;
+import com.bistro.sagg.core.session.SaggSessionConstants;
 import com.bistro.sagg.products.ui.utils.ProductsCommunicationConstants;
 import com.bistro.sagg.products.ui.viewers.ProductCategoryComboContentProvider;
 import com.bistro.sagg.products.ui.viewers.ProductCategoryComboLabelProvider;
@@ -111,7 +114,8 @@ public class ProductSelectionView extends ViewPart {
 	public ProductSelectionView() {
 		super();
 //		this.categories = productService.getProductCategories();
-		this.products = productServices.getMarketableProducts();
+		FranchiseBranch branch = SaggSession.getCurrentSession().getSessionObject(SaggSessionConstants.CURRENT_FRANCHISE_BANCH);
+		this.products = productServices.getMarketableProducts(branch);
 		
 		this.bundleContext = FrameworkUtil.getBundle(ProductSelectionView.class).getBundleContext();
         ServiceReference<EventAdmin> ref = bundleContext.getServiceReference(EventAdmin.class);
