@@ -7,6 +7,7 @@ import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.model.order.billing.PurchaseBillingItem;
 import com.bistro.sagg.core.model.products.Combo;
 import com.bistro.sagg.core.model.products.ComboItem;
+import com.bistro.sagg.core.model.products.InventoryProductCategory;
 import com.bistro.sagg.core.model.products.MarketableProduct;
 import com.bistro.sagg.core.model.products.Product;
 import com.bistro.sagg.core.model.products.ProductCategory;
@@ -14,13 +15,16 @@ import com.bistro.sagg.core.model.products.ProductFormat;
 import com.bistro.sagg.core.model.products.Recipe;
 import com.bistro.sagg.core.model.products.RecipeLine;
 import com.bistro.sagg.core.model.products.SalableProduct;
+import com.bistro.sagg.core.model.products.SaleProductCategory;
 import com.bistro.sagg.core.model.products.Supply;
 
 public interface ProductServices extends ISaggService {
 
-	void createCategory(FranchiseBranch branch, String name);
+	void createCategory(FranchiseBranch branch, String name, boolean isForSale);
 
-	List<ProductCategory> getProductCategories(FranchiseBranch branch);
+	List<InventoryProductCategory> getInventoryProductCategories(FranchiseBranch branch);
+
+	List<SaleProductCategory> getSaleProductCategories(FranchiseBranch branch);
 
 	List<ProductFormat> getProductFormats();
 

@@ -33,19 +33,23 @@ public class BillingServicesImpl implements BillingServices {
 	public List<BillingDocument> getBillingDocuments() {
 		return (List<BillingDocument>) billilngDocumentRepository.findAll();
 	}
-	
-	public SaleBillingDocument createBillingDocument(SaleOrder order, DocumentType documentType, PaymentMethod paymentMethod) {
+
+	public SaleBillingDocument createBillingDocument(SaleOrder order, DocumentType documentType, String documentNumber,
+			PaymentMethod paymentMethod) {
 		SaleBillingDocument document = new SaleOrderToBillindDocumentTransformer().transform(order);
 		document.setPaymentMethod(paymentMethod);
 		document.setDocumentType(documentType);
+		document.setDocumentNumber(documentNumber);
 		billilngDocumentRepository.save(document);
 		return document;
 	}
-	
-	public PurchaseBillingDocument createBillingDocument(PurchaseOrder order, DocumentType documentType, PaymentMethod paymentMethod) {
+
+	public PurchaseBillingDocument createBillingDocument(PurchaseOrder order, DocumentType documentType,
+			String documentNumber, PaymentMethod paymentMethod) {
 		PurchaseBillingDocument document = new PurchaseOrderToBillindDocumentTransformer().transform(order);
 		document.setPaymentMethod(paymentMethod);
 		document.setDocumentType(documentType);
+		document.setDocumentNumber(documentNumber);
 		billilngDocumentRepository.save(document);
 		return document;
 	}

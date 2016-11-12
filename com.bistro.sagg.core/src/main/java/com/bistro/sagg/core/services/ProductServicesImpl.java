@@ -6,13 +6,14 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.bistro.sagg.core.builders.ProductCategoryBuilder;
+import com.bistro.sagg.core.factory.ProductCategoryFactory;
 import com.bistro.sagg.core.factory.ProductFactory;
 import com.bistro.sagg.core.factory.RecipeFactory;
 import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.model.order.billing.PurchaseBillingItem;
 import com.bistro.sagg.core.model.products.Combo;
 import com.bistro.sagg.core.model.products.ComboItem;
+import com.bistro.sagg.core.model.products.InventoryProductCategory;
 import com.bistro.sagg.core.model.products.MarketableProduct;
 import com.bistro.sagg.core.model.products.Product;
 import com.bistro.sagg.core.model.products.ProductCategory;
@@ -20,12 +21,14 @@ import com.bistro.sagg.core.model.products.ProductFormat;
 import com.bistro.sagg.core.model.products.Recipe;
 import com.bistro.sagg.core.model.products.RecipeLine;
 import com.bistro.sagg.core.model.products.SalableProduct;
+import com.bistro.sagg.core.model.products.SaleProductCategory;
 import com.bistro.sagg.core.model.products.Supply;
 import com.bistro.sagg.core.repository.ComboRepository;
+import com.bistro.sagg.core.repository.InventoryProductCategoryRepository;
 import com.bistro.sagg.core.repository.MarketableProductRepository;
-import com.bistro.sagg.core.repository.ProductCategoryRepository;
 import com.bistro.sagg.core.repository.ProductFormatRepository;
 import com.bistro.sagg.core.repository.RecipeRepository;
+import com.bistro.sagg.core.repository.SaleProductCategoryRepository;
 import com.bistro.sagg.core.repository.SupplyRepository;
 
 public class ProductServicesImpl implements ProductServices {
@@ -35,7 +38,9 @@ public class ProductServicesImpl implements ProductServices {
 	@Autowired
 	private MarketableProductRepository marketableProductRepository;
 	@Autowired
-	private ProductCategoryRepository productCategoryRepository;
+	private InventoryProductCategoryRepository inventoryProductCategoryRepository;
+	@Autowired
+	private SaleProductCategoryRepository saleProductCategoryRepository;
 	@Autowired
 	private ProductFormatRepository productFormatRepository;
 	@Autowired
@@ -43,17 +48,34 @@ public class ProductServicesImpl implements ProductServices {
 	@Autowired
 	private SupplyRepository supplyRepository;
 
-	public void createCategory(FranchiseBranch branch, String name) {
-		// Create product category object
-		ProductCategoryBuilder builder = new ProductCategoryBuilder();
-		builder.build(branch, name);
-		ProductCategory category = builder.getCategory();
-		// Save product category
-		productCategoryRepository.save(category);
+	public void createCategory(FranchiseBranch branch, String name, boolean isForSale) {
+		if(isForSale) {
+			createSaleProductCategory(branch, name);
+		} else {
+			createInventoryProductCategory(branch, name);
+		}
 	}
 
-	public List<ProductCategory> getProductCategories(FranchiseBranch branch) {
-		return productCategoryRepository.findByBranch(branch);
+	private void createSaleProductCategory(FranchiseBranch branch, String name) {
+		// Create product category object
+		SaleProductCategory category = ProductCategoryFactory.createSaleProductCategory(branch, name);
+		// Save product category
+		saleProductCategoryRepository.save(category);
+	}
+
+	private void createInventoryProductCategory(FranchiseBranch branch, String name) {
+		// Create product category object
+		InventoryProductCategory category = ProductCategoryFactory.createInventoryProductCategory(branch, name);
+		// Save product category
+		inventoryProductCategoryRepository.save(category);
+	}
+
+	public List<InventoryProductCategory> getInventoryProductCategories(FranchiseBranch branch) {
+		return inventoryProductCategoryRepository.findByBranch(branch);
+	}
+
+	public List<SaleProductCategory> getSaleProductCategories(FranchiseBranch branch) {
+		return saleProductCategoryRepository.findByBranch(branch);
 	}
 
 	public List<ProductFormat> getProductFormats() {

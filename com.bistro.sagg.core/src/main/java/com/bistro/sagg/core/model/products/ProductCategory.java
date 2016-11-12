@@ -1,11 +1,14 @@
 package com.bistro.sagg.core.model.products;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -14,6 +17,8 @@ import com.bistro.sagg.core.model.Identificable;
 import com.bistro.sagg.core.model.company.FranchiseBranch;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "CATEGORY_TYPE")
 @Table(name = "PRODUCT_CATEGORIES")
 public class ProductCategory implements Identificable {
 

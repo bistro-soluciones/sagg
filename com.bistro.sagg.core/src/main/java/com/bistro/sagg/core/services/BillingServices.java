@@ -16,9 +16,11 @@ public interface BillingServices extends ISaggService {
 
 	List<BillingDocument> getBillingDocuments();
 
-	SaleBillingDocument createBillingDocument(SaleOrder order, DocumentType documentType, PaymentMethod paymentMethod);
+	SaleBillingDocument createBillingDocument(SaleOrder order, DocumentType documentType, String documentNumber,
+			PaymentMethod paymentMethod);
 
-	PurchaseBillingDocument createBillingDocument(PurchaseOrder order, DocumentType documentType, PaymentMethod paymentMethod);
+	PurchaseBillingDocument createBillingDocument(PurchaseOrder order, DocumentType documentType, String documentNumber,
+			PaymentMethod paymentMethod);
 
 //	BillingDocument createPurchaseBillingDocument(DocumentType documentType, String documentNumber, PaymentMethod paymentMethod,
 //			List<PurchaseBillingItem> items);
