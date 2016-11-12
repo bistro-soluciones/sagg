@@ -7,7 +7,10 @@ public class GenerigReportsLabelProvider extends SaggTableLabelProvider {
 	@Override
 	public String getColumnText(Object element, int columnIndex) {
 		Object[] line = (Object[]) element;
-		return line[columnIndex].toString();
+		if(line[columnIndex] != null) {
+			return line[columnIndex].toString();
+		}
+		return "";
 	}
 
 }
