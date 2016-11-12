@@ -338,7 +338,6 @@ public class EmployeeDetailView extends ViewPart {
 		cityCombo.setText("");
 		cityCombo.setEnabled(false);
 		selectedPosition = null;
-		franchiseBranch = null;
 		selectedCity = null;
 	}
 	
