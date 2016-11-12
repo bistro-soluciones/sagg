@@ -39,18 +39,20 @@ import org.osgi.service.event.EventHandler;
 
 import com.bistro.sagg.core.model.company.employees.Employee;
 import com.bistro.sagg.core.model.order.SaleOrder;
-import com.bistro.sagg.core.model.order.billing.BillingDocument;
+import com.bistro.sagg.core.model.order.SaleOrderItem;
 import com.bistro.sagg.core.model.order.billing.DocumentType;
+import com.bistro.sagg.core.model.order.billing.SaleBillingDocument;
 import com.bistro.sagg.core.model.order.payment.PaymentMethod;
 import com.bistro.sagg.core.services.BillingServices;
 import com.bistro.sagg.core.services.OrderServices;
+import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.core.session.SaggSession;
 import com.bistro.sagg.core.session.SaggSessionConstants;
 import com.bistro.sagg.core.util.TransactionUtils;
 import com.bistro.sagg.sales.ui.utils.SalesCommunicationConstants;
-import com.bistro.sagg.sales.ui.viewers.BillingDocumentTypeComboLabelProvider;
 import com.bistro.sagg.sales.ui.viewers.BillingDocumentTypeComboContentProvider;
+import com.bistro.sagg.sales.ui.viewers.BillingDocumentTypeComboLabelProvider;
 import com.bistro.sagg.sales.ui.viewers.PaymentMethodComboContentProvider;
 import com.bistro.sagg.sales.ui.viewers.PaymentMethodComboLabelProvider;
 
@@ -103,8 +105,8 @@ public class SalesConfirmationDetailView extends ViewPart {
 			.lookup(BillingServices.class.getName());
 	private OrderServices orderServices = (OrderServices) SaggServiceLocator.getInstance()
 			.lookup(OrderServices.class.getName());
-//	private EmployeeServices employeeServices = (EmployeeServices) SaggServiceLocator.getInstance()
-//			.lookup(EmployeeServices.class.getName());
+	private ProductServices productServices = (ProductServices) SaggServiceLocator.getInstance()
+			.lookup(ProductServices.class.getName());
 	
 	private SaleOrder order;
 	private BigDecimal subtotalAmount = BigDecimal.ZERO;
@@ -382,9 +384,13 @@ public class SalesConfirmationDetailView extends ViewPart {
 		confirmTransactionButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				BillingDocument document = billingServices.createBillingDocument(order, selectedDocumentType, selectedPaymentMethod);
-				order.setDocument(document);
-				orderServices.deliverSaleOrder(order);
+				SaleBillingDocument document = billingServices.createBillingDocument(order, selectedDocumentType, selectedPaymentMethod);
+				orderServices.deliverSaleOrder(order, document);
+				for (SaleOrderItem item : order.getItems()) {
+					productServices.decreaseProductStock(item.getSalableProduct(), item.getQuantity());
+					orderServices.decreasePurchasedItemStock(item.getSalableProduct(), item.getQuantity());
+					// TODO track de ganancias netas
+				}
 				resetDefaultValues();
 				Event event = new Event(SalesCommunicationConstants.RESET_SALE_ORDER_EVENT, new HashMap<String, Object>());
 				eventAdmin.sendEvent(event);

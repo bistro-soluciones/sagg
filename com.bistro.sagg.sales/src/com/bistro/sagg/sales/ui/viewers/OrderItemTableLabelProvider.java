@@ -11,7 +11,7 @@ public class OrderItemTableLabelProvider extends SaggTableLabelProvider {
 		SaleOrderItem item = (SaleOrderItem) element;
 		switch (columnIndex) {
 		case OrderItemColumnIndexConstants.PRODUCT_NAME_COLUMN_IDX:
-			return item.getProduct().getName();
+			return item.getSalableProduct().getName();
 		case OrderItemColumnIndexConstants.PRODUCT_QUANTITY_COLUMN_IDX:
 			return String.valueOf(item.getQuantity());
 		case OrderItemColumnIndexConstants.PRODUCT_AMOUNT_COLUMN_IDX:

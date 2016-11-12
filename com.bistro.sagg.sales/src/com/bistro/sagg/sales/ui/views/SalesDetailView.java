@@ -42,7 +42,7 @@ import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.model.company.employees.Employee;
 import com.bistro.sagg.core.model.order.SaleOrder;
 import com.bistro.sagg.core.model.order.SaleOrderItem;
-import com.bistro.sagg.core.model.products.Product;
+import com.bistro.sagg.core.model.products.SalableProduct;
 import com.bistro.sagg.core.services.OrderServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.core.session.SaggSession;
@@ -310,7 +310,7 @@ public class SalesDetailView extends ViewPart {
 		EventHandler handler = new EventHandler() {
 			public void handleEvent(final Event event) {
 				SaleOrderItem item = OrderItemFactory.createSaleOrderItem(
-						(Product) event.getProperty(SalesCommunicationConstants.ADD_PRODUCT_DATA),
+						(SalableProduct) event.getProperty(SalesCommunicationConstants.ADD_PRODUCT_DATA),
 						(int) event.getProperty(SalesCommunicationConstants.ADD_PRODUCT_QUANTITY_DATA));
 				if (parent.getDisplay().getThread() == Thread.currentThread()) {
 					productsTableViewer.add(item);

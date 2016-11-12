@@ -6,7 +6,7 @@ import com.bistro.sagg.core.model.products.ProductCategory;
 import com.bistro.sagg.core.osgi.ui.viewers.SaggStructuredContentProvider;
 import com.bistro.sagg.core.services.ProductServices;
 
-public class ProductListContentProvider extends SaggStructuredContentProvider {
+public class SalableProductListContentProvider extends SaggStructuredContentProvider {
 
 	private ProductCategory category;
 
@@ -27,7 +27,7 @@ public class ProductListContentProvider extends SaggStructuredContentProvider {
 	public Object[] getElements(Object inputElement) {
 		if (category != null) {
 			ProductServices productServices = (ProductServices) inputElement;
-			return productServices.getProductsByCategory(category).toArray();
+			return productServices.getSalableProductsByCategory(category).toArray();
 		}
 		return Collections.EMPTY_LIST.toArray();
 	}

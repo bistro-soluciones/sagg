@@ -45,6 +45,7 @@ import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.model.products.MarketableProduct;
 import com.bistro.sagg.core.model.products.Product;
 import com.bistro.sagg.core.model.products.ProductCategory;
+import com.bistro.sagg.core.model.products.SalableProduct;
 import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.core.session.SaggSession;
@@ -52,8 +53,8 @@ import com.bistro.sagg.core.session.SaggSessionConstants;
 import com.bistro.sagg.sales.ui.utils.SalesCommunicationConstants;
 import com.bistro.sagg.sales.ui.viewers.ProductCategoryComboContentProvider;
 import com.bistro.sagg.sales.ui.viewers.ProductCategoryComboLabelProvider;
-import com.bistro.sagg.sales.ui.viewers.ProductListContentProvider;
-import com.bistro.sagg.sales.ui.viewers.ProductListLabelProvider;
+import com.bistro.sagg.sales.ui.viewers.SalableProductListContentProvider;
+import com.bistro.sagg.sales.ui.viewers.SalableProductListLabelProvider;
 
 /**
  * This sample class demonstrates how to plug-in a new
@@ -89,9 +90,9 @@ public class ProductSelectionView extends ViewPart {
 	private ProductServices productServices = (ProductServices) SaggServiceLocator.getInstance()
 			.lookup(ProductServices.class.getName());
 	
-	private List<ProductCategory> categories;
-	private List<MarketableProduct> products = new ArrayList<MarketableProduct>();
-	private Product selectedProduct;
+//	private List<ProductCategory> categories;
+//	private List<MarketableProduct> products = new ArrayList<MarketableProduct>();
+	private SalableProduct selectedProduct;
 	private int selectedProductQuantity;
 	
     private BundleContext bundleContext;
@@ -101,7 +102,7 @@ public class ProductSelectionView extends ViewPart {
 		super();
 //		this.categories = productService.getProductCategories();
 		FranchiseBranch branch = SaggSession.getCurrentSession().getSessionObject(SaggSessionConstants.CURRENT_FRANCHISE_BANCH);
-		this.products = productServices.getMarketableProducts(branch);
+//		this.products = productServices.getMarketableProducts(branch);
 		
 		this.bundleContext = FrameworkUtil.getBundle(ProductSelectionView.class).getBundleContext();
         ServiceReference<EventAdmin> ref = bundleContext.getServiceReference(EventAdmin.class);
@@ -134,7 +135,7 @@ public class ProductSelectionView extends ViewPart {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				ProductCategory category = (ProductCategory) ((StructuredSelection) event.getSelection()).getFirstElement();
-				ProductListContentProvider provider = (ProductListContentProvider) productListViewer.getContentProvider();
+				SalableProductListContentProvider provider = (SalableProductListContentProvider) productListViewer.getContentProvider();
 				provider.setCategory(category);
 				productListViewer.refresh();
 				productList.setEnabled(true);
@@ -147,8 +148,8 @@ public class ProductSelectionView extends ViewPart {
 		productLabel.setText("Producto");
 		
 		productListViewer = new ListViewer(composite_1, SWT.BORDER);
-		productListViewer.setContentProvider(new ProductListContentProvider());
-		productListViewer.setLabelProvider(new ProductListLabelProvider());
+		productListViewer.setContentProvider(new SalableProductListContentProvider());
+		productListViewer.setLabelProvider(new SalableProductListLabelProvider());
 		productListViewer.setInput(productServices);
 		productList = productListViewer.getList();
 		productList.setEnabled(false);
@@ -160,7 +161,8 @@ public class ProductSelectionView extends ViewPart {
 				if(source.getSelectionCount() > 0) {
 					productQuantitySpinner.setEnabled(true);
 					productQuantitySpinner.setSelection(0);
-					selectedProduct = (Product) ((StructuredSelection)productListViewer.getSelection()).getFirstElement();
+					selectedProduct = (SalableProduct) ((StructuredSelection) productListViewer.getSelection())
+							.getFirstElement();
 				} else {
 					productQuantitySpinner.setEnabled(false);
 					selectedProduct = null;
@@ -364,107 +366,107 @@ public class ProductSelectionView extends ViewPart {
 //		addProductButton.setEnabled(false);
 	}
 
-	private void fillProductCategories(Composite productCategoriesComposite) {
-		for (ProductCategory category : categories) {
-			Button btnCateg = new Button(productCategoriesComposite, SWT.WRAP | SWT.PUSH);
-			btnCateg.setLayoutData(new RowData(100, 100));
-			btnCateg.setText(getLabel(category.getName()));
-			btnCateg.setToolTipText(category.getName());
-		}
-		for (ProductCategory category : categories) {
-			Button btnCateg = new Button(productCategoriesComposite, SWT.WRAP | SWT.PUSH);
-			btnCateg.setLayoutData(new RowData(100, 100));
-			btnCateg.setText(getLabel(category.getName()));
-			btnCateg.setToolTipText(category.getName());
-		}
-		for (ProductCategory category : categories) {
-			Button btnCateg = new Button(productCategoriesComposite, SWT.WRAP | SWT.PUSH);
-			btnCateg.setLayoutData(new RowData(100, 100));
-			btnCateg.setText(getLabel(category.getName()));
-			btnCateg.setToolTipText(category.getName());
-		}
-		for (ProductCategory category : categories) {
-			Button btnCateg = new Button(productCategoriesComposite, SWT.WRAP | SWT.PUSH);
-			btnCateg.setLayoutData(new RowData(100, 100));
-			btnCateg.setText(getLabel(category.getName()));
-			btnCateg.setToolTipText(category.getName());
-		}
-	}
-	
-	private void fillProducts(Composite productsComposite) {
-		for (Product product : products) {
-			Button btnCateg = new Button(productsComposite, SWT.WRAP | SWT.PUSH);
-			btnCateg.setLayoutData(new RowData(100, 100));
-			btnCateg.setText(getLabel(product.getName()));
-			btnCateg.setToolTipText(product.getName());
-		}
-		for (Product product : products) {
-			Button btnCateg = new Button(productsComposite, SWT.WRAP | SWT.PUSH);
-			btnCateg.setLayoutData(new RowData(100, 100));
-			btnCateg.setText(getLabel(product.getName()));
-			btnCateg.setToolTipText(product.getName());
-		}
-		for (Product product : products) {
-			Button btnCateg = new Button(productsComposite, SWT.WRAP | SWT.PUSH);
-			btnCateg.setLayoutData(new RowData(100, 100));
-			btnCateg.setText(getLabel(product.getName()));
-			btnCateg.setToolTipText(product.getName());
-		}
-		for (Product product : products) {
-			Button btnCateg = new Button(productsComposite, SWT.WRAP | SWT.PUSH);
-			btnCateg.setLayoutData(new RowData(100, 100));
-			btnCateg.setText(getLabel(product.getName()));
-			btnCateg.setToolTipText(product.getName());
-		}
-		for (Product product : products) {
-			Button btnCateg = new Button(productsComposite, SWT.WRAP | SWT.PUSH);
-			btnCateg.setLayoutData(new RowData(100, 100));
-			btnCateg.setText(getLabel(product.getName()));
-			btnCateg.setToolTipText(product.getName());
-		}
-		for (Product product : products) {
-			Button btnCateg = new Button(productsComposite, SWT.WRAP | SWT.PUSH);
-			btnCateg.setLayoutData(new RowData(100, 100));
-			btnCateg.setText(getLabel(product.getName()));
-			btnCateg.setToolTipText(product.getName());
-		}
-		for (Product product : products) {
-			Button btnCateg = new Button(productsComposite, SWT.WRAP | SWT.PUSH);
-			btnCateg.setLayoutData(new RowData(100, 100));
-			btnCateg.setText(getLabel(product.getName()));
-			btnCateg.setToolTipText(product.getName());
-		}
-		for (Product product : products) {
-			Button btnCateg = new Button(productsComposite, SWT.WRAP | SWT.PUSH);
-			btnCateg.setLayoutData(new RowData(100, 100));
-			btnCateg.setText(getLabel(product.getName()));
-			btnCateg.setToolTipText(product.getName());
-		}
-		for (Product product : products) {
-			Button btnCateg = new Button(productsComposite, SWT.WRAP | SWT.PUSH);
-			btnCateg.setLayoutData(new RowData(100, 100));
-			btnCateg.setText(getLabel(product.getName()));
-			btnCateg.setToolTipText(product.getName());
-		}
-		for (Product product : products) {
-			Button btnCateg = new Button(productsComposite, SWT.WRAP | SWT.PUSH);
-			btnCateg.setLayoutData(new RowData(100, 100));
-			btnCateg.setText(getLabel(product.getName()));
-			btnCateg.setToolTipText(product.getName());
-		}
-		for (Product product : products) {
-			Button btnCateg = new Button(productsComposite, SWT.WRAP | SWT.PUSH);
-			btnCateg.setLayoutData(new RowData(100, 100));
-			btnCateg.setText(getLabel(product.getName()));
-			btnCateg.setToolTipText(product.getName());
-		}
-		for (Product product : products) {
-			Button btnCateg = new Button(productsComposite, SWT.WRAP | SWT.PUSH);
-			btnCateg.setLayoutData(new RowData(100, 100));
-			btnCateg.setText(getLabel(product.getName()));
-			btnCateg.setToolTipText(product.getName());
-		}
-	}
+//	private void fillProductCategories(Composite productCategoriesComposite) {
+//		for (ProductCategory category : categories) {
+//			Button btnCateg = new Button(productCategoriesComposite, SWT.WRAP | SWT.PUSH);
+//			btnCateg.setLayoutData(new RowData(100, 100));
+//			btnCateg.setText(getLabel(category.getName()));
+//			btnCateg.setToolTipText(category.getName());
+//		}
+//		for (ProductCategory category : categories) {
+//			Button btnCateg = new Button(productCategoriesComposite, SWT.WRAP | SWT.PUSH);
+//			btnCateg.setLayoutData(new RowData(100, 100));
+//			btnCateg.setText(getLabel(category.getName()));
+//			btnCateg.setToolTipText(category.getName());
+//		}
+//		for (ProductCategory category : categories) {
+//			Button btnCateg = new Button(productCategoriesComposite, SWT.WRAP | SWT.PUSH);
+//			btnCateg.setLayoutData(new RowData(100, 100));
+//			btnCateg.setText(getLabel(category.getName()));
+//			btnCateg.setToolTipText(category.getName());
+//		}
+//		for (ProductCategory category : categories) {
+//			Button btnCateg = new Button(productCategoriesComposite, SWT.WRAP | SWT.PUSH);
+//			btnCateg.setLayoutData(new RowData(100, 100));
+//			btnCateg.setText(getLabel(category.getName()));
+//			btnCateg.setToolTipText(category.getName());
+//		}
+//	}
+//	
+//	private void fillProducts(Composite productsComposite) {
+//		for (Product product : products) {
+//			Button btnCateg = new Button(productsComposite, SWT.WRAP | SWT.PUSH);
+//			btnCateg.setLayoutData(new RowData(100, 100));
+//			btnCateg.setText(getLabel(product.getName()));
+//			btnCateg.setToolTipText(product.getName());
+//		}
+//		for (Product product : products) {
+//			Button btnCateg = new Button(productsComposite, SWT.WRAP | SWT.PUSH);
+//			btnCateg.setLayoutData(new RowData(100, 100));
+//			btnCateg.setText(getLabel(product.getName()));
+//			btnCateg.setToolTipText(product.getName());
+//		}
+//		for (Product product : products) {
+//			Button btnCateg = new Button(productsComposite, SWT.WRAP | SWT.PUSH);
+//			btnCateg.setLayoutData(new RowData(100, 100));
+//			btnCateg.setText(getLabel(product.getName()));
+//			btnCateg.setToolTipText(product.getName());
+//		}
+//		for (Product product : products) {
+//			Button btnCateg = new Button(productsComposite, SWT.WRAP | SWT.PUSH);
+//			btnCateg.setLayoutData(new RowData(100, 100));
+//			btnCateg.setText(getLabel(product.getName()));
+//			btnCateg.setToolTipText(product.getName());
+//		}
+//		for (Product product : products) {
+//			Button btnCateg = new Button(productsComposite, SWT.WRAP | SWT.PUSH);
+//			btnCateg.setLayoutData(new RowData(100, 100));
+//			btnCateg.setText(getLabel(product.getName()));
+//			btnCateg.setToolTipText(product.getName());
+//		}
+//		for (Product product : products) {
+//			Button btnCateg = new Button(productsComposite, SWT.WRAP | SWT.PUSH);
+//			btnCateg.setLayoutData(new RowData(100, 100));
+//			btnCateg.setText(getLabel(product.getName()));
+//			btnCateg.setToolTipText(product.getName());
+//		}
+//		for (Product product : products) {
+//			Button btnCateg = new Button(productsComposite, SWT.WRAP | SWT.PUSH);
+//			btnCateg.setLayoutData(new RowData(100, 100));
+//			btnCateg.setText(getLabel(product.getName()));
+//			btnCateg.setToolTipText(product.getName());
+//		}
+//		for (Product product : products) {
+//			Button btnCateg = new Button(productsComposite, SWT.WRAP | SWT.PUSH);
+//			btnCateg.setLayoutData(new RowData(100, 100));
+//			btnCateg.setText(getLabel(product.getName()));
+//			btnCateg.setToolTipText(product.getName());
+//		}
+//		for (Product product : products) {
+//			Button btnCateg = new Button(productsComposite, SWT.WRAP | SWT.PUSH);
+//			btnCateg.setLayoutData(new RowData(100, 100));
+//			btnCateg.setText(getLabel(product.getName()));
+//			btnCateg.setToolTipText(product.getName());
+//		}
+//		for (Product product : products) {
+//			Button btnCateg = new Button(productsComposite, SWT.WRAP | SWT.PUSH);
+//			btnCateg.setLayoutData(new RowData(100, 100));
+//			btnCateg.setText(getLabel(product.getName()));
+//			btnCateg.setToolTipText(product.getName());
+//		}
+//		for (Product product : products) {
+//			Button btnCateg = new Button(productsComposite, SWT.WRAP | SWT.PUSH);
+//			btnCateg.setLayoutData(new RowData(100, 100));
+//			btnCateg.setText(getLabel(product.getName()));
+//			btnCateg.setToolTipText(product.getName());
+//		}
+//		for (Product product : products) {
+//			Button btnCateg = new Button(productsComposite, SWT.WRAP | SWT.PUSH);
+//			btnCateg.setLayoutData(new RowData(100, 100));
+//			btnCateg.setText(getLabel(product.getName()));
+//			btnCateg.setToolTipText(product.getName());
+//		}
+//	}
 	
 	private String getLabel(String text) {
 		String[] split = text.split(" ");
