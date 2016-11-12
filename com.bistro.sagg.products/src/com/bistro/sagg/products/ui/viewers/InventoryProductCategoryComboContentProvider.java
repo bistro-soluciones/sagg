@@ -7,7 +7,7 @@ import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.session.SaggSession;
 import com.bistro.sagg.core.session.SaggSessionConstants;
 
-public class ProductCategoryComboContentProvider extends SaggStructuredContentProvider {
+public class InventoryProductCategoryComboContentProvider extends SaggStructuredContentProvider {
 
 	private Supplier supplier;
 	
@@ -26,7 +26,7 @@ public class ProductCategoryComboContentProvider extends SaggStructuredContentPr
 		}
 		ProductServices productServices = (ProductServices) inputElement;
 		FranchiseBranch branch = SaggSession.getCurrentSession().getSessionObject(SaggSessionConstants.CURRENT_FRANCHISE_BANCH);
-		return productServices.getProductCategories(branch).toArray();
+		return productServices.getInventoryProductCategories(branch).toArray();
 	}
 
 }

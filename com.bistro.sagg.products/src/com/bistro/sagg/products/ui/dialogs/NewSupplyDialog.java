@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Text;
 import com.bistro.sagg.core.model.products.ProductCategory;
 import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
-import com.bistro.sagg.products.ui.viewers.ProductCategoryComboContentProvider;
 import com.bistro.sagg.products.ui.viewers.ProductCategoryComboLabelProvider;
 
 public class NewSupplyDialog extends Dialog {
@@ -86,7 +85,7 @@ public class NewSupplyDialog extends Dialog {
 		categoryLabel.setText("Categor\u00EDa");
 
 		ComboViewer productCategoryComboViewer = new ComboViewer(basicInfoGroup, SWT.NONE);
-		productCategoryComboViewer.setContentProvider(new ProductCategoryComboContentProvider());
+//		productCategoryComboViewer.setContentProvider(new ProductCategoryComboContentProvider());
 		productCategoryComboViewer.setLabelProvider(new ProductCategoryComboLabelProvider());
 		productCategoryComboViewer.setInput(productService);
 		Combo productCategoryCombo = productCategoryComboViewer.getCombo();

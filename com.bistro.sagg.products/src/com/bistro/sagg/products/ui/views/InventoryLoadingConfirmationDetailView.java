@@ -281,7 +281,8 @@ public class InventoryLoadingConfirmationDetailView extends ViewPart {
 		confirmTransactionButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				PurchaseBillingDocument document = billingServices.createBillingDocument(order, selectedDocumentType, selectedPaymentMethod);
+				PurchaseBillingDocument document = billingServices.createBillingDocument(order, selectedDocumentType,
+						documentNumberText.getText(), selectedPaymentMethod);
 				orderServices.receivePurchaseOrder(order, document);
 				productServices.increaseProductStock(document.getItems());
 				resetDefaultValues();
@@ -310,6 +311,7 @@ public class InventoryLoadingConfirmationDetailView extends ViewPart {
 				subtotalAmount = TransactionUtils.addItemAmounts(order.getItems());
 				if (parent.getDisplay().getThread() == Thread.currentThread()) {
 					orderNumberText.setText(order.getOrderNumber());
+					documentNumberText.setText(order.getOrderNumber());
 					orderDateText.setText(formatter.format(order.getDate()));
 					supplierText.setText(supplier.getBusinessName());
 					receiverText.setText(receiver.getFullName());
@@ -324,6 +326,7 @@ public class InventoryLoadingConfirmationDetailView extends ViewPart {
 					parent.getDisplay().syncExec(new Runnable() {
 						public void run() {
 							orderNumberText.setText(order.getOrderNumber());
+							documentNumberText.setText(order.getOrderNumber());
 							orderDateText.setText(formatter.format(order.getDate()));
 							supplierText.setText(supplier.getBusinessName());
 							receiverText.setText(receiver.getFullName());

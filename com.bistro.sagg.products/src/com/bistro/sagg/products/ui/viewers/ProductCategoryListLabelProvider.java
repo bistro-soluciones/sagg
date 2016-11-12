@@ -12,6 +12,8 @@ public class ProductCategoryListLabelProvider extends SaggTableLabelProvider {
 		switch (columnIndex) {
 		case ProductCategoryColumnIndex.NAME_COLUMN_IDX:
 			return category.getName();
+		case ProductCategoryColumnIndex.TYPE_COLUMN_IDX:
+			return category.getType();
 		}
 		return "";
 	}

@@ -89,16 +89,27 @@ public class ProductCategoryListView extends ViewPart {
 		productCategoriesTable.setLinesVisible(true);
 		productCategoriesTable.setHeaderVisible(true);
 		
-		TableColumn tblclmnNombre = new TableColumn(productCategoriesTable, SWT.NONE);
-		tblclmnNombre.addSelectionListener(new SelectionAdapter() {
+		TableColumn categoryNameColumn = new TableColumn(productCategoriesTable, SWT.NONE);
+		categoryNameColumn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				((ProductCategoryListSorter) productCategoriesTableViewer.getSorter()).doSort(ProductCategoryColumnIndex.NAME_COLUMN_IDX);
 				productCategoriesTableViewer.refresh();
 			}
 		});
-		tblclmnNombre.setWidth(182);
-		tblclmnNombre.setText("Categor\u00EDa");
+		categoryNameColumn.setWidth(250);
+		categoryNameColumn.setText("Categor\u00EDa");
+		
+		TableColumn categoryTtypeColumn = new TableColumn(productCategoriesTable, SWT.NONE);
+		categoryTtypeColumn.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				((ProductCategoryListSorter) productCategoriesTableViewer.getSorter()).doSort(ProductCategoryColumnIndex.TYPE_COLUMN_IDX);
+				productCategoriesTableViewer.refresh();
+			}
+		});
+		categoryTtypeColumn.setWidth(100);
+		categoryTtypeColumn.setText("Tipo");
 		
 		productCategoriesTableViewer.setInput(productServices);
 		

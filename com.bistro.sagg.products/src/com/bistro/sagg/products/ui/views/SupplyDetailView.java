@@ -43,7 +43,7 @@ import com.bistro.sagg.core.model.products.ProductFormat;
 import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.products.ui.utils.ProductsCommunicationConstants;
-import com.bistro.sagg.products.ui.viewers.ProductCategoryComboContentProvider;
+import com.bistro.sagg.products.ui.viewers.InventoryProductCategoryComboContentProvider;
 import com.bistro.sagg.products.ui.viewers.ProductCategoryComboLabelProvider;
 import com.bistro.sagg.products.ui.viewers.ProductFormatComboContentProvider;
 import com.bistro.sagg.products.ui.viewers.ProductFormatComboLabelProvider;
@@ -126,7 +126,7 @@ public class SupplyDetailView extends ViewPart {
 		categoryLabel.setText("Categor\u00EDa");
 		
 		productCategoryComboViewer = new ComboViewer(basicInfoGroup, SWT.NONE);
-		productCategoryComboViewer.setContentProvider(new ProductCategoryComboContentProvider());
+		productCategoryComboViewer.setContentProvider(new InventoryProductCategoryComboContentProvider());
 		productCategoryComboViewer.setLabelProvider(new ProductCategoryComboLabelProvider());
 		productCategoryComboViewer.setInput(productServices);
 		categoryCombo = productCategoryComboViewer.getCombo();

@@ -61,6 +61,7 @@ public class ProductCategoryDetailView extends ViewPart {
 	public static final String ID = "com.bistro.sagg.products.ui.views.ProductCategoryDetailView";
 	
 	private Text nameText;
+	private Button forSaleCheckButton;
 	
 	private ProductServices productServices = (ProductServices) SaggServiceLocator.getInstance()
 			.lookup(ProductServices.class.getName());
@@ -86,7 +87,7 @@ public class ProductCategoryDetailView extends ViewPart {
 		parent.setLayout(new GridLayout(1, false));
 		
 		Group basicInfoGroup = new Group(parent, SWT.NONE);
-		basicInfoGroup.setLayout(new GridLayout(2, false));
+		basicInfoGroup.setLayout(new GridLayout(3, false));
 		basicInfoGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		basicInfoGroup.setText("Informaci\u00F3n B\u00E1sica");
 		
@@ -99,6 +100,9 @@ public class ProductCategoryDetailView extends ViewPart {
 		
 		nameText = new Text(basicInfoGroup, SWT.BORDER);
 		nameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		forSaleCheckButton = new Button(basicInfoGroup, SWT.CHECK);
+		forSaleCheckButton.setText("Venta");
 		
 		Composite buttonsComposite = new Composite(parent, SWT.NONE);
 		buttonsComposite.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, true, 1, 1));
@@ -119,7 +123,7 @@ public class ProductCategoryDetailView extends ViewPart {
 		saveButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				productServices.createCategory(franchiseBranch, nameText.getText());
+				productServices.createCategory(franchiseBranch, nameText.getText(), forSaleCheckButton.getSelection());
 				Map<String,Object> properties = new HashMap<String, Object>();
 				Event event = new Event(ProductsCommunicationConstants.ADD_PRODUCT_CATEGORY_EVENT, properties);
 				eventAdmin.sendEvent(event);
@@ -139,6 +143,7 @@ public class ProductCategoryDetailView extends ViewPart {
 
 	private void resetDefaultValues() {
 		nameText.setText("");
+		forSaleCheckButton.setSelection(false);
 	}
 	
 	private void hookContextMenu() {

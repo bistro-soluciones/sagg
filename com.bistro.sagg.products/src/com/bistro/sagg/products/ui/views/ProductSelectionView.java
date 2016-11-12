@@ -55,10 +55,10 @@ import com.bistro.sagg.core.services.SupplierServices;
 import com.bistro.sagg.core.session.SaggSession;
 import com.bistro.sagg.core.session.SaggSessionConstants;
 import com.bistro.sagg.products.ui.utils.ProductsCommunicationConstants;
-import com.bistro.sagg.products.ui.viewers.ProductCategoryComboContentProvider;
 import com.bistro.sagg.products.ui.viewers.ProductCategoryComboLabelProvider;
 import com.bistro.sagg.products.ui.viewers.ProductListContentProvider;
 import com.bistro.sagg.products.ui.viewers.ProductListLabelProvider;
+import com.bistro.sagg.products.ui.viewers.SaleProductCategoryComboContentProvider;
 import com.bistro.sagg.products.ui.viewers.SupplierComboContentProvider;
 import com.bistro.sagg.products.ui.viewers.SupplierComboLabelProvider;
 
@@ -148,7 +148,7 @@ public class ProductSelectionView extends ViewPart {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				selectedSupplier = (Supplier) ((StructuredSelection) event.getSelection()).getFirstElement();
-				ProductCategoryComboContentProvider provider = (ProductCategoryComboContentProvider) productCategoryComboViewer.getContentProvider();
+				SaleProductCategoryComboContentProvider provider = (SaleProductCategoryComboContentProvider) productCategoryComboViewer.getContentProvider();
 				provider.setSupplier(selectedSupplier);
 				productCategoryComboViewer.refresh();
 				productCategoryCombo.setEnabled(true);
@@ -165,7 +165,7 @@ public class ProductSelectionView extends ViewPart {
 		productCategoryLabel.setText("Categor\u00EDa");
 		
 		productCategoryComboViewer = new ComboViewer(parent, SWT.NONE);
-		productCategoryComboViewer.setContentProvider(new ProductCategoryComboContentProvider());
+		productCategoryComboViewer.setContentProvider(new SaleProductCategoryComboContentProvider());
 		productCategoryComboViewer.setLabelProvider(new ProductCategoryComboLabelProvider());
 		productCategoryComboViewer.setInput(productServices);
 		productCategoryCombo = productCategoryComboViewer.getCombo();

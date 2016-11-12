@@ -1,7 +1,5 @@
 package com.bistro.sagg.products.ui.dialogs;
 
-import java.math.BigDecimal;
-
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -23,7 +21,6 @@ import org.eclipse.swt.widgets.Text;
 import com.bistro.sagg.core.model.products.ProductCategory;
 import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
-import com.bistro.sagg.products.ui.viewers.ProductCategoryComboContentProvider;
 import com.bistro.sagg.products.ui.viewers.ProductCategoryComboLabelProvider;
 
 public class NewMarketableProductDialog extends Dialog {
@@ -89,7 +86,7 @@ public class NewMarketableProductDialog extends Dialog {
 		categoryLabel.setText("Categor\u00EDa");
 
 		ComboViewer productCategoryComboViewer = new ComboViewer(basicInfoGroup, SWT.NONE);
-		productCategoryComboViewer.setContentProvider(new ProductCategoryComboContentProvider());
+//		productCategoryComboViewer.setContentProvider(new ProductCategoryComboContentProvider());
 		productCategoryComboViewer.setLabelProvider(new ProductCategoryComboLabelProvider());
 		productCategoryComboViewer.setInput(productServices);
 		Combo productCategoryCombo = productCategoryComboViewer.getCombo();

@@ -58,10 +58,11 @@ import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.core.session.SaggSession;
 import com.bistro.sagg.core.session.SaggSessionConstants;
 import com.bistro.sagg.products.ui.utils.ProductsCommunicationConstants;
-import com.bistro.sagg.products.ui.viewers.ProductCategoryComboContentProvider;
+import com.bistro.sagg.products.ui.viewers.InventoryProductCategoryComboContentProvider;
 import com.bistro.sagg.products.ui.viewers.ProductCategoryComboLabelProvider;
 import com.bistro.sagg.products.ui.viewers.ProductListLabelProvider;
 import com.bistro.sagg.products.ui.viewers.RecipeLineTableLabelProvider;
+import com.bistro.sagg.products.ui.viewers.SaleProductCategoryComboContentProvider;
 import com.bistro.sagg.products.ui.viewers.SuppliesByCategoryListContentProvider;
 
 /**
@@ -172,7 +173,7 @@ public class BuildRecipeView extends ViewPart {
 		recipeCategoryLabel.setText("Categor\u00EDa");
 		
 		recipeCategoryComboViewer = new ComboViewer(composite, SWT.NONE);
-		recipeCategoryComboViewer.setContentProvider(new ProductCategoryComboContentProvider());
+		recipeCategoryComboViewer.setContentProvider(new SaleProductCategoryComboContentProvider());
 		recipeCategoryComboViewer.setLabelProvider(new ProductCategoryComboLabelProvider());
 		recipeCategoryComboViewer.setInput(productServices);
 		recipeCategoryCombo = recipeCategoryComboViewer.getCombo();
@@ -206,7 +207,7 @@ public class BuildRecipeView extends ViewPart {
 		categoryLabel.setText("Categor\u00EDa");
 		
 		productCategoryComboViewer = new ComboViewer(composite_1, SWT.NONE);
-		productCategoryComboViewer.setContentProvider(new ProductCategoryComboContentProvider());
+		productCategoryComboViewer.setContentProvider(new InventoryProductCategoryComboContentProvider());
 		productCategoryComboViewer.setLabelProvider(new ProductCategoryComboLabelProvider());
 		productCategoryComboViewer.setInput(productServices);
 		categoryCombo = productCategoryComboViewer.getCombo();
