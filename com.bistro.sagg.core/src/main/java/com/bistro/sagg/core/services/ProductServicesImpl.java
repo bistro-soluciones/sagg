@@ -70,6 +70,13 @@ public class ProductServicesImpl implements ProductServices {
 		inventoryProductCategoryRepository.save(category);
 	}
 
+	public List<ProductCategory> getProductCategories(FranchiseBranch branch) {
+		List<ProductCategory> categories = new ArrayList<ProductCategory>();
+		categories.addAll(getSaleProductCategories(branch));
+		categories.addAll(getInventoryProductCategories(branch));
+		return categories;
+	}
+
 	public List<InventoryProductCategory> getInventoryProductCategories(FranchiseBranch branch) {
 		return inventoryProductCategoryRepository.findByBranch(branch);
 	}

@@ -22,6 +22,8 @@ public interface ProductServices extends ISaggService {
 
 	void createCategory(FranchiseBranch branch, String name, boolean isForSale);
 
+	List<ProductCategory> getProductCategories(FranchiseBranch branch);
+
 	List<InventoryProductCategory> getInventoryProductCategories(FranchiseBranch branch);
 
 	List<SaleProductCategory> getSaleProductCategories(FranchiseBranch branch);

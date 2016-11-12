@@ -7,4 +7,9 @@ import javax.persistence.Entity;
 @DiscriminatorValue("SALE_CATEGORY")
 public class SaleProductCategory extends ProductCategory {
 
+	@Override
+	public String getType() {
+		return "Venta";
+	}
+
 }

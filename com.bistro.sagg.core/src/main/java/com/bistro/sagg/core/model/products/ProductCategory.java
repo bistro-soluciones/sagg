@@ -20,7 +20,7 @@ import com.bistro.sagg.core.model.company.FranchiseBranch;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "CATEGORY_TYPE")
 @Table(name = "PRODUCT_CATEGORIES")
-public class ProductCategory implements Identificable {
+public abstract class ProductCategory implements Identificable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,4 +61,6 @@ public class ProductCategory implements Identificable {
 		this.branch = branch;
 	}
 
+	public abstract String getType();
+	
 }
