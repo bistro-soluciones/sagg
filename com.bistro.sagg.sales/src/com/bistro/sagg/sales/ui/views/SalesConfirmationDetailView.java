@@ -87,6 +87,7 @@ public class SalesConfirmationDetailView extends ViewPart {
 	private Text couponNumberText;
 	private Text cashAmountText;
 	private Combo documentTypeCombo;
+	private Text documentNumberText;
 	private Combo couponCombo;
 //	private Combo cardTypeCombo;
 	private Combo saleTypeCombo;
@@ -138,7 +139,7 @@ public class SalesConfirmationDetailView extends ViewPart {
 		
 		Label orderNumberLabel = new Label(paymentDetailComposite, SWT.NONE);
 		orderNumberLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		orderNumberLabel.setText("N\u00FAmero");
+		orderNumberLabel.setText("N\u00FAmero de Orden");
 		
 		orderNumberText = new Text(paymentDetailComposite, SWT.BORDER | SWT.RIGHT);
 		orderNumberText.setEditable(false);
@@ -159,8 +160,17 @@ public class SalesConfirmationDetailView extends ViewPart {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				selectedDocumentType = (DocumentType) ((StructuredSelection) event.getSelection()).getFirstElement();
+				documentNumberText.setEnabled(true);
 			}
 		});
+		
+		Label documentNumberLabel = new Label(paymentDetailComposite, SWT.RIGHT);
+		documentNumberLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		documentNumberLabel.setText("N\u00FAmero");
+		
+		documentNumberText = new Text(paymentDetailComposite, SWT.BORDER | SWT.RIGHT);
+		documentNumberText.setEnabled(false);
+		documentNumberText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label orderDateLabel = new Label(paymentDetailComposite, SWT.NONE);
 		orderDateLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -384,7 +394,8 @@ public class SalesConfirmationDetailView extends ViewPart {
 		confirmTransactionButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				SaleBillingDocument document = billingServices.createBillingDocument(order, selectedDocumentType, selectedPaymentMethod);
+				SaleBillingDocument document = billingServices.createBillingDocument(order, selectedDocumentType,
+						documentNumberText.getText(), selectedPaymentMethod);
 				orderServices.deliverSaleOrder(order, document);
 				for (SaleOrderItem item : order.getItems()) {
 					productServices.decreaseProductStock(item.getSalableProduct(), item.getQuantity());
@@ -416,6 +427,7 @@ public class SalesConfirmationDetailView extends ViewPart {
 				subtotalAmount = TransactionUtils.addItemAmounts(order.getItems());
 				if (parent.getDisplay().getThread() == Thread.currentThread()) {
 					orderNumberText.setText(order.getOrderNumber());
+					documentNumberText.setText(order.getOrderNumber());
 					orderDateText.setText(formatter.format(order.getDate()));
 					sellerText.setText(seller.getFullName());
 					subtotalAmountTextLabel.setText(subtotalAmount.toString());
@@ -428,6 +440,7 @@ public class SalesConfirmationDetailView extends ViewPart {
 					parent.getDisplay().syncExec(new Runnable() {
 						public void run() {
 							orderNumberText.setText(order.getOrderNumber());
+							documentNumberText.setText(order.getOrderNumber());
 							orderDateText.setText(formatter.format(order.getDate()));
 							sellerText.setText(seller.getFullName());
 							subtotalAmountTextLabel.setText(subtotalAmount.toString());
@@ -450,6 +463,8 @@ public class SalesConfirmationDetailView extends ViewPart {
 		orderNumberText.setText("");
 		documentTypeCombo.setText("");
 		documentTypeCombo.setEnabled(false);
+		documentNumberText.setText("");
+		documentNumberText.setEnabled(false);
 		orderDateText.setText("");
 		sellerText.setText("");
 		couponCombo.redraw();
