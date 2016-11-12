@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,11 +16,17 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import com.bistro.sagg.core.model.Identificable;
 import com.bistro.sagg.core.model.company.FranchiseBranch;
+import com.bistro.sagg.core.model.order.SaleOrderItem;
+import com.bistro.sagg.core.model.order.billing.SaleBillingItem;
 
 @Entity
 @Table(name = "COMBOS")
-public class Combo implements SalableProduct {
+public class Combo implements SalableProduct, Identificable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +38,8 @@ public class Combo implements SalableProduct {
 	private String description;
 	@Column(name = "UNIT_SALES_PRICE")
 	private BigDecimal unitSalesPrice;
-	@OneToMany(mappedBy = "combo")
+	@OneToMany(mappedBy = "combo", cascade = CascadeType.PERSIST, fetch= FetchType.EAGER)
+	@Fetch(FetchMode.SELECT)
 	private List<ComboItem> items = new ArrayList<ComboItem>();
 	// Franchise information
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -94,10 +102,35 @@ public class Combo implements SalableProduct {
 		getItems().add(item);
 		item.setCombo(this);
 	}
+	
+	public void addToSaleOrderItem(SaleOrderItem item) {
+		item.setCombo(this);
+	}
 
 	public void addToComboItem(ComboItem item) {
 		// Do nothing as combo cannot be part of a combo item
 		// TODO throw exception
+	}
+
+	public void addToSaleBillingItem(SaleBillingItem item) {
+		item.setCombo(this);
+	}
+	
+	public boolean hasStock() {
+		for (ComboItem item : items) {
+			if (!item.getProduct().hasStock()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public void decreaseStock(int quantity) {
+		for (int i = 0; i < quantity; i++) {
+			for (ComboItem item : items) {
+				item.decreaseStock();
+			}
+		}
 	}
 
 }

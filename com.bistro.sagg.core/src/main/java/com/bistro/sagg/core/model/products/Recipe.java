@@ -17,11 +17,17 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import com.bistro.sagg.core.model.Identificable;
 import com.bistro.sagg.core.model.company.FranchiseBranch;
+import com.bistro.sagg.core.model.order.SaleOrderItem;
+import com.bistro.sagg.core.model.order.billing.SaleBillingItem;
 
 @Entity
 @Table(name = "RECIPES")
-public class Recipe implements SalableProduct {
+public class Recipe implements SalableProduct, Identificable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +42,8 @@ public class Recipe implements SalableProduct {
 	private ProductCategory category;
 	@Column(name = "UNIT_SALES_PRICE")
 	private BigDecimal unitSalesPrice;
-	@OneToMany(mappedBy = "recipe", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "recipe", cascade = CascadeType.PERSIST, fetch= FetchType.EAGER)
+	@Fetch(FetchMode.SELECT)
 	private List<RecipeLine> lines = new ArrayList<RecipeLine>();
 	// Franchise information
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -110,9 +117,34 @@ public class Recipe implements SalableProduct {
 		getLines().add(recipeLine);
 		recipeLine.setRecipe(this);
 	}
+	
+	public void addToSaleOrderItem(SaleOrderItem item) {
+		item.setRecipe(this);
+	}
 
 	public void addToComboItem(ComboItem item) {
 		item.setRecipe(this);
 	}
 
+	public void addToSaleBillingItem(SaleBillingItem item) {
+		item.setRecipe(this);
+	}
+	
+	public boolean hasStock() {
+		for (RecipeLine line : lines) {
+			if (!line.getSupply().hasStock()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public void decreaseStock(int quantity) {
+		for (int i = 0; i < quantity; i++) {
+			for (RecipeLine line : lines) {
+				line.decreaseStock();
+			}
+		}
+	}
+	
 }

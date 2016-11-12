@@ -1,6 +1,4 @@
-package com.bistro.sagg.core.model.order;
-
-import java.math.BigDecimal;
+package com.bistro.sagg.core.model.order.billing;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,26 +9,25 @@ import javax.persistence.Table;
 import com.bistro.sagg.core.model.products.Combo;
 import com.bistro.sagg.core.model.products.MarketableProduct;
 import com.bistro.sagg.core.model.products.Recipe;
-import com.bistro.sagg.core.model.products.SalableProduct;
 
 @Entity
-@Table(name = "SALE_ORDER_ITEMS")
-public class SaleOrderItem extends OrderItem {
+@Table(name = "SALE_BILLING_ITEMS")
+public class SaleBillingItem extends BillingItem {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PRODUCT_ID")
 	private MarketableProduct product;
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "RECIPE_ID")
 	private Recipe recipe;
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "COMBO_ID")
 	private Combo combo;
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "ORDER_ID")
-	private SaleOrder order;
-
-	public SaleOrderItem() {
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "BILLING_DOCUMENT_ID")
+	private SaleBillingDocument document;
+	
+	public SaleBillingItem() {
 		super();
 	}
 
@@ -58,27 +55,40 @@ public class SaleOrderItem extends OrderItem {
 		this.combo = combo;
 	}
 
-	public SaleOrder getOrder() {
-		return order;
+	public SaleBillingDocument getDocument() {
+		return document;
 	}
 
-	public void setOrder(SaleOrder order) {
-		this.order = order;
+	public void setDocument(SaleBillingDocument document) {
+		this.document = document;
 	}
 
-	public SalableProduct getSalableProduct() {
-		if (getProduct() != null) {
-			return getProduct();
+	@Override
+	public String getProductName() {
+		if(getCombo() != null) {
+			return getCombo().getName();
 		}
-		return getRecipe();
+		if(getProduct() != null) {
+			return getProduct().getName();
+		}
+		if(getRecipe() != null) {
+			return getRecipe().getName();
+		}
+		return "";
 	}
 
-	public void setSalableProduct(SalableProduct product) {
-		product.addToSaleOrderItem(this);
-	}
-
-	public void recalculateAmount() {
-		setAmount(getSalableProduct().getUnitSalesPrice().multiply(new BigDecimal(getQuantity())));
+	@Override
+	public String getProductCategoryName() {
+		if(getCombo() != null) {
+			return "Combo";
+		}
+		if(getProduct() != null) {
+			return getProduct().getCategory().getName();
+		}
+		if(getRecipe() != null) {
+			return getRecipe().getCategory().getName();
+		}
+		return "";
 	}
 
 }

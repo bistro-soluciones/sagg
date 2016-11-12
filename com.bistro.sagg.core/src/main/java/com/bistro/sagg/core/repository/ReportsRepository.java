@@ -34,8 +34,8 @@ public interface ReportsRepository extends JpaRepository<Franchise, Long> {
 			@Param("productId") Long productId);
 	
 	@Query(value = "SELECT " +
-				   "	bd.document_number AS NUMERO_VENTA, " +
-				   "	bd.document_datetime AS FECHA_HORA, " +
+				   "	sbd.document_number AS NUMERO_VENTA, " +
+				   "	sbd.document_datetime AS FECHA_HORA, " +
 				   "	p.name AS PRODUCTO, " +
 				   "	pc.name AS CATEGORIA, " +
 				   "	p.unit_sales_price AS PRECIO_UNITARIO, " +
@@ -46,44 +46,44 @@ public interface ReportsRepository extends JpaRepository<Franchise, Long> {
 				   "	products p, " +
 				   "	sale_orders so, " +
 				   "	sale_order_items soi, " +
-				   "	billing_documents bd " +
+				   "	sale_billing_documents sbd " +
 				   "WHERE " +
 				   "	pc.franchise_branch_id = :branchId AND " +
 				   "	pc.id = p.product_category_id AND " +
 				   "	p.id = soi.product_id AND " +
 				   "	soi.order_id = so.id AND " +
-				   "	bd.id = so.billing_document_id AND " +
+				   "	sbd.id = so.billing_document_id AND " +
 				   "	CASE WHEN (:fromDate IS NOT NULL) THEN so.order_datetime >= :fromDate ELSE TRUE END AND " +
 				   "	CASE WHEN (:toDate IS NOT NULL) THEN so.order_datetime <= :toDate + INTERVAL 1 DAY ELSE TRUE END AND " +
 				   "	CASE WHEN (:productCategoryId IS NOT NULL) THEN pc.id = :productCategoryId ELSE TRUE END AND " +
 				   "	CASE WHEN (:productId IS NOT NULL) THEN p.id = :productId ELSE TRUE END " +
 				   "ORDER BY " +
 				   "	so.order_number DESC, " +
-				   "	bd.document_datetime DESC", nativeQuery = true)
+				   "	sbd.document_datetime DESC", nativeQuery = true)
 	List<Object> findSalesDetailedByProduct(@Param("branchId") Long branchId, @Param("fromDate") Date fromDate,
 			@Param("toDate") Date toDate, @Param("productCategoryId") Long productCategoryId,
 			@Param("productId") Long productId);
 	
 	@Query(value = "SELECT " +
-				   "	bd.document_number AS NUMERO_VENTA, " +
+				   "	sbd.document_number AS NUMERO_VENTA, " +
 				   "	dt.name AS DOCUMENTO, " +
 				   "	pm.name AS FORMA_PAGO, " +
-				   "	bd.document_datetime AS FECHA_HORA, " +
+				   "	sbd.document_datetime AS FECHA_HORA, " +
 				   "	concat(e.firstname, ' ', e.lastname) AS VENDEDOR, " +
 				   "	so.order_status AS ESTADO, " +
-				   "	(SELECT SUM(bi.unit_price) FROM billing_items bi WHERE bi.billing_document_id = bd.id) AS TOTAL " +
+				   "	(SELECT SUM(sbi.unit_price) FROM sale_billing_items sbi WHERE sbi.billing_document_id = sbd.id) AS TOTAL " +
 				   "FROM " +
 				   "	sale_orders so, " +
 				   "	employees e, " +
-				   "	billing_documents bd, " +
+				   "	sale_billing_documents sbd, " +
 				   "	document_types dt, " +
 				   "	payment_methods pm " +
 				   "WHERE " +
 				   "	so.franchise_branch_id = :branchId AND " +
-				   "	so.billing_document_id = bd.id AND " +
-				   "	bd.document_type_id = dt.id AND " +
+				   "	so.billing_document_id = sbd.id AND " +
+				   "	sbd.document_type_id = dt.id AND " +
 				   "	so.employee_id = e.id AND " +
-				   "	bd.payment_method_id = pm.id AND " +
+				   "	sbd.payment_method_id = pm.id AND " +
 				   "	CASE WHEN (:fromDate IS NOT NULL) THEN so.order_datetime >= :fromDate ELSE TRUE END AND " +
 				   "	CASE WHEN (:toDate IS NOT NULL) THEN so.order_datetime <= :toDate + INTERVAL 1 DAY ELSE TRUE END AND " +
 				   "	CASE WHEN (:documentTypeId IS NOT NULL) THEN dt.id = :documentTypeId ELSE TRUE END AND " +

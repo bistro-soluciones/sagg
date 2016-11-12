@@ -14,6 +14,10 @@ import com.bistro.sagg.core.model.products.Supply;
 
 public class RecipeFactory {
 
+	private RecipeFactory() {
+		super();
+	}
+
 	public static Recipe createRecipe(String name, String description, ProductCategory category, List<RecipeLine> lines,
 			BigDecimal salesPrice, FranchiseBranch branch) {
 		Recipe recipe = new Recipe();

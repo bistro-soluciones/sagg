@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.bistro.sagg.core.model.company.FranchiseBranch;
-import com.bistro.sagg.core.model.order.billing.BillingItem;
+import com.bistro.sagg.core.model.order.billing.PurchaseBillingItem;
 import com.bistro.sagg.core.model.products.Combo;
 import com.bistro.sagg.core.model.products.ComboItem;
 import com.bistro.sagg.core.model.products.MarketableProduct;
@@ -13,6 +13,7 @@ import com.bistro.sagg.core.model.products.ProductCategory;
 import com.bistro.sagg.core.model.products.ProductFormat;
 import com.bistro.sagg.core.model.products.Recipe;
 import com.bistro.sagg.core.model.products.RecipeLine;
+import com.bistro.sagg.core.model.products.SalableProduct;
 import com.bistro.sagg.core.model.products.Supply;
 
 public interface ProductServices extends ISaggService {
@@ -27,15 +28,20 @@ public interface ProductServices extends ISaggService {
 
 	List<Supply> getSupplies(FranchiseBranch branch);
 
-	void createMarketableProduct(String name, ProductCategory category, int minStock, BigDecimal unitSalesPrice);
+	void createMarketableProduct(String name, ProductCategory category, int minStock, BigDecimal unitSalesPrice,
+			ProductFormat format);
 
 	List<MarketableProduct> getMarketableProducts(FranchiseBranch branch);
 
 	List<Product> getProductsByCategory(ProductCategory category);
+	
+	List<SalableProduct> getSalableProductsByCategory(ProductCategory category);
 
 	List<Supply> getSuppliesByCategory(ProductCategory category);
 
-	void increaseProductStock(List<BillingItem> items);
+	void increaseProductStock(List<PurchaseBillingItem> items);
+	
+	void decreaseProductStock(SalableProduct product, int quantity);
 
 	void createRecipe(String name, String description, ProductCategory category, List<RecipeLine> lines,
 			BigDecimal salesPrice, FranchiseBranch branch);

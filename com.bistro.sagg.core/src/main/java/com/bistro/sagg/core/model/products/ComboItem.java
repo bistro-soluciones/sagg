@@ -1,5 +1,6 @@
 package com.bistro.sagg.core.model.products;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,9 +11,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.bistro.sagg.core.model.Identificable;
+
 @Entity
 @Table(name = "COMBO_ITEMS")
-public class ComboItem {
+public class ComboItem implements Identificable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,10 +24,10 @@ public class ComboItem {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "COMBO_ID")
 	private Combo combo;
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
 	@JoinColumn(name = "PRODUCT_ID")
 	private MarketableProduct product;
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
 	@JoinColumn(name = "RECIPE_ID")
 	private Recipe recipe;
 	@Column(name = "QUANTITY")
@@ -83,6 +86,15 @@ public class ComboItem {
 			itemName = getRecipe().getName();
 		}
 		return itemName;
+	}
+
+	public void decreaseStock() {
+		if (getProduct() != null) {
+			getProduct().decreaseStock(getQuantity());
+		}
+		if (getRecipe() != null) {
+			getRecipe().decreaseStock(getQuantity());
+		}
 	}
 
 }

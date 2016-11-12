@@ -31,7 +31,7 @@ public class Employee implements Identificable {
 	@Column(name = "PERSON_ID")
 	private String personId;
 	// Job information
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "POSITION_ID")
 	private Position position;
 	@Column(name = "START_WORKING_DATE")

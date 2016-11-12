@@ -6,12 +6,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.bistro.sagg.core.builders.MarketableProductBuilder;
 import com.bistro.sagg.core.builders.ProductCategoryBuilder;
 import com.bistro.sagg.core.factory.ProductFactory;
 import com.bistro.sagg.core.factory.RecipeFactory;
 import com.bistro.sagg.core.model.company.FranchiseBranch;
-import com.bistro.sagg.core.model.order.billing.BillingItem;
+import com.bistro.sagg.core.model.order.billing.PurchaseBillingItem;
 import com.bistro.sagg.core.model.products.Combo;
 import com.bistro.sagg.core.model.products.ComboItem;
 import com.bistro.sagg.core.model.products.MarketableProduct;
@@ -20,6 +19,7 @@ import com.bistro.sagg.core.model.products.ProductCategory;
 import com.bistro.sagg.core.model.products.ProductFormat;
 import com.bistro.sagg.core.model.products.Recipe;
 import com.bistro.sagg.core.model.products.RecipeLine;
+import com.bistro.sagg.core.model.products.SalableProduct;
 import com.bistro.sagg.core.model.products.Supply;
 import com.bistro.sagg.core.repository.ComboRepository;
 import com.bistro.sagg.core.repository.MarketableProductRepository;
@@ -73,11 +73,9 @@ public class ProductServicesImpl implements ProductServices {
 	}
 
 	public void createMarketableProduct(String name, ProductCategory category, int minStock,
-			BigDecimal unitSalesPrice) {
+			BigDecimal unitSalesPrice, ProductFormat format) {
 		// Create marketable product object
-		MarketableProductBuilder builder = new MarketableProductBuilder();
-		builder.build(name, category, 0, minStock, unitSalesPrice);
-		MarketableProduct product = builder.getProduct();
+		MarketableProduct product = ProductFactory.createMarketableProduct(name, category, 0, minStock, format);
 		// Save marketable product
 		marketableProductRepository.save(product);
 	}
@@ -94,6 +92,13 @@ public class ProductServicesImpl implements ProductServices {
 		return products;
 	}
 
+	public List<SalableProduct> getSalableProductsByCategory(ProductCategory category) {
+		List<SalableProduct> products = new ArrayList<SalableProduct>();
+		products.addAll(marketableProductRepository.findByCategory(category));
+		products.addAll(recipeRepository.findByCategory(category));
+		return products;
+	}
+	
 	public List<Supply> getSuppliesByCategory(ProductCategory category) {
 		return supplyRepository.findByCategory(category);
 	}
@@ -108,9 +113,9 @@ public class ProductServicesImpl implements ProductServices {
 		return products;
 	}
 
-	public void increaseProductStock(List<BillingItem> items) {
+	public void increaseProductStock(List<PurchaseBillingItem> items) {
 		// Increase product stock
-		for (BillingItem item : items) {
+		for (PurchaseBillingItem item : items) {
 			Product product = item.getProduct();
 			product.addStock(item.getQuantity());
 			if (product instanceof Supply) {
@@ -121,6 +126,22 @@ public class ProductServicesImpl implements ProductServices {
 				// Save marketable product
 				marketableProductRepository.save((MarketableProduct) product);
 			}
+		}
+	}
+	
+	public void decreaseProductStock(SalableProduct product, int quantity) {
+		product.decreaseStock(quantity);
+		if (product instanceof Combo) {
+			// Save combo
+			comboRepository.save((Combo) product);
+		}
+		if (product instanceof MarketableProduct) {
+			// Save marketable product
+			marketableProductRepository.save((MarketableProduct) product);
+		}
+		if (product instanceof Recipe) {
+			// Save recipe
+			recipeRepository.save((Recipe) product);
 		}
 	}
 

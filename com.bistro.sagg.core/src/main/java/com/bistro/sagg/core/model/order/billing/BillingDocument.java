@@ -1,27 +1,26 @@
 package com.bistro.sagg.core.model.order.billing;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.MappedSuperclass;
 
 import com.bistro.sagg.core.model.Identificable;
+import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.model.order.payment.PaymentMethod;
 
-@Entity
-@Table(name = "BILLING_DOCUMENTS")
-public class BillingDocument implements Identificable {
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@MappedSuperclass
+public abstract class BillingDocument implements Identificable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,8 +36,9 @@ public class BillingDocument implements Identificable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PAYMENT_METHOD_ID")
 	private PaymentMethod paymentMethod;
-	@OneToMany(mappedBy = "billingDocument", cascade = CascadeType.PERSIST)
-	private List<BillingItem> items = new ArrayList<BillingItem>();
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "FRANCHISE_BRANCH_ID")
+	private FranchiseBranch branch;
 
 	public BillingDocument() {
 		super();
@@ -84,24 +84,12 @@ public class BillingDocument implements Identificable {
 		this.paymentMethod = paymentMethod;
 	}
 
-	public List<BillingItem> getItems() {
-		return items;
+	public FranchiseBranch getBranch() {
+		return branch;
 	}
 
-	public void setItems(List<BillingItem> items) {
-		this.items = items;
-	}
-	
-	public void addItem(BillingItem item) {
-		item.setBillingDocument(this);
-		this.items.add(item);
-	}
-	
-	public void addItems(List<BillingItem> items) {
-		for (BillingItem item : items) {
-			item.setBillingDocument(this);
-		}
-		this.items.addAll(items);
+	public void setBranch(FranchiseBranch branch) {
+		this.branch = branch;
 	}
 
 }

@@ -3,29 +3,23 @@ package com.bistro.sagg.core.model.order.billing;
 import java.math.BigDecimal;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.MappedSuperclass;
 
 import com.bistro.sagg.core.model.Identificable;
-import com.bistro.sagg.core.model.products.Product;
 
-@Entity
-@Table(name = "BILLING_ITEMS")
-public class BillingItem implements Identificable {
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@MappedSuperclass
+public abstract class BillingItem implements Identificable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
 	private Long id;
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PRODUCT_ID")
-	private Product product;
 	@Column(name = "QUANTITY")
 	private int quantity = 0;
 	@Column(name = "UNIT_PRICE")
@@ -34,9 +28,6 @@ public class BillingItem implements Identificable {
 	private float tax;
 	@Column(name = "TAX_AMOUNT")
 	private BigDecimal taxAmount = BigDecimal.ZERO;
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "BILLING_DOCUMENT_ID")
-	private BillingDocument billingDocument;
 
 	public BillingItem() {
 		super();
@@ -48,14 +39,6 @@ public class BillingItem implements Identificable {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public Product getProduct() {
-		return product;
-	}
-
-	public void setProduct(Product product) {
-		this.product = product;
 	}
 
 	public int getQuantity() {
@@ -90,12 +73,8 @@ public class BillingItem implements Identificable {
 		this.taxAmount = taxAmount;
 	}
 
-	public BillingDocument getBillingDocument() {
-		return billingDocument;
-	}
-
-	public void setBillingDocument(BillingDocument billingDocument) {
-		this.billingDocument = billingDocument;
-	}
-
+	public abstract String getProductName();
+	
+	public abstract String getProductCategoryName();
+	
 }

@@ -15,6 +15,10 @@ import com.bistro.sagg.core.model.suppliers.Supplier;
 
 public class OrderFactory {
 
+	private OrderFactory() {
+		super();
+	}
+
 	public static SaleOrder createSaleOrder(FranchiseBranch branch, Employee seller, String orderNumber,
 			List<SaleOrderItem> items) {
 		SaleOrder order = new SaleOrder();

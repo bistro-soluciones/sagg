@@ -6,6 +6,9 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
+import com.bistro.sagg.core.model.order.SaleOrderItem;
+import com.bistro.sagg.core.model.order.billing.SaleBillingItem;
+
 @Entity
 @DiscriminatorValue("MARKETABLE_PRODUCT")
 public class MarketableProduct extends Product implements SalableProduct {
@@ -24,9 +27,21 @@ public class MarketableProduct extends Product implements SalableProduct {
 	public void setUnitSalesPrice(BigDecimal unitSalesPrice) {
 		this.unitSalesPrice = unitSalesPrice;
 	}
+	
+	public void addToSaleOrderItem(SaleOrderItem item) {
+		item.setProduct(this);
+	}
 
 	public void addToComboItem(ComboItem item) {
 		item.setProduct(this);
+	}
+
+	public void addToSaleBillingItem(SaleBillingItem item) {
+		item.setProduct(this);
+	}
+
+	public void decreaseStock(int quantity) {
+		setStock(getStock() - quantity);
 	}
 
 }

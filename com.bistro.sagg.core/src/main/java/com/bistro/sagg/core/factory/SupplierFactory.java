@@ -9,6 +9,10 @@ import com.bistro.sagg.core.model.suppliers.SupplierContact;
 
 public class SupplierFactory {
 
+	private SupplierFactory() {
+		super();
+	}
+
 	public static Supplier createSupplier(String businessName, String supplierId, String contactFirstname,
 			String contactLastname, String contactEmail, String contactPhone, String contactCellphone,
 			List<ProductCategory> categories, FranchiseBranch branch) {

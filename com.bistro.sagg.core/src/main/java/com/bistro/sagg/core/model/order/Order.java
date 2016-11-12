@@ -32,9 +32,6 @@ public abstract class Order implements Identificable {
 	private Date date;
 	@Column(name = "ORDER_STATUS")
 	private String status;
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "BILLING_DOCUMENT_ID")
-	private BillingDocument document;
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FRANCHISE_BRANCH_ID")
 	private FranchiseBranch branch;
@@ -73,14 +70,6 @@ public abstract class Order implements Identificable {
 
 	public void setStatus(String status) {
 		this.status = status;
-	}
-
-	public BillingDocument getDocument() {
-		return document;
-	}
-
-	public void setDocument(BillingDocument document) {
-		this.document = document;
 	}
 
 	public FranchiseBranch getBranch() {

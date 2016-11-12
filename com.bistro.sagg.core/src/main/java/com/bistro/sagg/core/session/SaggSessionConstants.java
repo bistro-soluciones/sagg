@@ -7,5 +7,6 @@ public interface SaggSessionConstants {
 	String ACTIVE_USER = "ACTIVE_USER";
 	String CURRENCY = "CURRENCY";
 	String DATE_FORMATTER = "DATE_FORMATTER";
+	String SHORT_DATE_FORMATTER = "SHORT_DATE_FORMATTER";
 	
 }

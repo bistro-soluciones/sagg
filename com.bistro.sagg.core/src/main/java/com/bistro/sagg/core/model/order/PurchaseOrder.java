@@ -8,9 +8,11 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.bistro.sagg.core.model.company.employees.Employee;
+import com.bistro.sagg.core.model.order.billing.PurchaseBillingDocument;
 import com.bistro.sagg.core.model.suppliers.Supplier;
 
 @Entity
@@ -28,7 +30,10 @@ public class PurchaseOrder extends Order {
 	private Supplier supplier;
 	@OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
 	private List<PurchaseOrderItem> items;
-
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "BILLING_DOCUMENT_ID")
+	private PurchaseBillingDocument document;
+	
 	public PurchaseOrder() {
 		super();
 	}
@@ -63,6 +68,14 @@ public class PurchaseOrder extends Order {
 
 	public void setItems(List<PurchaseOrderItem> items) {
 		this.items = items;
+	}
+
+	public PurchaseBillingDocument getDocument() {
+		return document;
+	}
+
+	public void setDocument(PurchaseBillingDocument document) {
+		this.document = document;
 	}
 
 }

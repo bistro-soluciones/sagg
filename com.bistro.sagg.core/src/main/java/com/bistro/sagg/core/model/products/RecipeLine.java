@@ -1,5 +1,6 @@
 package com.bistro.sagg.core.model.products;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -20,7 +21,7 @@ public class RecipeLine implements Identificable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
 	private Long id;
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
 	@JoinColumn(name = "SUPPLY_ID")
 	private Supply supply;
 	@Column(name = "PORTION")
@@ -63,6 +64,10 @@ public class RecipeLine implements Identificable {
 
 	public void setRecipe(Recipe recipe) {
 		this.recipe = recipe;
+	}
+
+	public void decreaseStock() {
+		getSupply().decreaseStock(getPortion());
 	}
 	
 }

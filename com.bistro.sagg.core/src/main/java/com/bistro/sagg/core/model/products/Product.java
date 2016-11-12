@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -37,6 +38,9 @@ public abstract class Product implements Identificable {
 	private int stock = 0;
 	@Column(name = "STOCK_MIN")
 	private int minStock = 0;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "PRODUCT_FORMAT_ID")
+	private ProductFormat format;
 
 	public Product() {
 		super();
@@ -82,6 +86,14 @@ public abstract class Product implements Identificable {
 		this.minStock = minStock;
 	}
 	
+	public ProductFormat getFormat() {
+		return format;
+	}
+
+	public void setFormat(ProductFormat format) {
+		this.format = format;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		// self check
@@ -100,6 +112,10 @@ public abstract class Product implements Identificable {
 
 	public void addStock(int quantity) {
 		this.stock += quantity;
+	}
+	
+	public boolean hasStock() {
+		return getStock() > 0;
 	}
 	
 }
