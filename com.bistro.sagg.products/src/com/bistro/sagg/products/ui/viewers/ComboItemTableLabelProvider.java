@@ -1,10 +1,8 @@
 package com.bistro.sagg.products.ui.viewers;
 
 import com.bistro.sagg.core.model.products.ComboItem;
-import com.bistro.sagg.core.model.products.RecipeLine;
 import com.bistro.sagg.core.osgi.ui.viewers.SaggTableLabelProvider;
 import com.bistro.sagg.products.ui.utils.ComboItemColumnIndexConstants;
-import com.bistro.sagg.products.ui.utils.RecipeLineColumnIndexConstants;
 
 public class ComboItemTableLabelProvider extends SaggTableLabelProvider {
 

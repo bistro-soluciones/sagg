@@ -40,11 +40,14 @@ import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 
 import com.bistro.sagg.core.model.products.ProductCategory;
+import com.bistro.sagg.core.model.products.ProductFormat;
 import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.products.ui.utils.ProductsCommunicationConstants;
 import com.bistro.sagg.products.ui.viewers.ProductCategoryComboContentProvider;
 import com.bistro.sagg.products.ui.viewers.ProductCategoryComboLabelProvider;
+import com.bistro.sagg.products.ui.viewers.ProductFormatComboContentProvider;
+import com.bistro.sagg.products.ui.viewers.ProductFormatComboLabelProvider;
 
 /**
  * This sample class demonstrates how to plug-in a new
@@ -75,9 +78,11 @@ public class MarketableProductDetailView extends ViewPart {
 	private ComboViewer productCategoryComboViewer;
 	private Combo categoryCombo;
 	private Spinner minStockSpinner;
+	private Combo productFormatCombo;
 	private Text unitSalesPriceText;
 	
 	private ProductCategory selectedCategory;
+	private ProductFormat selectedFormat;
 	
 	private ProductServices productServices = (ProductServices) SaggServiceLocator.getInstance()
 			.lookup(ProductServices.class.getName());
@@ -136,7 +141,7 @@ public class MarketableProductDetailView extends ViewPart {
 		});
 		
 		Group additionalInfoGroup = new Group(parent, SWT.NONE);
-		additionalInfoGroup.setLayout(new GridLayout(3, false));
+		additionalInfoGroup.setLayout(new GridLayout(2, false));
 		additionalInfoGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		additionalInfoGroup.setText("Informaci\u00F3n Adicional");
 		
@@ -147,22 +152,43 @@ public class MarketableProductDetailView extends ViewPart {
 		minStockLabel.setToolTipText("");
 		minStockLabel.setText("Stock M\u00EDnimo");
 		
-		minStockSpinner = new Spinner(additionalInfoGroup, SWT.BORDER);
+		Composite composite_1 = new Composite(additionalInfoGroup, SWT.NONE);
+		GridLayout gl_composite_1 = new GridLayout(3, false);
+		gl_composite_1.marginWidth = 0;
+		gl_composite_1.marginHeight = 0;
+		composite_1.setLayout(gl_composite_1);
+		composite_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		minStockSpinner = new Spinner(composite_1, SWT.BORDER);
 		minStockSpinner.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		
-		Composite composite = new Composite(additionalInfoGroup, SWT.NONE);
-		GridLayout gl_composite = new GridLayout(2, false);
-		gl_composite.marginHeight = 0;
-		gl_composite.marginWidth = 0;
-		composite.setLayout(gl_composite);
-		composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		Label productFormatLabel = new Label(composite_1, SWT.NONE);
+		productFormatLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		productFormatLabel.setText("Formato");
 		
-		Label unitSalesPriceLabel = new Label(composite, SWT.NONE);
-		unitSalesPriceLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		unitSalesPriceLabel.setText("Precio Unitario de Venta");
+		ComboViewer productFormatComboViewer = new ComboViewer(composite_1, SWT.NONE);
+		productFormatComboViewer.setContentProvider(new ProductFormatComboContentProvider());
+		productFormatComboViewer.setLabelProvider(new ProductFormatComboLabelProvider());
+		productFormatComboViewer.setInput(productServices);
+		productFormatCombo = productFormatComboViewer.getCombo();
+		productFormatCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		productFormatComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				selectedFormat = (ProductFormat) ((StructuredSelection) event.getSelection()).getFirstElement();
+			}
+		});
 		
-		unitSalesPriceText = new Text(composite, SWT.BORDER);
-		unitSalesPriceText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		Label unitSalesPriceLabel = new Label(additionalInfoGroup, SWT.RIGHT);
+		GridData gd_unitSalesPriceLabel = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_unitSalesPriceLabel.widthHint = 124;
+		unitSalesPriceLabel.setLayoutData(gd_unitSalesPriceLabel);
+		unitSalesPriceLabel.setText("Precio Unit. Venta");
+		
+		unitSalesPriceText = new Text(additionalInfoGroup, SWT.BORDER | SWT.RIGHT);
+		GridData gd_unitSalesPriceText = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_unitSalesPriceText.widthHint = 50;
+		unitSalesPriceText.setLayoutData(gd_unitSalesPriceText);
 		unitSalesPriceText.setText("0");
 		
 		Composite buttonsComposite = new Composite(parent, SWT.NONE);
@@ -185,7 +211,7 @@ public class MarketableProductDetailView extends ViewPart {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				productServices.createMarketableProduct(nameText.getText(), selectedCategory,
-						Integer.parseInt(minStockSpinner.getText()), new BigDecimal(unitSalesPriceText.getText()));
+						Integer.parseInt(minStockSpinner.getText()), new BigDecimal(unitSalesPriceText.getText()), selectedFormat);
 				Map<String,Object> properties = new HashMap<String, Object>();
 				Event event = new Event(ProductsCommunicationConstants.ADD_MARKETABLE_PRODUCT_EVENT, properties);
 				eventAdmin.sendEvent(event);

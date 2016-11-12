@@ -37,12 +37,13 @@ import org.osgi.service.event.EventHandler;
 
 import com.bistro.sagg.core.model.company.employees.Employee;
 import com.bistro.sagg.core.model.order.PurchaseOrder;
-import com.bistro.sagg.core.model.order.billing.BillingDocument;
 import com.bistro.sagg.core.model.order.billing.DocumentType;
+import com.bistro.sagg.core.model.order.billing.PurchaseBillingDocument;
 import com.bistro.sagg.core.model.order.payment.PaymentMethod;
 import com.bistro.sagg.core.model.suppliers.Supplier;
 import com.bistro.sagg.core.services.BillingServices;
 import com.bistro.sagg.core.services.OrderServices;
+import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.core.session.SaggSession;
 import com.bistro.sagg.core.session.SaggSessionConstants;
@@ -95,8 +96,8 @@ public class InventoryLoadingConfirmationDetailView extends ViewPart {
 			.lookup(BillingServices.class.getName());
 	private OrderServices orderServices = (OrderServices) SaggServiceLocator.getInstance()
 			.lookup(OrderServices.class.getName());
-//	private EmployeeServices employeeServices = (EmployeeServices) SaggServiceLocator.getInstance()
-//			.lookup(EmployeeServices.class.getName());
+	private ProductServices productServices = (ProductServices) SaggServiceLocator.getInstance()
+			.lookup(ProductServices.class.getName());
 	
 	private PurchaseOrder order;
 	private Supplier supplier;
@@ -273,16 +274,16 @@ public class InventoryLoadingConfirmationDetailView extends ViewPart {
 		});
 		cancelTransactionButton.setEnabled(false);
 		cancelTransactionButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		cancelTransactionButton.setText("Cancelar Venta");
+		cancelTransactionButton.setText("Cancelar Carga");
 		cancelTransactionButton.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD));
 		
 		confirmTransactionButton = new Button(composite_3, SWT.NONE);
 		confirmTransactionButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				BillingDocument document = billingServices.createBillingDocument(order, selectedDocumentType, selectedPaymentMethod);
-				order.setDocument(document);
-				orderServices.receivePurchaseOrder(order);
+				PurchaseBillingDocument document = billingServices.createBillingDocument(order, selectedDocumentType, selectedPaymentMethod);
+				orderServices.receivePurchaseOrder(order, document);
+				productServices.increaseProductStock(document.getItems());
 				resetDefaultValues();
 				Event event = new Event(ProductsCommunicationConstants.RESET_PURCHASE_ORDER_EVENT, new HashMap<String, Object>());
 				eventAdmin.sendEvent(event);
@@ -291,7 +292,7 @@ public class InventoryLoadingConfirmationDetailView extends ViewPart {
 		confirmTransactionButton.setEnabled(false);
 		confirmTransactionButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		confirmTransactionButton.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD));
-		confirmTransactionButton.setText("Confirmar Venta");
+		confirmTransactionButton.setText("Confirmar Carga");
 		
 		makeActions();
 		hookContextMenu();

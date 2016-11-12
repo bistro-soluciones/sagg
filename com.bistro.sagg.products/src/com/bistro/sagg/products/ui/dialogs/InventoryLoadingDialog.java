@@ -28,10 +28,11 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
-import com.bistro.sagg.core.builders.BillingItemBuilder;
+import com.bistro.sagg.core.factory.BillingItemFactory;
 import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.model.order.billing.BillingItem;
 import com.bistro.sagg.core.model.order.billing.DocumentType;
+import com.bistro.sagg.core.model.order.billing.PurchaseBillingItem;
 import com.bistro.sagg.core.model.products.Product;
 import com.bistro.sagg.core.model.products.ProductCategory;
 import com.bistro.sagg.core.model.suppliers.Supplier;
@@ -41,8 +42,8 @@ import com.bistro.sagg.core.services.FranchiseServices;
 import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.core.services.SupplierServices;
-import com.bistro.sagg.products.ui.viewers.BillingDocumentTypeComboLabelProvider;
 import com.bistro.sagg.products.ui.viewers.BillingDocumentTypeComboContentProvider;
+import com.bistro.sagg.products.ui.viewers.BillingDocumentTypeComboLabelProvider;
 import com.bistro.sagg.products.ui.viewers.BillingItemListLabelProvider;
 import com.bistro.sagg.products.ui.viewers.ProductCategoryComboLabelProvider;
 import com.bistro.sagg.products.ui.viewers.ProductComboContentProvider;
@@ -350,29 +351,9 @@ public class InventoryLoadingDialog extends Dialog {
 			}
 			
 			private void addItem() {
-				BillingItem item = lookupExistentItem();
-				boolean isNewItem = true;
-				BillingItemBuilder builder;
-				if(item == null) {
-					builder = new BillingItemBuilder();
-				} else {
-					builder = new BillingItemBuilder(item);
-					isNewItem = false;
-				}
-				builder.build(selectedProduct, Integer.parseInt(quantityText.getText()), new BigDecimal(unitPriceText.getText()), false);
-				item = builder.getItem();
-				if(isNewItem) {
-					items.add(item);
-				}
-			}
-
-			private BillingItem lookupExistentItem() {
-				for (BillingItem item : items) {
-					if(item.getProduct().equals(selectedProduct)) {
-						return item;
-					}
-				}
-				return null;
+				PurchaseBillingItem item = BillingItemFactory.createPurchaseBillingItem(selectedProduct,
+						Integer.parseInt(quantityText.getText()), new BigDecimal(unitPriceText.getText()), false);
+				items.add(item);
 			}
 
 			private void recalculateAmounts() {

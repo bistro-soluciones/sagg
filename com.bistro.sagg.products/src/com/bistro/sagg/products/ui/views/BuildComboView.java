@@ -13,9 +13,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ListViewer;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -60,11 +58,8 @@ import com.bistro.sagg.core.session.SaggSessionConstants;
 import com.bistro.sagg.products.ui.utils.ProductsCommunicationConstants;
 import com.bistro.sagg.products.ui.viewers.ComboItemTableLabelProvider;
 import com.bistro.sagg.products.ui.viewers.MarketableProductListContentProvider;
-import com.bistro.sagg.products.ui.viewers.ProductCategoryComboContentProvider;
-import com.bistro.sagg.products.ui.viewers.ProductCategoryComboLabelProvider;
 import com.bistro.sagg.products.ui.viewers.ProductListLabelProvider;
 import com.bistro.sagg.products.ui.viewers.RecipeListContentProvider;
-import com.bistro.sagg.products.ui.viewers.SuppliesByCategoryListContentProvider;
 
 /**
  * This sample class demonstrates how to plug-in a new

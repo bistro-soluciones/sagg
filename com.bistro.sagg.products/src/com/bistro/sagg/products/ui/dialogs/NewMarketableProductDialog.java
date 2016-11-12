@@ -156,8 +156,8 @@ public class NewMarketableProductDialog extends Dialog {
 
 	@Override
 	protected void okPressed() {
-		productServices.createMarketableProduct(nameText.getText(), selectedCategory,
-				Integer.parseInt(minStockText.getText()), new BigDecimal(unitSalesPriceText.getText()));
+//		productServices.createMarketableProduct(nameText.getText(), selectedCategory,
+//				Integer.parseInt(minStockText.getText()), new BigDecimal(unitSalesPriceText.getText()));
 		super.okPressed();
 	}
 

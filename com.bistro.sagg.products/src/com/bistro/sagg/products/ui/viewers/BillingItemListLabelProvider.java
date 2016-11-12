@@ -13,9 +13,9 @@ public class BillingItemListLabelProvider extends SaggTableLabelProvider {
 		BillingItem item = (BillingItem) element;
 		switch (columnIndex) {
 		case BillingItemColumnIndex.NAME_COLUMN_IDX:
-			return item.getProduct().getName();
+			return item.getProductName();
 		case BillingItemColumnIndex.CATEGORY_COLUMN_IDX:
-			return item.getProduct().getCategory().getName();
+			return item.getProductCategoryName();
 		case BillingItemColumnIndex.QUANTITY_COLUMN_IDX:
 			return String.valueOf(item.getQuantity());
 		case BillingItemColumnIndex.UNIT_PRICE_COLUMN_IDX:

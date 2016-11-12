@@ -23,10 +23,8 @@ import org.osgi.service.event.EventHandler;
 
 import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
-import com.bistro.sagg.products.ui.utils.MarketableProductColumnIndex;
 import com.bistro.sagg.products.ui.utils.ProductsCommunicationConstants;
 import com.bistro.sagg.products.ui.utils.RecipeColumnIndex;
-import com.bistro.sagg.products.ui.viewers.MarketableProductListSorter;
 import com.bistro.sagg.products.ui.viewers.RecipeListContentProvider;
 import com.bistro.sagg.products.ui.viewers.RecipeListLabelProvider;
 import com.bistro.sagg.products.ui.viewers.RecipeListSorter;
