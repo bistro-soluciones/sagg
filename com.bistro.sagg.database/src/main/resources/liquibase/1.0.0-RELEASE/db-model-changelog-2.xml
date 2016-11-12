@@ -138,14 +138,14 @@
                 <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
             <column name="document_type_id" type="bigint(20)">
-                <constraints primaryKey="true" foreignKeyName="id" referencedTableName="document_types" nullable="false"/>
+                <constraints foreignKeyName="id" referencedTableName="document_types" nullable="false"/>
             </column>
             <column name="document_number" type="varchar(30)"/>
             <column name="supplier_id" type="bigint(20)">
-                <constraints primaryKey="true" foreignKeyName="id" referencedTableName="suppliers" nullable="false"/>
+                <constraints foreignKeyName="id" referencedTableName="suppliers" nullable="false"/>
             </column>
             <column name="franchise_branch_id" type="bigint(20)">
-                <constraints primaryKey="true" foreignKeyName="id" referencedTableName="franchise_branches" nullable="false"/>
+                <constraints foreignKeyName="id" referencedTableName="franchise_branches" nullable="false"/>
             </column>
         </createTable>
     </changeSet>
@@ -156,14 +156,14 @@
                 <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
             <column name="product_id" type="bigint(20)">
-                <constraints primaryKey="true" foreignKeyName="id" referencedTableName="products" nullable="false"/>
+                <constraints foreignKeyName="id" referencedTableName="products" nullable="false"/>
             </column>
             <column name="quantity" type="int"/>
             <column name="unit_price" type="currency"/>
             <column name="tax" type="float"/>
             <column name="tax_amount" type="currency"/>
             <column name="billing_document_id" type="bigint(20)">
-                <constraints primaryKey="true" foreignKeyName="id" referencedTableName="billing_documents" nullable="false"/>
+                <constraints foreignKeyName="id" referencedTableName="billing_documents" nullable="false"/>
             </column>
         </createTable>
     </changeSet>

@@ -103,5 +103,173 @@
             </column>
     	</addColumn>
     </changeSet>
+    
+    <changeSet id="10" author="sebastian.lavie">
+    	<addColumn tableName="sale_order_items">
+            <column name="recipe_id" type="bigint(20)" afterColumn="product_id">
+                <constraints foreignKeyName="id" referencedTableName="recipes"/>
+            </column>
+    	</addColumn>
+    </changeSet>
+    
+    <changeSet id="11" author="sebastian.lavie">
+    	<dropNotNullConstraint tableName="sale_order_items" columnName="product_id" columnDataType="bigint(20)"/>
+    </changeSet>
+	
+    <changeSet id="12" author="sebastian.lavie">
+    	<addColumn tableName="sale_order_items">
+            <column name="comno_id" type="bigint(20)" afterColumn="recipe_id">
+                <constraints foreignKeyName="id" referencedTableName="combos"/>
+            </column>
+    	</addColumn>
+    </changeSet>
+	
+    <changeSet id="13" author="sebastian.lavie">
+    	<addColumn tableName="sale_order_items">
+            <column name="combo_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="combos"/>
+            </column>
+    	</addColumn>
+    </changeSet>
+	
+    <changeSet id="14" author="sebastian.lavie">
+    	<addColumn tableName="billing_items">
+            <column name="recipe_id" type="bigint(20)" afterColumn="product_id">
+                <constraints foreignKeyName="id" referencedTableName="recipes"/>
+            </column>
+    	</addColumn>
+    </changeSet>
+        
+	<changeSet id="15" author="sebastian.lavie">
+    	<addColumn tableName="billing_items">
+            <column name="comno_id" type="bigint(20)" afterColumn="recipe_id">
+                <constraints foreignKeyName="id" referencedTableName="combos"/>
+            </column>
+    	</addColumn>
+    </changeSet>
 
+    <changeSet id="16" author="sebastian.lavie">
+    	<dropTable tableName="billing_items"/>
+	</changeSet>
+	
+	<changeSet id="17" author="sebastian.lavie">
+    	<dropTable tableName="billing_documents"/>
+	</changeSet>
+
+    <changeSet id="18" author="sebastian.lavie">
+        <createTable tableName="purchase_billing_documents">
+            <column name="id" type="bigint(20)" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="document_type_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="document_types" nullable="false"/>
+            </column>
+            <column name="document_number" type="varchar(30)"/>
+            <column name="document_datetime" type="timestamp"/>
+            <column name="payment_method_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="payment_methods" nullable="false"/>
+            </column>
+            <column name="supplier_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="suppliers" nullable="false"/>
+            </column>
+            <column name="franchise_branch_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="franchise_branches" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+        
+    <changeSet id="19" author="sebastian.lavie">
+        <createTable tableName="purchase_billing_items">
+            <column name="id" type="bigint(20)" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="product_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="products" nullable="false"/>
+            </column>
+            <column name="quantity" type="int"/>
+            <column name="unit_price" type="currency"/>
+            <column name="tax" type="float"/>
+            <column name="tax_amount" type="currency"/>
+            <column name="billing_document_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="purchase_billing_documents" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    
+    <changeSet id="20" author="sebastian.lavie">
+        <createTable tableName="sale_billing_documents">
+            <column name="id" type="bigint(20)" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="document_type_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="document_types" nullable="false"/>
+            </column>
+            <column name="document_number" type="varchar(30)"/>
+            <column name="document_datetime" type="timestamp"/>
+            <column name="payment_method_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="payment_methods" nullable="false"/>
+            </column>
+            <column name="employee_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="employees" nullable="false"/>
+            </column>
+            <column name="franchise_branch_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="franchise_branches" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    
+    <changeSet id="21" author="sebastian.lavie">
+        <createTable tableName="sale_billing_items">
+            <column name="id" type="bigint(20)" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="combo_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="combos"/>
+            </column>
+            <column name="product_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="products"/>
+            </column>
+            <column name="recipe_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="recipes"/>
+            </column>
+            <column name="quantity" type="int"/>
+            <column name="unit_price" type="currency"/>
+            <column name="tax" type="float"/>
+            <column name="tax_amount" type="currency"/>
+            <column name="billing_document_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="sale_billing_documents" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    
+    <changeSet id="22" author="sebastian.lavie">
+    	<dropColumn tableName="sale_orders" columnName="billing_document_id"/>
+    </changeSet>
+
+    <changeSet id="23" author="sebastian.lavie">
+    	<addColumn tableName="sale_orders">
+    		<column name="billing_document_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="sale_billing_documents"/>
+            </column>
+    	</addColumn>
+    </changeSet>
+    
+	<changeSet id="24" author="sebastian.lavie">
+    	<dropColumn tableName="purchase_orders" columnName="billing_document_id"/>
+    </changeSet>
+    
+	<changeSet id="25" author="sebastian.lavie">
+    	<addColumn tableName="purchase_orders">
+    		<column name="billing_document_id" type="bigint(20)">
+                <constraints foreignKeyName="id" referencedTableName="sale_billing_documents"/>
+            </column>
+    	</addColumn>
+    </changeSet>
+    
+    <changeSet id="26" author="sebastian.lavie">
+    	<addColumn tableName="purchase_order_items">
+            <column name="available_stock" type="int" afterColumn="purchase_unit_price"/>
+    	</addColumn>
+    </changeSet>
+    
 </databaseChangeLog>
