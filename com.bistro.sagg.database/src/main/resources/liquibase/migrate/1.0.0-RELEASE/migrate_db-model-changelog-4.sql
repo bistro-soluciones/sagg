@@ -135,6 +135,16 @@ ALTER TABLE purchase_orders ADD billing_document_id BIGINT NULL;
 
 INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('25', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-4.xml', NOW(), 82, '7:6642d8c92ed82b6b3c50e7157c643e82', 'addColumn tableName=purchase_orders', '', 'EXECUTED', NULL, NULL, '3.5.1', '8962903369');
 
+--  Changeset src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-4.xml::26::sebastian.lavie
+ALTER TABLE purchase_order_items ADD available_stock INT NULL AFTER `purchase_unit_price`;
+
+INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('26', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-4.xml', NOW(), 83, '7:01805deeaad00356bdda34a90b8024ae', 'addColumn tableName=purchase_order_items', '', 'EXECUTED', NULL, NULL, '3.5.1', '8990166164');
+
+--  Changeset src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-4.xml::27::sebastian.lavie
+ALTER TABLE product_categories ADD category_type VARCHAR(20) NULL AFTER `id`;
+
+INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('27', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-4.xml', NOW(), 86, '7:37a17fd98c2fed0eb3b1279bcb52e473', 'addColumn tableName=product_categories', '', 'EXECUTED', NULL, NULL, '3.5.1', '8989987468');
+
 --  Release Database Lock
 UPDATE DATABASECHANGELOGLOCK SET LOCKED = 0, LOCKEDBY = NULL, LOCKGRANTED = NULL WHERE ID = 1;
 

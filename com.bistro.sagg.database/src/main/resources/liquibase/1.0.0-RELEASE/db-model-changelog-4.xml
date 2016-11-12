@@ -272,4 +272,10 @@
     	</addColumn>
     </changeSet>
     
+    <changeSet id="27" author="sebastian.lavie">
+        <addColumn tableName="product_categories">
+        	<column name="category_type" type="varchar(20)" afterColumn="id"/>
+        </addColumn>
+    </changeSet>
+    
 </databaseChangeLog>
