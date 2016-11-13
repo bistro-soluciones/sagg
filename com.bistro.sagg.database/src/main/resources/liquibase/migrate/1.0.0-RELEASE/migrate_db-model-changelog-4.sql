@@ -41,9 +41,9 @@ CREATE TABLE combos (id BIGINT AUTO_INCREMENT NOT NULL, name VARCHAR(30) NULL, d
 INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('6', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-4.xml', NOW(), 63, '7:2505a544e1301a1f179bde72f0f107dd', 'createTable tableName=combos', '', 'EXECUTED', NULL, NULL, '3.5.1', '8458156973');
 
 --  Changeset src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-4.xml::7::sebastian.lavie
-CREATE TABLE combo_items (id BIGINT AUTO_INCREMENT NOT NULL, combo_id BIGINT NOT NULL, product_id BIGINT NOT NULL, recipe_id BIGINT NOT NULL, CONSTRAINT PK_COMBO_ITEMS PRIMARY KEY (id), UNIQUE (id));
+CREATE TABLE combo_items (id BIGINT AUTO_INCREMENT NOT NULL, combo_id BIGINT NOT NULL, product_id BIGINT NULL, recipe_id BIGINT NULL, CONSTRAINT PK_COMBO_ITEMS PRIMARY KEY (id), UNIQUE (id));
 
-INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('7', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-4.xml', NOW(), 64, '7:360a8c40d0d6e40824f006fd002d8401', 'createTable tableName=combo_items', '', 'EXECUTED', NULL, NULL, '3.5.1', '8458156973');
+INSERT INTO DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('7', 'sebastian.lavie', 'src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-4.xml', NOW(), 87, '7:e25cf04ab8cf3c876d9a7b6f2929261c', 'createTable tableName=combo_items', '', 'EXECUTED', NULL, NULL, '3.5.1', '9043396373');
 
 --  Changeset src/main/resources/liquibase/1.0.0-RELEASE/db-model-changelog-4.xml::8::sebastian.lavie
 ALTER TABLE combo_items ADD quantity INT NULL;

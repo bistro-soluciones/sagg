@@ -82,10 +82,10 @@
                 <constraints foreignKeyName="id" referencedTableName="combos" nullable="false"/>
             </column>
             <column name="product_id" type="bigint(20)">
-                <constraints foreignKeyName="id" referencedTableName="marketable_products" nullable="false"/>
+                <constraints foreignKeyName="id" referencedTableName="marketable_products"/>
             </column>
             <column name="recipe_id" type="bigint(20)">
-                <constraints foreignKeyName="id" referencedTableName="recipes" nullable="false"/>
+                <constraints foreignKeyName="id" referencedTableName="recipes"/>
             </column>
         </createTable>
     </changeSet>
