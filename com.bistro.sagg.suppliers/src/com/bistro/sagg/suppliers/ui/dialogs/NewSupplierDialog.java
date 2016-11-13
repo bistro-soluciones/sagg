@@ -29,7 +29,7 @@ import com.bistro.sagg.core.model.products.ProductCategory;
 import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.core.services.SupplierServices;
-import com.bistro.sagg.suppliers.ui.viewers.ProductCategoryComboContentProvider;
+import com.bistro.sagg.suppliers.ui.viewers.InventoryProductCategoryComboContentProvider;
 import com.bistro.sagg.suppliers.ui.viewers.ProductCategoryComboLabelProvider;
 import com.bistro.sagg.suppliers.ui.viewers.ProductCategoryListContentProvider;
 
@@ -187,7 +187,7 @@ public class NewSupplierDialog extends Dialog {
 		productCategoryComposite.setLayout(gl_productCategoryComposite);
 		
 		ComboViewer productCategoryComboViewer = new ComboViewer(productCategoryComposite, SWT.NONE);
-		productCategoryComboViewer.setContentProvider(new ProductCategoryComboContentProvider());
+		productCategoryComboViewer.setContentProvider(new InventoryProductCategoryComboContentProvider());
 		productCategoryComboViewer.setLabelProvider(new ProductCategoryComboLabelProvider());
 		productCategoryComboViewer.setInput(productServices);
 		Combo combo = productCategoryComboViewer.getCombo();

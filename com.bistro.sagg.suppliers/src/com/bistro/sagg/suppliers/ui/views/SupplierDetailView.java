@@ -43,7 +43,7 @@ import com.bistro.sagg.core.services.SupplierServices;
 import com.bistro.sagg.core.session.SaggSession;
 import com.bistro.sagg.core.session.SaggSessionConstants;
 import com.bistro.sagg.suppliers.ui.utils.SuppliersCommunicationConstants;
-import com.bistro.sagg.suppliers.ui.viewers.ProductCategoryComboContentProvider;
+import com.bistro.sagg.suppliers.ui.viewers.InventoryProductCategoryComboContentProvider;
 import com.bistro.sagg.suppliers.ui.viewers.ProductCategoryComboLabelProvider;
 import com.bistro.sagg.suppliers.ui.viewers.ProductCategoryListContentProvider;
 
@@ -208,7 +208,7 @@ public class SupplierDetailView extends ViewPart {
 		productCategoryComposite.setLayout(gl_productCategoryComposite);
 		
 		productCategoryComboViewer = new ComboViewer(productCategoryComposite, SWT.NONE);
-		productCategoryComboViewer.setContentProvider(new ProductCategoryComboContentProvider());
+		productCategoryComboViewer.setContentProvider(new InventoryProductCategoryComboContentProvider());
 		productCategoryComboViewer.setLabelProvider(new ProductCategoryComboLabelProvider());
 		productCategoryComboViewer.setInput(productServices);
 		productCategoryComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
