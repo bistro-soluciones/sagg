@@ -51,7 +51,7 @@ import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.core.session.SaggSession;
 import com.bistro.sagg.core.session.SaggSessionConstants;
 import com.bistro.sagg.sales.ui.utils.SalesCommunicationConstants;
-import com.bistro.sagg.sales.ui.viewers.ProductCategoryComboContentProvider;
+import com.bistro.sagg.sales.ui.viewers.SaleProductCategoryComboContentProvider;
 import com.bistro.sagg.sales.ui.viewers.ProductCategoryComboLabelProvider;
 import com.bistro.sagg.sales.ui.viewers.SalableProductListContentProvider;
 import com.bistro.sagg.sales.ui.viewers.SalableProductListLabelProvider;
@@ -126,7 +126,7 @@ public class ProductSelectionView extends ViewPart {
 		productCategoryLabel.setText("Categor\u00EDa");
 		
 		ComboViewer productCategoryComboViewer = new ComboViewer(composite_1, SWT.NONE);
-		productCategoryComboViewer.setContentProvider(new ProductCategoryComboContentProvider());
+		productCategoryComboViewer.setContentProvider(new SaleProductCategoryComboContentProvider());
 		productCategoryComboViewer.setLabelProvider(new ProductCategoryComboLabelProvider());
 		productCategoryComboViewer.setInput(productServices);
 		productCategoryCombo = productCategoryComboViewer.getCombo();
