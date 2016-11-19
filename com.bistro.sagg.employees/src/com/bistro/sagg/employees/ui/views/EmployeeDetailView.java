@@ -51,7 +51,7 @@ import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.core.session.SaggSession;
 import com.bistro.sagg.core.session.SaggSessionConstants;
 import com.bistro.sagg.core.validation.processor.ListValidatorProcessor;
-import com.bistro.sagg.core.validation.validator.ChainedValidator;
+import com.bistro.sagg.core.validation.validator.AndValidator;
 import com.bistro.sagg.core.validation.validator.EmailValidator;
 import com.bistro.sagg.core.validation.validator.EmptyOrNullValidator;
 import com.bistro.sagg.core.validation.validator.RUTValidator;
@@ -374,7 +374,7 @@ public class EmployeeDetailView extends ViewPart {
 				ErrorMessageUtils.createMandatoryFieldErrorMsg("Nombres")));
 		validators.add(new EmptyOrNullValidator(lastnameText.getText(),
 				ErrorMessageUtils.createMandatoryFieldErrorMsg("Apellidos")));
-		validators.add(new ChainedValidator(personIdText.getText(),
+		validators.add(new AndValidator(personIdText.getText(),
 				new EmptyOrNullValidator(personIdText.getText(), ErrorMessageUtils.createMandatoryFieldErrorMsg("RUT")),
 				new RUTValidator(personIdText.getText(), ErrorMessageUtils.createWrongFieldValueErrorMsg("RUT"))));
 		validators.add(new EmptyOrNullValidator(positionCombo.getText(),
