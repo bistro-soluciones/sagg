@@ -1,5 +1,6 @@
 package com.bistro.sagg.products.ui.views;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -17,6 +19,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -29,10 +32,14 @@ import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 
 import com.bistro.sagg.core.model.company.FranchiseBranch;
+import com.bistro.sagg.core.osgi.ui.utils.ErrorMessageUtils;
 import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.core.session.SaggSession;
 import com.bistro.sagg.core.session.SaggSessionConstants;
+import com.bistro.sagg.core.validation.processor.ListValidatorProcessor;
+import com.bistro.sagg.core.validation.validator.EmptyOrNullValidator;
+import com.bistro.sagg.core.validation.validator.SaggValidator;
 import com.bistro.sagg.products.ui.utils.ProductsCommunicationConstants;
 
 /**
@@ -68,6 +75,8 @@ public class ProductCategoryDetailView extends ViewPart {
 
 	private FranchiseBranch franchiseBranch;
 	
+	private ListValidatorProcessor processor;
+	
 	private BundleContext bundleContext;
 	private EventAdmin eventAdmin;
 
@@ -77,6 +86,7 @@ public class ProductCategoryDetailView extends ViewPart {
 		ServiceReference<EventAdmin> ref = bundleContext.getServiceReference(EventAdmin.class);
 		this.eventAdmin = bundleContext.getService(ref);
 		this.franchiseBranch = SaggSession.getCurrentSession().getSessionObject(SaggSessionConstants.CURRENT_FRANCHISE_BANCH);
+		this.processor = setupProductCategoryValidatorProcessor();
 	}
 
 	/**
@@ -95,7 +105,7 @@ public class ProductCategoryDetailView extends ViewPart {
 		GridData gd_nameLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
 		gd_nameLabel.widthHint = 124;
 		nameLabel.setLayoutData(gd_nameLabel);
-		nameLabel.setText("Nombre");
+		nameLabel.setText("Nombre *");
 		nameLabel.setAlignment(SWT.RIGHT);
 		
 		nameText = new Text(basicInfoGroup, SWT.BORDER);
@@ -123,11 +133,13 @@ public class ProductCategoryDetailView extends ViewPart {
 		saveButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				productServices.createCategory(franchiseBranch, nameText.getText(), forSaleCheckButton.getSelection());
-				Map<String,Object> properties = new HashMap<String, Object>();
-				Event event = new Event(ProductsCommunicationConstants.ADD_PRODUCT_CATEGORY_EVENT, properties);
-				eventAdmin.sendEvent(event);
-				resetDefaultValues();
+				if (validateFields(parent.getShell())) {
+					productServices.createCategory(franchiseBranch, nameText.getText(), forSaleCheckButton.getSelection());
+					Map<String,Object> properties = new HashMap<String, Object>();
+					Event event = new Event(ProductsCommunicationConstants.ADD_PRODUCT_CATEGORY_EVENT, properties);
+					eventAdmin.sendEvent(event);
+					resetDefaultValues();
+				}
 			}
 		});
 		saveButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -141,6 +153,22 @@ public class ProductCategoryDetailView extends ViewPart {
 		contributeToActionBars();
 	}
 
+	private boolean validateFields(Shell shell) {
+		boolean result = processor.processValidation();
+		if (!result) {
+			MessageDialog.openError(shell, "Error", processor.getErrorMessage());
+		}
+		return result;
+	}
+
+	private ListValidatorProcessor setupProductCategoryValidatorProcessor() {
+		java.util.List<SaggValidator> validators = new ArrayList<>();
+		validators.add(
+				new EmptyOrNullValidator(nameText.getText(), ErrorMessageUtils.createMandatoryFieldErrorMsg("Nombre")));
+		ListValidatorProcessor processor = new ListValidatorProcessor(validators);
+		return processor;
+	}
+	
 	private void resetDefaultValues() {
 		nameText.setText("");
 		forSaleCheckButton.setSelection(false);
