@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 public class RUTValidator extends SingleValidator {
 
-	private static final String RUT_REGEX = "(\\d{1}|\\d{2}).\\d{3}.\\d{3}-[k|K|[0-9]]";
+	private static final String RUT_REGEX = "\\d{1,2}.\\d{3}.\\d{3}-[k|K|[0-9]]";
 
 	public RUTValidator(Object value) {
 		super(value);
