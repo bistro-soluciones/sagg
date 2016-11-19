@@ -118,7 +118,7 @@ public class Combo implements SalableProduct, Identificable {
 	
 	public boolean hasStock() {
 		for (ComboItem item : items) {
-			if (!item.getProduct().hasStock()) {
+			if (!item.getSalableProduct().hasStock()) {
 				return false;
 			}
 		}

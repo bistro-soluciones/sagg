@@ -49,6 +49,8 @@ public interface ProductServices extends ISaggService {
 	
 	void decreaseProductStock(SalableProduct product, int quantity);
 
+	void decreaseProductStock(Supply product, int quantity);
+	
 	void createRecipe(String name, String description, ProductCategory category, List<RecipeLine> lines,
 			BigDecimal salesPrice, FranchiseBranch branch);
 

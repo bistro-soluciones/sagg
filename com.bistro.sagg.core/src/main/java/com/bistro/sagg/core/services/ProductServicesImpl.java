@@ -159,19 +159,40 @@ public class ProductServicesImpl implements ProductServices {
 	}
 	
 	public void decreaseProductStock(SalableProduct product, int quantity) {
-		product.decreaseStock(quantity);
-		if (product instanceof Combo) {
-			// Save combo
-			comboRepository.save((Combo) product);
-		}
 		if (product instanceof MarketableProduct) {
+			product.decreaseStock(quantity);
 			// Save marketable product
 			marketableProductRepository.save((MarketableProduct) product);
 		}
+		if (product instanceof Combo) {
+			// Save combo
+			Combo combo = (Combo) product;
+			for (ComboItem item : combo.getItems()) {
+				decreaseProductStock(item.getSalableProduct(), quantity);
+//				if(item.getSalableProduct() instanceof Recipe) {
+//					recipeRepository.save((Recipe) item.getSalableProduct());
+//				}
+//				if(item.getSalableProduct() instanceof MarketableProduct) {
+//					marketableProductRepository.save((MarketableProduct) item.getSalableProduct());
+//				}
+			}
+			comboRepository.save(combo);
+		}
+		// FIXME descuenta 200 + 2
 		if (product instanceof Recipe) {
+			Recipe recipe = (Recipe) product;
+			for (RecipeLine line : recipe.getLines()) {
+				decreaseProductStock(line.getSupply(), quantity * line.getPortion());
+			}
 			// Save recipe
 			recipeRepository.save((Recipe) product);
 		}
+	}
+	
+	public void decreaseProductStock(Supply product, int quantity) {
+		product.decreaseStock(quantity);
+		// Save supply product
+		supplyRepository.save((Supply) product);
 	}
 
 	public void createRecipe(String name, String description, ProductCategory category, List<RecipeLine> lines,

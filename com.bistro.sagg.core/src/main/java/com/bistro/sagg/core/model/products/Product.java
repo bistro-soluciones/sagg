@@ -111,7 +111,7 @@ public abstract class Product implements Identificable {
 	}
 
 	public void addStock(int quantity) {
-		this.stock += quantity;
+		this.stock += quantity * getFormat().getUnit();
 	}
 	
 	public boolean hasStock() {

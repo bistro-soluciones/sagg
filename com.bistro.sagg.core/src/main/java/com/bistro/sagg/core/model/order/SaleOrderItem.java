@@ -67,6 +67,9 @@ public class SaleOrderItem extends OrderItem {
 	}
 
 	public SalableProduct getSalableProduct() {
+		if (getCombo() != null) {
+			return getCombo();
+		}
 		if (getProduct() != null) {
 			return getProduct();
 		}

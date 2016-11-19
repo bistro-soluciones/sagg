@@ -9,7 +9,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import com.bistro.sagg.core.model.Identificable;
 
@@ -24,10 +28,14 @@ public class ComboItem implements Identificable {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "COMBO_ID")
 	private Combo combo;
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+//	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+	@Fetch(FetchMode.SELECT) // asociado a CascadeType
 	@JoinColumn(name = "PRODUCT_ID")
 	private MarketableProduct product;
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+//	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+	@Fetch(FetchMode.SELECT) // asociado a CascadeType
 	@JoinColumn(name = "RECIPE_ID")
 	private Recipe recipe;
 	@Column(name = "QUANTITY")
@@ -75,6 +83,13 @@ public class ComboItem implements Identificable {
 
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
+	}
+	
+	public SalableProduct getSalableProduct() {
+		if (getProduct() != null) {
+			return getProduct();
+		}
+		return getRecipe();
 	}
 	
 	public String getItemName() {

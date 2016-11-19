@@ -11,6 +11,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import com.bistro.sagg.core.model.Identificable;
 
 @Entity
@@ -21,7 +24,9 @@ public class RecipeLine implements Identificable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
 	private Long id;
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+//	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+	@Fetch(FetchMode.SELECT) // asociado a CascadeType
 	@JoinColumn(name = "SUPPLY_ID")
 	private Supply supply;
 	@Column(name = "PORTION")
