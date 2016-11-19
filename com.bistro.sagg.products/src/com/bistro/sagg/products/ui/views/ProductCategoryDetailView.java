@@ -100,7 +100,7 @@ public class ProductCategoryDetailView extends ViewPart {
 		
 		Label nameLabel = new Label(basicInfoGroup, SWT.RIGHT);
 		GridData gd_nameLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_nameLabel.widthHint = 124;
+		gd_nameLabel.widthHint = 130;
 		nameLabel.setLayoutData(gd_nameLabel);
 		nameLabel.setText("Nombre *");
 		nameLabel.setAlignment(SWT.RIGHT);

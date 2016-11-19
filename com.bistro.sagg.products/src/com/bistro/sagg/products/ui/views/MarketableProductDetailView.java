@@ -238,25 +238,6 @@ public class MarketableProductDetailView extends ViewPart {
 		hookDoubleClickAction();
 		contributeToActionBars();
 	}
-	
-	private void createAddCategoryEventHandler(Composite parent) {
-		EventHandler handler = new EventHandler() {
-			public void handleEvent(final Event event) {
-				if (parent.getDisplay().getThread() == Thread.currentThread()) {
-					productCategoryComboViewer.refresh();
-				} else {
-					parent.getDisplay().syncExec(new Runnable() {
-						public void run() {
-							productCategoryComboViewer.refresh();
-						}
-					});
-				}
-			}
-	    };
-	    Dictionary<String,String> properties = new Hashtable<String, String>();
-	    properties.put(EventConstants.EVENT_TOPIC, ProductsCommunicationConstants.ADD_PRODUCT_CATEGORY_EVENT);
-	    bundleContext.registerService(EventHandler.class, handler, properties);
-	}
 
 	private boolean validateFields(Shell shell) {
 		ListValidatorProcessor processor = setupProductValidatorProcessor();
@@ -280,6 +261,25 @@ public class MarketableProductDetailView extends ViewPart {
 				new AmountValidator(unitSalesPriceText.getText(), ErrorMessageUtils.createWrongAmountFieldValueErrorMsg("Precio Unit. Venta"))));
 		ListValidatorProcessor processor = new ListValidatorProcessor(validators);
 		return processor;
+	}
+	
+	private void createAddCategoryEventHandler(Composite parent) {
+		EventHandler handler = new EventHandler() {
+			public void handleEvent(final Event event) {
+				if (parent.getDisplay().getThread() == Thread.currentThread()) {
+					productCategoryComboViewer.refresh();
+				} else {
+					parent.getDisplay().syncExec(new Runnable() {
+						public void run() {
+							productCategoryComboViewer.refresh();
+						}
+					});
+				}
+			}
+	    };
+	    Dictionary<String,String> properties = new Hashtable<String, String>();
+	    properties.put(EventConstants.EVENT_TOPIC, ProductsCommunicationConstants.ADD_PRODUCT_CATEGORY_EVENT);
+	    bundleContext.registerService(EventHandler.class, handler, properties);
 	}
 	
 	private void resetDefaultValues() {

@@ -120,9 +120,9 @@ public class SupplyDetailView extends ViewPart {
 		
 		Label nameLabel = new Label(basicInfoGroup, SWT.RIGHT);
 		GridData gd_nameLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_nameLabel.widthHint = 124;
+		gd_nameLabel.widthHint = 130;
 		nameLabel.setLayoutData(gd_nameLabel);
-		nameLabel.setText("Nombre");
+		nameLabel.setText("Nombre *");
 		nameLabel.setAlignment(SWT.RIGHT);
 		
 		nameText = new Text(basicInfoGroup, SWT.BORDER);
@@ -130,9 +130,9 @@ public class SupplyDetailView extends ViewPart {
 		
 		Label categoryLabel = new Label(basicInfoGroup, SWT.RIGHT);
 		GridData gd_categoryLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_categoryLabel.widthHint = 124;
+		gd_categoryLabel.widthHint = 130;
 		categoryLabel.setLayoutData(gd_categoryLabel);
-		categoryLabel.setText("Categor\u00EDa");
+		categoryLabel.setText("Categor\u00EDa *");
 		
 		productCategoryComboViewer = new ComboViewer(basicInfoGroup, SWT.NONE);
 		productCategoryComboViewer.setContentProvider(new InventoryProductCategoryComboContentProvider());
@@ -154,7 +154,7 @@ public class SupplyDetailView extends ViewPart {
 		
 		Label minStockLabel = new Label(additionalInfoGroup, SWT.RIGHT);
 		GridData gd_minStockLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_minStockLabel.widthHint = 124;
+		gd_minStockLabel.widthHint = 130;
 		minStockLabel.setLayoutData(gd_minStockLabel);
 		minStockLabel.setToolTipText("");
 		minStockLabel.setText("Stock M\u00EDnimo");
@@ -170,7 +170,7 @@ public class SupplyDetailView extends ViewPart {
 		
 		Label productFormatLabel = new Label(composite, SWT.NONE);
 		productFormatLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		productFormatLabel.setText("Formato");
+		productFormatLabel.setText("Formato *");
 		
 		ComboViewer productFormatComboViewer = new ComboViewer(composite, SWT.NONE);
 		productFormatComboViewer.setContentProvider(new ProductFormatComboContentProvider());

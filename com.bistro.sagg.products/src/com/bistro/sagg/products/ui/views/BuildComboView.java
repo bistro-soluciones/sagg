@@ -12,6 +12,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -29,6 +30,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -51,10 +53,16 @@ import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.model.products.ComboItem;
 import com.bistro.sagg.core.model.products.ProductCategory;
 import com.bistro.sagg.core.model.products.SalableProduct;
+import com.bistro.sagg.core.osgi.ui.utils.ErrorMessageUtils;
 import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.core.session.SaggSession;
 import com.bistro.sagg.core.session.SaggSessionConstants;
+import com.bistro.sagg.core.validation.processor.ListValidatorProcessor;
+import com.bistro.sagg.core.validation.validator.AmountValidator;
+import com.bistro.sagg.core.validation.validator.AndValidator;
+import com.bistro.sagg.core.validation.validator.EmptyOrNullValidator;
+import com.bistro.sagg.core.validation.validator.SaggValidator;
 import com.bistro.sagg.products.ui.utils.ProductsCommunicationConstants;
 import com.bistro.sagg.products.ui.viewers.ComboItemTableLabelProvider;
 import com.bistro.sagg.products.ui.viewers.MarketableProductListContentProvider;
@@ -149,9 +157,9 @@ public class BuildComboView extends ViewPart {
 		
 		Label nameLabel = new Label(composite, SWT.RIGHT);
 		GridData gd_nameLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_nameLabel.widthHint = 80;
+		gd_nameLabel.widthHint = 90;
 		nameLabel.setLayoutData(gd_nameLabel);
-		nameLabel.setText("Nombre");
+		nameLabel.setText("Nombre *");
 		nameLabel.setAlignment(SWT.RIGHT);
 		
 		nameText = new Text(composite, SWT.BORDER);
@@ -159,18 +167,18 @@ public class BuildComboView extends ViewPart {
 		
 		Label descriptionLabel = new Label(composite, SWT.RIGHT);
 		GridData gd_descriptionLabel = new GridData(SWT.RIGHT, SWT.TOP, false, false, 1, 1);
-		gd_descriptionLabel.widthHint = 80;
+		gd_descriptionLabel.widthHint = 90;
 		descriptionLabel.setLayoutData(gd_descriptionLabel);
-		descriptionLabel.setText("Descripci\u00F3n");
+		descriptionLabel.setText("Descripci\u00F3n *");
 		
 		descriptionText = new Text(composite, SWT.BORDER | SWT.WRAP | SWT.MULTI);
 		descriptionText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
 		Label priceLabel = new Label(composite, SWT.RIGHT);
 		GridData gd_priceLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_priceLabel.widthHint = 80;
+		gd_priceLabel.widthHint = 90;
 		priceLabel.setLayoutData(gd_priceLabel);
-		priceLabel.setText("Precio");
+		priceLabel.setText("Precio *");
 		
 		salesPriceText = new Text(composite, SWT.BORDER | SWT.RIGHT);
 		GridData gd_salesPriceText = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
@@ -443,24 +451,26 @@ public class BuildComboView extends ViewPart {
 		saveComboButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				java.util.List<ComboItem> items = new ArrayList<ComboItem>();
-				for (TableItem item : comboItemsTable.getItems()) {
-					items.add((ComboItem) item.getData());
+				if (validateFields(parent.getShell())) {
+					java.util.List<ComboItem> items = new ArrayList<ComboItem>();
+					for (TableItem item : comboItemsTable.getItems()) {
+						items.add((ComboItem) item.getData());
+					}
+					clearComboItemListButton.setEnabled(false);
+					cancelComboButton.setEnabled(false);
+					saveComboButton.setEnabled(false);
+					
+					FranchiseBranch branch = SaggSession.getCurrentSession()
+							.getSessionObject(SaggSessionConstants.CURRENT_FRANCHISE_BANCH);
+					productServices.createCombo(nameText.getText(), descriptionText.getText(), items,
+							new BigDecimal(salesPriceText.getText()), branch);
+					
+					Map<String,Object> properties = new HashMap<String, Object>();
+					Event event = new Event(ProductsCommunicationConstants.ADD_RECIPE_EVENT, properties);
+					eventAdmin.sendEvent(event);
+					
+					resetDefaultValues();
 				}
-				clearComboItemListButton.setEnabled(false);
-				cancelComboButton.setEnabled(false);
-				saveComboButton.setEnabled(false);
-				
-				FranchiseBranch branch = SaggSession.getCurrentSession()
-						.getSessionObject(SaggSessionConstants.CURRENT_FRANCHISE_BANCH);
-				productServices.createCombo(nameText.getText(), descriptionText.getText(), items,
-						new BigDecimal(salesPriceText.getText()), branch);
-
-				Map<String,Object> properties = new HashMap<String, Object>();
-				Event event = new Event(ProductsCommunicationConstants.ADD_RECIPE_EVENT, properties);
-				eventAdmin.sendEvent(event);
-				
-				resetDefaultValues();
 			}
 		});
 		saveComboButton.setEnabled(false);
@@ -476,6 +486,29 @@ public class BuildComboView extends ViewPart {
 		contributeToActionBars();
 	}
 	
+	private boolean validateFields(Shell shell) {
+		ListValidatorProcessor processor = setupProductValidatorProcessor();
+		boolean result = processor.processValidation();
+		if (!result) {
+			MessageDialog.openError(shell, "Error", processor.getErrorMessage());
+		}
+		return result;
+	}
+
+	private ListValidatorProcessor setupProductValidatorProcessor() {
+		java.util.List<SaggValidator> validators = new ArrayList<>();
+		validators.add(
+				new EmptyOrNullValidator(nameText.getText(), ErrorMessageUtils.createMandatoryFieldErrorMsg("Nombre")));
+		validators.add(new EmptyOrNullValidator(descriptionText.getText(),
+				ErrorMessageUtils.createMandatoryFieldErrorMsg("Descripci\u00F3n")));
+		validators.add(new AndValidator(salesPriceText.getText(),
+				new EmptyOrNullValidator(salesPriceText.getText(),
+						ErrorMessageUtils.createMandatoryFieldErrorMsg("Precio")),
+				new AmountValidator(salesPriceText.getText(),
+						ErrorMessageUtils.createWrongAmountFieldValueErrorMsg("Precio"))));
+		ListValidatorProcessor processor = new ListValidatorProcessor(validators);
+		return processor;
+	}
 	private void createResetViewEventHandler(Composite parent) {
 		EventHandler handler = new EventHandler() {
 			public void handleEvent(final Event event) {
