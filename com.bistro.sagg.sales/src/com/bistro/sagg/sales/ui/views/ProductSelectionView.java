@@ -1,6 +1,5 @@
 package com.bistro.sagg.sales.ui.views;
 
-import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -24,7 +23,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -42,19 +40,18 @@ import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 
 import com.bistro.sagg.core.model.company.FranchiseBranch;
-import com.bistro.sagg.core.model.products.MarketableProduct;
-import com.bistro.sagg.core.model.products.Product;
 import com.bistro.sagg.core.model.products.ProductCategory;
 import com.bistro.sagg.core.model.products.SalableProduct;
+import com.bistro.sagg.core.osgi.ui.viewers.FromListContentProvider;
 import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.core.session.SaggSession;
 import com.bistro.sagg.core.session.SaggSessionConstants;
 import com.bistro.sagg.sales.ui.utils.SalesCommunicationConstants;
-import com.bistro.sagg.sales.ui.viewers.SaleProductCategoryComboContentProvider;
 import com.bistro.sagg.sales.ui.viewers.ProductCategoryComboLabelProvider;
 import com.bistro.sagg.sales.ui.viewers.SalableProductListContentProvider;
 import com.bistro.sagg.sales.ui.viewers.SalableProductListLabelProvider;
+import com.bistro.sagg.sales.ui.viewers.SaleProductCategoryComboContentProvider;
 
 /**
  * This sample class demonstrates how to plug-in a new
@@ -85,7 +82,9 @@ public class ProductSelectionView extends ViewPart {
 	private ListViewer productListViewer;
 	private org.eclipse.swt.widgets.List productList;
 	private Spinner productQuantitySpinner;
+	private Combo comboItemCombo;
 	private Button addProductButton;
+	private Button addComboButton;
 	
 	private ProductServices productServices = (ProductServices) SaggServiceLocator.getInstance()
 			.lookup(ProductServices.class.getName());
@@ -94,6 +93,7 @@ public class ProductSelectionView extends ViewPart {
 //	private List<MarketableProduct> products = new ArrayList<MarketableProduct>();
 	private SalableProduct selectedProduct;
 	private int selectedProductQuantity;
+	private com.bistro.sagg.core.model.products.Combo selectedCombo;
 	
     private BundleContext bundleContext;
 	private EventAdmin eventAdmin;
@@ -101,7 +101,7 @@ public class ProductSelectionView extends ViewPart {
 	public ProductSelectionView() {
 		super();
 //		this.categories = productService.getProductCategories();
-		FranchiseBranch branch = SaggSession.getCurrentSession().getSessionObject(SaggSessionConstants.CURRENT_FRANCHISE_BANCH);
+//		FranchiseBranch branch = SaggSession.getCurrentSession().getSessionObject(SaggSessionConstants.CURRENT_FRANCHISE_BANCH);
 //		this.products = productServices.getMarketableProducts(branch);
 		
 		this.bundleContext = FrameworkUtil.getBundle(ProductSelectionView.class).getBundleContext();
@@ -213,6 +213,10 @@ public class ProductSelectionView extends ViewPart {
 		Composite composite_2 = new Composite(parent, SWT.NONE);
 		composite_2.setLayout(new GridLayout(1, false));
 		
+		FranchiseBranch branch = SaggSession.getCurrentSession().getSessionObject(SaggSessionConstants.CURRENT_FRANCHISE_BANCH);
+		List<com.bistro.sagg.core.model.products.Combo> combos = productServices.getCombos(branch);
+		int comboSize = combos.size();
+
 		Composite composite_3 = new Composite(composite_2, SWT.NONE);
 		composite_3.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		composite_3.setBounds(0, 0, 64, 64);
@@ -220,17 +224,15 @@ public class ProductSelectionView extends ViewPart {
 		gl_composite_3.marginHeight = 0;
 		composite_3.setLayout(gl_composite_3);
 		
-		Button btnCombo = new Button(composite_3, SWT.NONE);
-		btnCombo.setEnabled(false);
-		btnCombo.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD | SWT.ITALIC));
-		btnCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		btnCombo.setText("Promo 1");
-		
-		Button btnNewButton_2 = new Button(composite_3, SWT.NONE);
-		btnNewButton_2.setEnabled(false);
-		btnNewButton_2.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD | SWT.ITALIC));
-		btnNewButton_2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		btnNewButton_2.setText("Promo 2");
+		for (int i = 0; i < 2; i++) {
+			if(comboSize > 0) {
+				com.bistro.sagg.core.model.products.Combo combo = combos.remove(0);
+				comboSize--;
+				createComboButton(composite_3, combo);
+			} else {
+				createGenericComboButton(composite_3);
+			}
+		}
 		
 		Composite composite_4 = new Composite(composite_2, SWT.NONE);
 		composite_4.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -239,17 +241,15 @@ public class ProductSelectionView extends ViewPart {
 		gl_composite_4.marginHeight = 0;
 		composite_4.setLayout(gl_composite_4);
 		
-		Button btnPromo = new Button(composite_4, SWT.NONE);
-		btnPromo.setEnabled(false);
-		btnPromo.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD | SWT.ITALIC));
-		btnPromo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		btnPromo.setText("Promo 3");
-		
-		Button btnPromo_1 = new Button(composite_4, SWT.NONE);
-		btnPromo_1.setEnabled(false);
-		btnPromo_1.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD | SWT.ITALIC));
-		btnPromo_1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		btnPromo_1.setText("Promo 4");
+		for (int i = 0; i < 2; i++) {
+			if(comboSize > 0) {
+				com.bistro.sagg.core.model.products.Combo combo = combos.remove(0);
+				comboSize--;
+				createComboButton(composite_4, combo);
+			} else {
+				createGenericComboButton(composite_4);
+			}
+		}
 		
 		Composite composite_5 = new Composite(composite_2, SWT.NONE);
 		composite_5.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -258,17 +258,15 @@ public class ProductSelectionView extends ViewPart {
 		gl_composite_5.marginHeight = 0;
 		composite_5.setLayout(gl_composite_5);
 		
-		Button btnPromo_2 = new Button(composite_5, SWT.NONE);
-		btnPromo_2.setEnabled(false);
-		btnPromo_2.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD | SWT.ITALIC));
-		btnPromo_2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		btnPromo_2.setText("Promo 5");
-		
-		Button btnPromo_3 = new Button(composite_5, SWT.NONE);
-		btnPromo_3.setEnabled(false);
-		btnPromo_3.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD | SWT.ITALIC));
-		btnPromo_3.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		btnPromo_3.setText("Promo 6");
+		for (int i = 0; i < 2; i++) {
+			if(comboSize > 0) {
+				com.bistro.sagg.core.model.products.Combo combo = combos.remove(0);
+				comboSize--;
+				createComboButton(composite_5, combo);
+			} else {
+				createGenericComboButton(composite_5);
+			}
+		}
 		
 		Composite composite_6 = new Composite(composite_2, SWT.NONE);
 		composite_6.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -277,17 +275,15 @@ public class ProductSelectionView extends ViewPart {
 		gl_composite_6.marginHeight = 0;
 		composite_6.setLayout(gl_composite_6);
 		
-		Button btnPromo_4 = new Button(composite_6, SWT.NONE);
-		btnPromo_4.setEnabled(false);
-		btnPromo_4.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		btnPromo_4.setText("Promo 7");
-		btnPromo_4.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD | SWT.ITALIC));
-		
-		Button btnPromo_5 = new Button(composite_6, SWT.NONE);
-		btnPromo_5.setEnabled(false);
-		btnPromo_5.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		btnPromo_5.setText("Promo 8");
-		btnPromo_5.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD | SWT.ITALIC));
+		for (int i = 0; i < 2; i++) {
+			if(comboSize > 0) {
+				com.bistro.sagg.core.model.products.Combo combo = combos.remove(0);
+				comboSize--;
+				createComboButton(composite_6, combo);
+			} else {
+				createGenericComboButton(composite_6);
+			}
+		}
 		
 		Composite composite_7 = new Composite(composite_2, SWT.NONE);
 		composite_7.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
@@ -300,19 +296,75 @@ public class ProductSelectionView extends ViewPart {
 		lblOtros.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblOtros.setText("Otros");
 		
-		Combo combo_1 = new Combo(composite_7, SWT.NONE);
-		combo_1.setEnabled(false);
-		combo_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		// TODO sacar
+//		combos = productServices.getCombos(branch);
 		
-		Button btnAgregar = new Button(composite_7, SWT.NONE);
-		btnAgregar.setEnabled(false);
-		btnAgregar.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
-		btnAgregar.setText("Agregar");
+		ComboViewer comboItemComboViewer = new ComboViewer(composite_7, SWT.NONE);
+		comboItemComboViewer.setContentProvider(new FromListContentProvider());
+		comboItemComboViewer.setLabelProvider(new SalableProductListLabelProvider());
+		comboItemComboViewer.setInput(combos);
+		comboItemCombo = comboItemComboViewer.getCombo();
+		comboItemCombo.setEnabled(!combos.isEmpty());
+		comboItemCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		comboItemComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				selectedCombo = (com.bistro.sagg.core.model.products.Combo) ((StructuredSelection) event.getSelection()).getFirstElement();
+//				ProductCategory category = (ProductCategory) ((StructuredSelection) event.getSelection()).getFirstElement();
+//				SalableProductListContentProvider provider = (SalableProductListContentProvider) productListViewer.getContentProvider();
+//				provider.setCategory(category);
+//				productListViewer.refresh();
+				addComboButton.setEnabled(true);
+			}
+		});
+		
+		addComboButton = new Button(composite_7, SWT.NONE);
+		addComboButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Map<String,Object> properties = new HashMap<String, Object>();
+		        properties.put(SalesCommunicationConstants.ADD_PRODUCT_DATA, selectedCombo);
+		        properties.put(SalesCommunicationConstants.ADD_PRODUCT_QUANTITY_DATA, 1);
+				Event event = new Event(SalesCommunicationConstants.ADD_PRODUCT_EVENT, properties);
+				eventAdmin.sendEvent(event);
+			}
+		});
+		addComboButton.setEnabled(false);
+		addComboButton.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.BOLD));
+		addComboButton.setText("Agregar");
 		
 		makeActions();
 		hookContextMenu();
 		hookDoubleClickAction();
 		contributeToActionBars();
+	}
+	
+	private void createComboButton(Composite composite_3, com.bistro.sagg.core.model.products.Combo combo) {
+		Button btnCombo = new Button(composite_3, SWT.NONE);
+		btnCombo.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD | SWT.ITALIC));
+		btnCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		btnCombo.setText(combo.getName());
+		btnCombo.setToolTipText("Descripción: " + combo.getDescription() + "\nPrecio: $" + combo.getUnitSalesPrice());
+		btnCombo.setData(combo);
+		btnCombo.setEnabled(combo.hasStock());
+		btnCombo.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Map<String,Object> properties = new HashMap<String, Object>();
+		        properties.put(SalesCommunicationConstants.ADD_PRODUCT_DATA, btnCombo.getData());
+		        properties.put(SalesCommunicationConstants.ADD_PRODUCT_QUANTITY_DATA, 1);
+				Event event = new Event(SalesCommunicationConstants.ADD_PRODUCT_EVENT, properties);
+				eventAdmin.sendEvent(event);
+			}
+		});
+	}
+
+	private void createGenericComboButton(Composite composite_3) {
+		Button btnCombo = new Button(composite_3, SWT.NONE);
+		btnCombo.setEnabled(false);
+		btnCombo.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD | SWT.ITALIC));
+		btnCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		btnCombo.setText("Proximamente");
 	}
 
 	private void createConfirmSaleOrderEventHandler(Composite parent) {
@@ -321,12 +373,14 @@ public class ProductSelectionView extends ViewPart {
 				if (parent.getDisplay().getThread() == Thread.currentThread()) {
 					productQuantitySpinner.setEnabled(false);
 					addProductButton.setEnabled(false);
+					addComboButton.setEnabled(false);
 					resetDefaultValues();
 				} else {
 					parent.getDisplay().syncExec(new Runnable() {
 						public void run() {
 							productQuantitySpinner.setEnabled(false);
 							addProductButton.setEnabled(false);
+							addComboButton.setEnabled(false);
 							resetDefaultValues();
 						}
 					});
@@ -362,6 +416,8 @@ public class ProductSelectionView extends ViewPart {
 		productList.removeAll();
 		selectedProduct = null;
 		productQuantitySpinner.setSelection(0);
+		comboItemCombo.setText("");
+		selectedCombo = null;
 //		productQuantitySpinner.setEnabled(false);
 //		addProductButton.setEnabled(false);
 	}
