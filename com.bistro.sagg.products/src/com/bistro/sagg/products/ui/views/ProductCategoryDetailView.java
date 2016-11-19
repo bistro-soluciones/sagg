@@ -75,8 +75,6 @@ public class ProductCategoryDetailView extends ViewPart {
 
 	private FranchiseBranch franchiseBranch;
 	
-	private ListValidatorProcessor processor;
-	
 	private BundleContext bundleContext;
 	private EventAdmin eventAdmin;
 
@@ -86,7 +84,6 @@ public class ProductCategoryDetailView extends ViewPart {
 		ServiceReference<EventAdmin> ref = bundleContext.getServiceReference(EventAdmin.class);
 		this.eventAdmin = bundleContext.getService(ref);
 		this.franchiseBranch = SaggSession.getCurrentSession().getSessionObject(SaggSessionConstants.CURRENT_FRANCHISE_BANCH);
-		this.processor = setupProductCategoryValidatorProcessor();
 	}
 
 	/**
@@ -146,7 +143,6 @@ public class ProductCategoryDetailView extends ViewPart {
 		saveButton.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD));
 		saveButton.setText("Guardar");
 		
-		
 		makeActions();
 		hookContextMenu();
 		hookDoubleClickAction();
@@ -154,6 +150,7 @@ public class ProductCategoryDetailView extends ViewPart {
 	}
 
 	private boolean validateFields(Shell shell) {
+		ListValidatorProcessor processor = setupProductCategoryValidatorProcessor();
 		boolean result = processor.processValidation();
 		if (!result) {
 			MessageDialog.openError(shell, "Error", processor.getErrorMessage());

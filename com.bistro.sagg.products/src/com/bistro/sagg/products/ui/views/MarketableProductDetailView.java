@@ -1,6 +1,7 @@
 package com.bistro.sagg.products.ui.views;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -11,6 +12,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -25,6 +27,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
@@ -41,8 +44,14 @@ import org.osgi.service.event.EventHandler;
 
 import com.bistro.sagg.core.model.products.ProductCategory;
 import com.bistro.sagg.core.model.products.ProductFormat;
+import com.bistro.sagg.core.osgi.ui.utils.ErrorMessageUtils;
 import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
+import com.bistro.sagg.core.validation.processor.ListValidatorProcessor;
+import com.bistro.sagg.core.validation.validator.AmountValidator;
+import com.bistro.sagg.core.validation.validator.AndValidator;
+import com.bistro.sagg.core.validation.validator.EmptyOrNullValidator;
+import com.bistro.sagg.core.validation.validator.SaggValidator;
 import com.bistro.sagg.products.ui.utils.ProductsCommunicationConstants;
 import com.bistro.sagg.products.ui.viewers.ProductCategoryComboLabelProvider;
 import com.bistro.sagg.products.ui.viewers.ProductFormatComboContentProvider;
@@ -113,9 +122,9 @@ public class MarketableProductDetailView extends ViewPart {
 		
 		Label nameLabel = new Label(basicInfoGroup, SWT.RIGHT);
 		GridData gd_nameLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_nameLabel.widthHint = 124;
+		gd_nameLabel.widthHint = 132;
 		nameLabel.setLayoutData(gd_nameLabel);
-		nameLabel.setText("Nombre");
+		nameLabel.setText("Nombre *");
 		nameLabel.setAlignment(SWT.RIGHT);
 		
 		nameText = new Text(basicInfoGroup, SWT.BORDER);
@@ -123,9 +132,9 @@ public class MarketableProductDetailView extends ViewPart {
 		
 		Label categoryLabel = new Label(basicInfoGroup, SWT.RIGHT);
 		GridData gd_categoryLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_categoryLabel.widthHint = 124;
+		gd_categoryLabel.widthHint = 132;
 		categoryLabel.setLayoutData(gd_categoryLabel);
-		categoryLabel.setText("Categor\u00EDa");
+		categoryLabel.setText("Categor\u00EDa *");
 		
 		productCategoryComboViewer = new ComboViewer(basicInfoGroup, SWT.NONE);
 		productCategoryComboViewer.setContentProvider(new SaleProductCategoryComboContentProvider());
@@ -147,7 +156,7 @@ public class MarketableProductDetailView extends ViewPart {
 		
 		Label minStockLabel = new Label(additionalInfoGroup, SWT.RIGHT);
 		GridData gd_minStockLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_minStockLabel.widthHint = 124;
+		gd_minStockLabel.widthHint = 132;
 		minStockLabel.setLayoutData(gd_minStockLabel);
 		minStockLabel.setToolTipText("");
 		minStockLabel.setText("Stock M\u00EDnimo");
@@ -164,7 +173,7 @@ public class MarketableProductDetailView extends ViewPart {
 		
 		Label productFormatLabel = new Label(composite_1, SWT.NONE);
 		productFormatLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		productFormatLabel.setText("Formato");
+		productFormatLabel.setText("Formato *");
 		
 		ComboViewer productFormatComboViewer = new ComboViewer(composite_1, SWT.NONE);
 		productFormatComboViewer.setContentProvider(new ProductFormatComboContentProvider());
@@ -181,9 +190,9 @@ public class MarketableProductDetailView extends ViewPart {
 		
 		Label unitSalesPriceLabel = new Label(additionalInfoGroup, SWT.RIGHT);
 		GridData gd_unitSalesPriceLabel = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-		gd_unitSalesPriceLabel.widthHint = 124;
+		gd_unitSalesPriceLabel.widthHint = 132;
 		unitSalesPriceLabel.setLayoutData(gd_unitSalesPriceLabel);
-		unitSalesPriceLabel.setText("Precio Unit. Venta");
+		unitSalesPriceLabel.setText("Precio Unit. Venta *");
 		
 		unitSalesPriceText = new Text(additionalInfoGroup, SWT.BORDER | SWT.RIGHT);
 		GridData gd_unitSalesPriceText = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
@@ -210,18 +219,19 @@ public class MarketableProductDetailView extends ViewPart {
 		saveButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				productServices.createMarketableProduct(nameText.getText(), selectedCategory,
-						Integer.parseInt(minStockSpinner.getText()), new BigDecimal(unitSalesPriceText.getText()), selectedFormat);
-				Map<String,Object> properties = new HashMap<String, Object>();
-				Event event = new Event(ProductsCommunicationConstants.ADD_MARKETABLE_PRODUCT_EVENT, properties);
-				eventAdmin.sendEvent(event);
-				resetDefaultValues();
+				if (validateFields(parent.getShell())) {
+					productServices.createMarketableProduct(nameText.getText(), selectedCategory,
+							Integer.parseInt(minStockSpinner.getText()), new BigDecimal(unitSalesPriceText.getText()), selectedFormat);
+					Map<String,Object> properties = new HashMap<String, Object>();
+					Event event = new Event(ProductsCommunicationConstants.ADD_MARKETABLE_PRODUCT_EVENT, properties);
+					eventAdmin.sendEvent(event);
+					resetDefaultValues();
+				}
 			}
 		});
 		saveButton.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false, 1, 1));
 		saveButton.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD));
 		saveButton.setText("Guardar");
-		
 		
 		makeActions();
 		hookContextMenu();
@@ -248,6 +258,30 @@ public class MarketableProductDetailView extends ViewPart {
 	    bundleContext.registerService(EventHandler.class, handler, properties);
 	}
 
+	private boolean validateFields(Shell shell) {
+		ListValidatorProcessor processor = setupProductValidatorProcessor();
+		boolean result = processor.processValidation();
+		if (!result) {
+			MessageDialog.openError(shell, "Error", processor.getErrorMessage());
+		}
+		return result;
+	}
+
+	private ListValidatorProcessor setupProductValidatorProcessor() {
+		java.util.List<SaggValidator> validators = new ArrayList<>();
+		validators.add(
+				new EmptyOrNullValidator(nameText.getText(), ErrorMessageUtils.createMandatoryFieldErrorMsg("Nombre")));
+		validators.add(
+				new EmptyOrNullValidator(selectedCategory, ErrorMessageUtils.createMandatoryFieldErrorMsg("Categor\u00EDa")));
+		validators.add(
+				new EmptyOrNullValidator(selectedFormat, ErrorMessageUtils.createMandatoryFieldErrorMsg("Formato")));
+		validators.add(new AndValidator(unitSalesPriceText.getText(),
+				new EmptyOrNullValidator(unitSalesPriceText.getText(), ErrorMessageUtils.createMandatoryFieldErrorMsg("Precio Unit. Venta")),
+				new AmountValidator(unitSalesPriceText.getText(), ErrorMessageUtils.createWrongAmountFieldValueErrorMsg("Precio Unit. Venta"))));
+		ListValidatorProcessor processor = new ListValidatorProcessor(validators);
+		return processor;
+	}
+	
 	private void resetDefaultValues() {
 		nameText.setText("");
 		selectedCategory = null;
