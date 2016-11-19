@@ -8,6 +8,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ListViewer;
@@ -24,6 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -37,11 +39,18 @@ import org.osgi.service.event.EventAdmin;
 
 import com.bistro.sagg.core.model.company.FranchiseBranch;
 import com.bistro.sagg.core.model.products.ProductCategory;
+import com.bistro.sagg.core.osgi.ui.utils.ErrorMessageUtils;
 import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.core.services.SupplierServices;
 import com.bistro.sagg.core.session.SaggSession;
 import com.bistro.sagg.core.session.SaggSessionConstants;
+import com.bistro.sagg.core.validation.processor.ListValidatorProcessor;
+import com.bistro.sagg.core.validation.validator.AndValidator;
+import com.bistro.sagg.core.validation.validator.EmailValidator;
+import com.bistro.sagg.core.validation.validator.EmptyOrNullValidator;
+import com.bistro.sagg.core.validation.validator.RUTValidator;
+import com.bistro.sagg.core.validation.validator.SaggValidator;
 import com.bistro.sagg.suppliers.ui.utils.SuppliersCommunicationConstants;
 import com.bistro.sagg.suppliers.ui.viewers.InventoryProductCategoryComboContentProvider;
 import com.bistro.sagg.suppliers.ui.viewers.ProductCategoryComboLabelProvider;
@@ -122,9 +131,9 @@ public class SupplierDetailView extends ViewPart {
 		
 		Label businessNameLabel = new Label(basicInfoGroup, SWT.RIGHT);
 		GridData gd_firstnameLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_firstnameLabel.widthHint = 130;
+		gd_firstnameLabel.widthHint = 135;
 		businessNameLabel.setLayoutData(gd_firstnameLabel);
-		businessNameLabel.setText("Razón Social");
+		businessNameLabel.setText("Raz\u00F3n Social *");
 		businessNameLabel.setAlignment(SWT.RIGHT);
 		
 		businessNameText = new Text(basicInfoGroup, SWT.BORDER);
@@ -132,9 +141,9 @@ public class SupplierDetailView extends ViewPart {
 		
 		Label personIdLabel = new Label(basicInfoGroup, SWT.RIGHT);
 		GridData gd_personIdLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_personIdLabel.widthHint = 130;
+		gd_personIdLabel.widthHint = 135;
 		personIdLabel.setLayoutData(gd_personIdLabel);
-		personIdLabel.setText("RUT");
+		personIdLabel.setText("RUT *");
 		
 		supplierIdText = new Text(basicInfoGroup, SWT.BORDER);
 		supplierIdText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -146,8 +155,10 @@ public class SupplierDetailView extends ViewPart {
 		
 		Label contactFirstnameLabel = new Label(contactInfoGroup, SWT.RIGHT);
 		gd_firstnameLabel.widthHint = 130;
-		contactFirstnameLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		contactFirstnameLabel.setText("Nombres");
+		GridData gd_contactFirstnameLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
+		gd_contactFirstnameLabel.widthHint = 135;
+		contactFirstnameLabel.setLayoutData(gd_contactFirstnameLabel);
+		contactFirstnameLabel.setText("Nombres *");
 		contactFirstnameLabel.setAlignment(SWT.RIGHT);
 		
 		contactFirstnameText = new Text(contactInfoGroup, SWT.BORDER);
@@ -155,16 +166,16 @@ public class SupplierDetailView extends ViewPart {
 		
 		Label contactLastnameLabel = new Label(contactInfoGroup, SWT.RIGHT);
 		GridData gd_contactLastnameLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_contactLastnameLabel.widthHint = 130;
+		gd_contactLastnameLabel.widthHint = 135;
 		contactLastnameLabel.setLayoutData(gd_contactLastnameLabel);
-		contactLastnameLabel.setText("Apellidos");
+		contactLastnameLabel.setText("Apellidos *");
 		
 		contactLastnameText = new Text(contactInfoGroup, SWT.BORDER);
 		contactLastnameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label contactPhoneLabel = new Label(contactInfoGroup, SWT.RIGHT);
 		GridData gd_contactPhoneLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_contactPhoneLabel.widthHint = 130;
+		gd_contactPhoneLabel.widthHint = 135;
 		contactPhoneLabel.setLayoutData(gd_contactPhoneLabel);
 		contactPhoneLabel.setText("Tel\u00E9fono");
 		
@@ -173,7 +184,7 @@ public class SupplierDetailView extends ViewPart {
 		
 		Label contactCellphoneLabel = new Label(contactInfoGroup, SWT.RIGHT);
 		GridData gd_contactCellphoneLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_contactCellphoneLabel.widthHint = 130;
+		gd_contactCellphoneLabel.widthHint = 135;
 		contactCellphoneLabel.setLayoutData(gd_contactCellphoneLabel);
 		contactCellphoneLabel.setText("Celular");
 		
@@ -182,9 +193,9 @@ public class SupplierDetailView extends ViewPart {
 		
 		Label contactEmailLabel = new Label(contactInfoGroup, SWT.RIGHT);
 		GridData gd_contactEmailLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_contactEmailLabel.widthHint = 130;
+		gd_contactEmailLabel.widthHint = 135;
 		contactEmailLabel.setLayoutData(gd_contactEmailLabel);
-		contactEmailLabel.setText("Correo Electr\u00F3nico");
+		contactEmailLabel.setText("Correo Electr\u00F3nico *");
 		
 		contactEmailText = new Text(contactInfoGroup, SWT.BORDER);
 		contactEmailText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -196,9 +207,9 @@ public class SupplierDetailView extends ViewPart {
 		
 		Label addressLabel = new Label(suppliesInfoGroup, SWT.RIGHT);
 		GridData gd_addressLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_addressLabel.widthHint = 130;
+		gd_addressLabel.widthHint = 135;
 		addressLabel.setLayoutData(gd_addressLabel);
-		addressLabel.setText("Insumos");
+		addressLabel.setText("Insumos *");
 
 		Composite productCategoryComposite = new Composite(suppliesInfoGroup, SWT.NONE);
 		productCategoryComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
@@ -265,13 +276,15 @@ public class SupplierDetailView extends ViewPart {
 		saveButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				FranchiseBranch branch = SaggSession.getCurrentSession().getSessionObject(SaggSessionConstants.CURRENT_FRANCHISE_BANCH);
-				supplierServices.createSupplier(businessNameText.getText(), supplierIdText.getText(), contactFirstnameText.getText(),
-						contactLastnameText.getText(), contactEmailText.getText(), contactPhoneText.getText(), contactCellphoneText.getText(),
-						selectedProductCategories, branch);
-				Event event = new Event(SuppliersCommunicationConstants.ADD_SUPPLIER_EVENT, new HashMap<String, Object>());
-				eventAdmin.sendEvent(event);
-				resetDefaultValues();
+				if (validateFields(parent.getShell())) {
+					FranchiseBranch branch = SaggSession.getCurrentSession().getSessionObject(SaggSessionConstants.CURRENT_FRANCHISE_BANCH);
+					supplierServices.createSupplier(businessNameText.getText(), supplierIdText.getText(), contactFirstnameText.getText(),
+							contactLastnameText.getText(), contactEmailText.getText(), contactPhoneText.getText(), contactCellphoneText.getText(),
+							selectedProductCategories, branch);
+					Event event = new Event(SuppliersCommunicationConstants.ADD_SUPPLIER_EVENT, new HashMap<String, Object>());
+					eventAdmin.sendEvent(event);
+					resetDefaultValues();
+				}
 			}
 		});
 		saveButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -283,6 +296,48 @@ public class SupplierDetailView extends ViewPart {
 		hookContextMenu();
 		hookDoubleClickAction();
 		contributeToActionBars();
+	}
+
+	private boolean validateFields(Shell shell) {
+		ListValidatorProcessor processor = getSupplierValidatorProcessor();
+		boolean result = processor.processValidation();
+		if (!result) {
+			MessageDialog.openError(shell, "Error", processor.getErrorMessage());
+		}
+		return result;
+	}
+
+	private ListValidatorProcessor getSupplierValidatorProcessor() {
+		java.util.List<SaggValidator> validators = new ArrayList<>();
+		validators.add(new EmptyOrNullValidator(businessNameText.getText(),
+				ErrorMessageUtils.createMandatoryFieldErrorMsg("Raz\u00F3n Social")));
+		validators.add(new AndValidator(supplierIdText.getText(),
+				new EmptyOrNullValidator(supplierIdText.getText(),
+						ErrorMessageUtils.createMandatoryFieldErrorMsg("RUT")),
+				new RUTValidator(supplierIdText.getText(), ErrorMessageUtils.createWrongFieldValueErrorMsg("RUT"))));
+		validators.add(new EmptyOrNullValidator(contactFirstnameText.getText(),
+				ErrorMessageUtils.createMandatoryFieldErrorMsg("Nombres de contacto")));
+		validators.add(new EmptyOrNullValidator(contactLastnameText.getText(),
+				ErrorMessageUtils.createMandatoryFieldErrorMsg("Apellidos de contacto")));
+//		validators.add(new OrValidator(supplierIdText.getText(),
+//				ErrorMessageUtils.createAtLeastOneMandatoryFieldErrorMsg("Tel\u00E9fono", "Celular",
+//						"Correo Electr\u00F3nico de contacto"),
+//				new EmptyOrNullValidator(contactPhoneText.getText(),
+//						ErrorMessageUtils.createMandatoryFieldErrorMsg("Tel\u00E9fono")),	
+//				new EmptyOrNullValidator(contactCellphoneText.getText(),
+//						ErrorMessageUtils.createMandatoryFieldErrorMsg("Celular")),
+//				new EmptyOrNullValidator(contactEmailText.getText(),
+//						ErrorMessageUtils.createMandatoryFieldErrorMsg("Correo Electr\u00F3nico de contacto"))));
+		validators.add(new EmptyOrNullValidator(contactEmailText.getText(),
+				ErrorMessageUtils.createMandatoryFieldErrorMsg("Correo Electr\u00F3nico de contacto")));
+		if (!"".equals(contactEmailText.getText())) {
+			validators.add(new EmailValidator(contactEmailText.getText(),
+					ErrorMessageUtils.createWrongFieldValueErrorMsg("Correo Electr\u00F3nico de contacto")));
+		}
+		validators.add(new EmptyOrNullValidator(selectedProductCategories,
+				ErrorMessageUtils.createOneMandatoryListElementErrorMsg("Insumo")));
+		ListValidatorProcessor processor = new ListValidatorProcessor(validators);
+		return processor;
 	}
 
 	private void resetDefaultValues() {
