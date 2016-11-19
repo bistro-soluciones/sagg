@@ -1,5 +1,7 @@
 package com.bistro.sagg.core.validation.validator;
 
+import java.util.List;
+
 public class EmptyOrNullValidator extends SingleValidator {
 
 	public EmptyOrNullValidator(Object value) {
@@ -11,7 +13,13 @@ public class EmptyOrNullValidator extends SingleValidator {
 	}
 
 	public boolean validate() {
-		if (getValue() == null || "".equals(getValue().toString())) {
+		if (getValue() == null) {
+			return false;
+		}
+		if (getValue() instanceof List<?> && ((List<?>) getValue()).isEmpty()) {
+			return false;
+		}
+		if (getValue() instanceof String && "".equals(getValue().toString())) {
 			return false;
 		}
 		return true;
