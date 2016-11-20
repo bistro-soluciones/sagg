@@ -2,6 +2,7 @@ package com.bistro.sagg.sales.ui.views;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -10,6 +11,7 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -25,6 +27,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
@@ -43,6 +46,7 @@ import com.bistro.sagg.core.model.order.SaleOrderItem;
 import com.bistro.sagg.core.model.order.billing.DocumentType;
 import com.bistro.sagg.core.model.order.billing.SaleBillingDocument;
 import com.bistro.sagg.core.model.order.payment.PaymentMethod;
+import com.bistro.sagg.core.osgi.ui.utils.ErrorMessageUtils;
 import com.bistro.sagg.core.services.BillingServices;
 import com.bistro.sagg.core.services.OrderServices;
 import com.bistro.sagg.core.services.ProductServices;
@@ -50,6 +54,11 @@ import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.core.session.SaggSession;
 import com.bistro.sagg.core.session.SaggSessionConstants;
 import com.bistro.sagg.core.util.TransactionUtils;
+import com.bistro.sagg.core.validation.processor.ListValidatorProcessor;
+import com.bistro.sagg.core.validation.validator.AmountValidator;
+import com.bistro.sagg.core.validation.validator.AndValidator;
+import com.bistro.sagg.core.validation.validator.EmptyOrNullValidator;
+import com.bistro.sagg.core.validation.validator.SaggValidator;
 import com.bistro.sagg.sales.ui.utils.SalesCommunicationConstants;
 import com.bistro.sagg.sales.ui.viewers.BillingDocumentTypeComboContentProvider;
 import com.bistro.sagg.sales.ui.viewers.BillingDocumentTypeComboLabelProvider;
@@ -139,7 +148,7 @@ public class SalesConfirmationDetailView extends ViewPart {
 		
 		Label orderNumberLabel = new Label(paymentDetailComposite, SWT.NONE);
 		orderNumberLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		orderNumberLabel.setText("N\u00FAmero de Orden");
+		orderNumberLabel.setText("N\u00FAmero de Orden *");
 		
 		orderNumberText = new Text(paymentDetailComposite, SWT.BORDER | SWT.RIGHT);
 		orderNumberText.setEditable(false);
@@ -147,7 +156,7 @@ public class SalesConfirmationDetailView extends ViewPart {
 		
 		Label documentTypeLabel = new Label(paymentDetailComposite, SWT.NONE);
 		documentTypeLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		documentTypeLabel.setText("Tipo de Documento");
+		documentTypeLabel.setText("Tipo de Documento *");
 		
 		ComboViewer documentTypeComboViewer = new ComboViewer(paymentDetailComposite, SWT.NONE);
 		documentTypeComboViewer.setContentProvider(new BillingDocumentTypeComboContentProvider());
@@ -166,7 +175,7 @@ public class SalesConfirmationDetailView extends ViewPart {
 		
 		Label documentNumberLabel = new Label(paymentDetailComposite, SWT.RIGHT);
 		documentNumberLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		documentNumberLabel.setText("N\u00FAmero");
+		documentNumberLabel.setText("N\u00FAmero *");
 		
 		documentNumberText = new Text(paymentDetailComposite, SWT.BORDER | SWT.RIGHT);
 		documentNumberText.setEnabled(false);
@@ -174,7 +183,7 @@ public class SalesConfirmationDetailView extends ViewPart {
 		
 		Label orderDateLabel = new Label(paymentDetailComposite, SWT.NONE);
 		orderDateLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		orderDateLabel.setText("Fecha");
+		orderDateLabel.setText("Fecha *");
 		
 		orderDateText = new Text(paymentDetailComposite, SWT.BORDER | SWT.RIGHT);
 		orderDateText.setEditable(false);
@@ -182,7 +191,7 @@ public class SalesConfirmationDetailView extends ViewPart {
 		
 		Label sellerLabel = new Label(paymentDetailComposite, SWT.NONE);
 		sellerLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		sellerLabel.setText("Vendedor");
+		sellerLabel.setText("Vendedor *");
 		
 		sellerText = new Text(paymentDetailComposite, SWT.BORDER | SWT.RIGHT);
 		sellerText.setEditable(false);
@@ -225,7 +234,7 @@ public class SalesConfirmationDetailView extends ViewPart {
 		
 		Label saleTypeLabel = new Label(paymentDetailComposite, SWT.NONE);
 		saleTypeLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		saleTypeLabel.setText("Tipo de Venta");
+		saleTypeLabel.setText("Tipo de Venta *");
 		
 		ComboViewer saleTypeComboViewer = new ComboViewer(paymentDetailComposite, SWT.NONE);
 		saleTypeComboViewer.setContentProvider(new PaymentMethodComboContentProvider());
@@ -394,17 +403,19 @@ public class SalesConfirmationDetailView extends ViewPart {
 		confirmTransactionButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				SaleBillingDocument document = billingServices.createBillingDocument(order, selectedDocumentType,
-						documentNumberText.getText(), selectedPaymentMethod);
-				orderServices.deliverSaleOrder(order, document);
-				for (SaleOrderItem item : order.getItems()) {
-					productServices.decreaseProductStock(item.getSalableProduct(), item.getQuantity());
-					orderServices.decreasePurchasedItemStock(item.getSalableProduct(), item.getQuantity());
-					// TODO track de ganancias netas
+				if (validateFields(parent.getShell())) {
+					SaleBillingDocument document = billingServices.createBillingDocument(order, selectedDocumentType,
+							documentNumberText.getText(), selectedPaymentMethod);
+					orderServices.deliverSaleOrder(order, document);
+					for (SaleOrderItem item : order.getItems()) {
+						productServices.decreaseProductStock(item.getSalableProduct(), item.getQuantity());
+						orderServices.decreasePurchasedItemStock(item.getSalableProduct(), item.getQuantity());
+						// TODO track de ganancias netas
+					}
+					resetDefaultValues();
+					Event event = new Event(SalesCommunicationConstants.RESET_SALE_ORDER_EVENT, new HashMap<String, Object>());
+					eventAdmin.sendEvent(event);
 				}
-				resetDefaultValues();
-				Event event = new Event(SalesCommunicationConstants.RESET_SALE_ORDER_EVENT, new HashMap<String, Object>());
-				eventAdmin.sendEvent(event);
 			}
 		});
 		confirmTransactionButton.setEnabled(false);
@@ -416,6 +427,33 @@ public class SalesConfirmationDetailView extends ViewPart {
 		hookContextMenu();
 		hookDoubleClickAction();
 		contributeToActionBars();
+	}
+
+	private boolean validateFields(Shell shell) {
+		ListValidatorProcessor processor = setupProductValidatorProcessor();
+		boolean result = processor.processValidation();
+		if (!result) {
+			MessageDialog.openError(shell, "Error", processor.getErrorMessage());
+		}
+		return result;
+	}
+
+	private ListValidatorProcessor setupProductValidatorProcessor() {
+		java.util.List<SaggValidator> validators = new ArrayList<>();
+		validators.add(
+				new EmptyOrNullValidator(orderNumberText.getText(), ErrorMessageUtils.createMandatoryFieldErrorMsg("N\u00FAmero de Orden")));
+		validators.add(
+				new EmptyOrNullValidator(selectedDocumentType, ErrorMessageUtils.createMandatoryFieldErrorMsg("Tipo de Documento")));
+		validators.add(
+				new EmptyOrNullValidator(documentNumberText.getText(), ErrorMessageUtils.createMandatoryFieldErrorMsg("N\u00FAmero de Documento")));
+		validators.add(
+				new EmptyOrNullValidator(orderDateText.getText(), ErrorMessageUtils.createMandatoryFieldErrorMsg("Fecha")));
+		validators.add(
+				new EmptyOrNullValidator(sellerText.getText(), ErrorMessageUtils.createMandatoryFieldErrorMsg("Vendedor")));
+		validators.add(
+				new EmptyOrNullValidator(selectedPaymentMethod, ErrorMessageUtils.createMandatoryFieldErrorMsg("Tipo de Venta")));
+		ListValidatorProcessor processor = new ListValidatorProcessor(validators);
+		return processor;
 	}
 
 	private void createConfirmSaleOrderEventHandler(Composite parent) {
