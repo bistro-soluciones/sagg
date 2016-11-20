@@ -2,6 +2,7 @@ package com.bistro.sagg.products.ui.views;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -10,6 +11,7 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -23,6 +25,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
@@ -41,6 +44,7 @@ import com.bistro.sagg.core.model.order.billing.DocumentType;
 import com.bistro.sagg.core.model.order.billing.PurchaseBillingDocument;
 import com.bistro.sagg.core.model.order.payment.PaymentMethod;
 import com.bistro.sagg.core.model.suppliers.Supplier;
+import com.bistro.sagg.core.osgi.ui.utils.ErrorMessageUtils;
 import com.bistro.sagg.core.services.BillingServices;
 import com.bistro.sagg.core.services.OrderServices;
 import com.bistro.sagg.core.services.ProductServices;
@@ -48,6 +52,9 @@ import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.core.session.SaggSession;
 import com.bistro.sagg.core.session.SaggSessionConstants;
 import com.bistro.sagg.core.util.TransactionUtils;
+import com.bistro.sagg.core.validation.processor.ListValidatorProcessor;
+import com.bistro.sagg.core.validation.validator.EmptyOrNullValidator;
+import com.bistro.sagg.core.validation.validator.SaggValidator;
 import com.bistro.sagg.products.ui.utils.ProductsCommunicationConstants;
 import com.bistro.sagg.products.ui.viewers.BillingDocumentTypeComboContentProvider;
 import com.bistro.sagg.products.ui.viewers.BillingDocumentTypeComboLabelProvider;
@@ -131,19 +138,19 @@ public class InventoryLoadingConfirmationDetailView extends ViewPart {
 		
 		Label orderNumberLabel = new Label(paymentDetailComposite, SWT.RIGHT);
 		GridData gd_orderNumberLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_orderNumberLabel.widthHint = 135;
+		gd_orderNumberLabel.widthHint = 145;
 		orderNumberLabel.setLayoutData(gd_orderNumberLabel);
-		orderNumberLabel.setText("N\u00FAmero de Orden");
+		orderNumberLabel.setText("N\u00FAmero de Orden *");
 		
 		orderNumberText = new Text(paymentDetailComposite, SWT.BORDER | SWT.RIGHT);
 		orderNumberText.setEditable(false);
 		orderNumberText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		Label documentTypeLabel = new Label(paymentDetailComposite, SWT.NONE);
+		Label documentTypeLabel = new Label(paymentDetailComposite, SWT.RIGHT);
 		GridData gd_documentTypeLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_documentTypeLabel.widthHint = 135;
+		gd_documentTypeLabel.widthHint = 145;
 		documentTypeLabel.setLayoutData(gd_documentTypeLabel);
-		documentTypeLabel.setText("Tipo de Documento");
+		documentTypeLabel.setText("Tipo de Documento *");
 		
 		ComboViewer documentTypeComboViewer = new ComboViewer(paymentDetailComposite, SWT.NONE);
 		documentTypeComboViewer.setContentProvider(new BillingDocumentTypeComboContentProvider());
@@ -162,9 +169,9 @@ public class InventoryLoadingConfirmationDetailView extends ViewPart {
 		
 		Label documentNumberLabel = new Label(paymentDetailComposite, SWT.RIGHT);
 		GridData gd_lblNewLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_lblNewLabel.widthHint = 135;
+		gd_lblNewLabel.widthHint = 145;
 		documentNumberLabel.setLayoutData(gd_lblNewLabel);
-		documentNumberLabel.setText("N\u00FAmero");
+		documentNumberLabel.setText("N\u00FAmero *");
 		
 		documentNumberText = new Text(paymentDetailComposite, SWT.BORDER | SWT.RIGHT);
 		documentNumberText.setEnabled(false);
@@ -174,7 +181,7 @@ public class InventoryLoadingConfirmationDetailView extends ViewPart {
 		GridData gd_orderDateLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
 		gd_orderDateLabel.widthHint = 135;
 		orderDateLabel.setLayoutData(gd_orderDateLabel);
-		orderDateLabel.setText("Fecha");
+		orderDateLabel.setText("Fecha *");
 		
 		orderDateText = new Text(paymentDetailComposite, SWT.BORDER | SWT.RIGHT);
 		orderDateText.setEditable(false);
@@ -184,7 +191,7 @@ public class InventoryLoadingConfirmationDetailView extends ViewPart {
 		GridData gd_supplierLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
 		gd_supplierLabel.widthHint = 135;
 		supplierLabel.setLayoutData(gd_supplierLabel);
-		supplierLabel.setText("Proveedor");
+		supplierLabel.setText("Proveedor *");
 		
 		supplierText = new Text(paymentDetailComposite, SWT.BORDER | SWT.RIGHT);
 		supplierText.setEnabled(false);
@@ -194,7 +201,7 @@ public class InventoryLoadingConfirmationDetailView extends ViewPart {
 		GridData gd_sellerLabel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
 		gd_sellerLabel.widthHint = 135;
 		sellerLabel.setLayoutData(gd_sellerLabel);
-		sellerLabel.setText("Recibe");
+		sellerLabel.setText("Recibe *");
 		
 		receiverText = new Text(paymentDetailComposite, SWT.BORDER | SWT.RIGHT);
 		receiverText.setEditable(false);
@@ -202,7 +209,7 @@ public class InventoryLoadingConfirmationDetailView extends ViewPart {
 		
 		Label saleTypeLabel = new Label(paymentDetailComposite, SWT.NONE);
 		saleTypeLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		saleTypeLabel.setText("Tipo de Pago");
+		saleTypeLabel.setText("Tipo de Pago *");
 		
 		ComboViewer paymentTypeComboViewer = new ComboViewer(paymentDetailComposite, SWT.NONE);
 		paymentTypeComboViewer.setContentProvider(new PaymentMethodComboContentProvider());
@@ -215,7 +222,7 @@ public class InventoryLoadingConfirmationDetailView extends ViewPart {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				selectedPaymentMethod = (PaymentMethod) ((StructuredSelection) event.getSelection()).getFirstElement();
-				confirmTransactionButton.setEnabled(true);
+//				confirmTransactionButton.setEnabled(true);
 			}
 		});
 
@@ -281,17 +288,19 @@ public class InventoryLoadingConfirmationDetailView extends ViewPart {
 		confirmTransactionButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				PurchaseBillingDocument document = billingServices.createBillingDocument(order, selectedDocumentType,
-						documentNumberText.getText(), selectedPaymentMethod);
-				orderServices.receivePurchaseOrder(order, document);
-				productServices.increaseProductStock(document.getItems());
-				resetDefaultValues();
-				Event event = new Event(ProductsCommunicationConstants.RESET_PURCHASE_ORDER_EVENT, new HashMap<String, Object>());
-				eventAdmin.sendEvent(event);
+				if (validateFields(parent.getShell())) {
+					PurchaseBillingDocument document = billingServices.createBillingDocument(order, selectedDocumentType,
+							documentNumberText.getText(), selectedPaymentMethod);
+					orderServices.receivePurchaseOrder(order, document);
+					productServices.increaseProductStock(document.getItems());
+					resetDefaultValues();
+					Event event = new Event(ProductsCommunicationConstants.RESET_PURCHASE_ORDER_EVENT, new HashMap<String, Object>());
+					eventAdmin.sendEvent(event);
+				}
 			}
 		});
-		confirmTransactionButton.setEnabled(false);
 		confirmTransactionButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		confirmTransactionButton.setEnabled(false);
 		confirmTransactionButton.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD));
 		confirmTransactionButton.setText("Confirmar Carga");
 		
@@ -299,6 +308,35 @@ public class InventoryLoadingConfirmationDetailView extends ViewPart {
 		hookContextMenu();
 		hookDoubleClickAction();
 		contributeToActionBars();
+	}
+
+	private boolean validateFields(Shell shell) {
+		ListValidatorProcessor processor = setupProductValidatorProcessor();
+		boolean result = processor.processValidation();
+		if (!result) {
+			MessageDialog.openError(shell, "Error", processor.getErrorMessage());
+		}
+		return result;
+	}
+
+	private ListValidatorProcessor setupProductValidatorProcessor() {
+		java.util.List<SaggValidator> validators = new ArrayList<>();
+		validators.add(
+				new EmptyOrNullValidator(orderNumberText.getText(), ErrorMessageUtils.createMandatoryFieldErrorMsg("N\u00FAmero de Orden")));
+		validators.add(
+				new EmptyOrNullValidator(selectedDocumentType, ErrorMessageUtils.createMandatoryFieldErrorMsg("Tipo de Documento")));
+		validators.add(
+				new EmptyOrNullValidator(documentNumberText.getText(), ErrorMessageUtils.createMandatoryFieldErrorMsg("N\u00FAmero de Documento")));
+		validators.add(
+				new EmptyOrNullValidator(orderDateText.getText(), ErrorMessageUtils.createMandatoryFieldErrorMsg("Fecha")));
+		validators.add(
+				new EmptyOrNullValidator(supplierText.getText(), ErrorMessageUtils.createMandatoryFieldErrorMsg("Proveedor")));
+		validators.add(
+				new EmptyOrNullValidator(receiverText.getText(), ErrorMessageUtils.createMandatoryFieldErrorMsg("Recibe")));
+		validators.add(
+				new EmptyOrNullValidator(selectedPaymentMethod, ErrorMessageUtils.createMandatoryFieldErrorMsg("Tipo de Pago")));
+		ListValidatorProcessor processor = new ListValidatorProcessor(validators);
+		return processor;
 	}
 
 	private void createConfirmSaleOrderEventHandler(Composite parent) {
@@ -321,7 +359,7 @@ public class InventoryLoadingConfirmationDetailView extends ViewPart {
 					documentTypeCombo.setEnabled(true);
 					paymentMethodCombo.setEnabled(true);
 					cancelTransactionButton.setEnabled(true);
-//					confirmTransactionButton.setEnabled(true);
+					confirmTransactionButton.setEnabled(true);
 				} else {
 					parent.getDisplay().syncExec(new Runnable() {
 						public void run() {
@@ -336,7 +374,7 @@ public class InventoryLoadingConfirmationDetailView extends ViewPart {
 							documentTypeCombo.setEnabled(true);
 							paymentMethodCombo.setEnabled(true);
 							cancelTransactionButton.setEnabled(true);
-//							confirmTransactionButton.setEnabled(true);
+							confirmTransactionButton.setEnabled(true);
 						}
 					});
 				}

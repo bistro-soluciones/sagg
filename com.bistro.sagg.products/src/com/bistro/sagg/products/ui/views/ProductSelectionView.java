@@ -12,6 +12,7 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ListViewer;
@@ -31,6 +32,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
@@ -49,11 +51,17 @@ import com.bistro.sagg.core.model.products.MarketableProduct;
 import com.bistro.sagg.core.model.products.Product;
 import com.bistro.sagg.core.model.products.ProductCategory;
 import com.bistro.sagg.core.model.suppliers.Supplier;
+import com.bistro.sagg.core.osgi.ui.utils.ErrorMessageUtils;
 import com.bistro.sagg.core.services.ProductServices;
 import com.bistro.sagg.core.services.SaggServiceLocator;
 import com.bistro.sagg.core.services.SupplierServices;
 import com.bistro.sagg.core.session.SaggSession;
 import com.bistro.sagg.core.session.SaggSessionConstants;
+import com.bistro.sagg.core.validation.processor.ListValidatorProcessor;
+import com.bistro.sagg.core.validation.validator.AmountValidator;
+import com.bistro.sagg.core.validation.validator.AndValidator;
+import com.bistro.sagg.core.validation.validator.EmptyOrNullValidator;
+import com.bistro.sagg.core.validation.validator.SaggValidator;
 import com.bistro.sagg.products.ui.utils.ProductsCommunicationConstants;
 import com.bistro.sagg.products.ui.viewers.ProductCategoryComboLabelProvider;
 import com.bistro.sagg.products.ui.viewers.ProductListContentProvider;
@@ -244,7 +252,7 @@ public class ProductSelectionView extends ViewPart {
 		
 		Label lblPrecioUnitario = new Label(composite, SWT.NONE);
 		lblPrecioUnitario.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblPrecioUnitario.setText("Precio Unitario");
+		lblPrecioUnitario.setText("Precio Unitario *");
 		
 		unitPriceText = new Text(composite, SWT.BORDER | SWT.RIGHT);
 		unitPriceText.addFocusListener(new FocusAdapter() {
@@ -276,13 +284,15 @@ public class ProductSelectionView extends ViewPart {
 		addProductButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Map<String,Object> properties = new HashMap<String, Object>();
-		        properties.put(ProductsCommunicationConstants.ADD_PRODUCT_DATA, selectedProduct);
-		        properties.put(ProductsCommunicationConstants.ADD_PRODUCT_SUPPLIER_DATA, selectedSupplier);
-		        properties.put(ProductsCommunicationConstants.ADD_PRODUCT_QUANTITY_DATA, selectedProductQuantity);
-		        properties.put(ProductsCommunicationConstants.ADD_PRODUCT_UNIT_PRICE_DATA, selectedProductUnitPrice);
-				Event event = new Event(ProductsCommunicationConstants.ADD_PRODUCT_EVENT, properties);
-				eventAdmin.sendEvent(event);
+				if (validateFields(parent.getShell())) {
+					Map<String,Object> properties = new HashMap<String, Object>();
+					properties.put(ProductsCommunicationConstants.ADD_PRODUCT_DATA, selectedProduct);
+					properties.put(ProductsCommunicationConstants.ADD_PRODUCT_SUPPLIER_DATA, selectedSupplier);
+					properties.put(ProductsCommunicationConstants.ADD_PRODUCT_QUANTITY_DATA, selectedProductQuantity);
+					properties.put(ProductsCommunicationConstants.ADD_PRODUCT_UNIT_PRICE_DATA, selectedProductUnitPrice);
+					Event event = new Event(ProductsCommunicationConstants.ADD_PRODUCT_EVENT, properties);
+					eventAdmin.sendEvent(event);
+				}
 			}
 		});
 		addProductButton.setEnabled(false);
@@ -296,12 +306,31 @@ public class ProductSelectionView extends ViewPart {
 		contributeToActionBars();
 	}
 
+	private boolean validateFields(Shell shell) {
+		ListValidatorProcessor processor = setupProductValidatorProcessor();
+		boolean result = processor.processValidation();
+		if (!result) {
+			MessageDialog.openError(shell, "Error", processor.getErrorMessage());
+		}
+		return result;
+	}
+
+	private ListValidatorProcessor setupProductValidatorProcessor() {
+		java.util.List<SaggValidator> validators = new ArrayList<>();
+		validators.add(new AndValidator(unitPriceText.getText(),
+				new EmptyOrNullValidator(unitPriceText.getText(), ErrorMessageUtils.createMandatoryFieldErrorMsg("Precio Unitario")),
+				new AmountValidator(unitPriceText.getText(), ErrorMessageUtils.createWrongAmountFieldValueErrorMsg("Precio Unitario"))));
+		ListValidatorProcessor processor = new ListValidatorProcessor(validators);
+		return processor;
+	}
+
 	private void createConfirmSaleOrderEventHandler(Composite parent) {
 		EventHandler handler = new EventHandler() {
 			public void handleEvent(final Event event) {
 				if (parent.getDisplay().getThread() == Thread.currentThread()) {
 					productQuantitySpinner.setEnabled(false);
 					unitPriceText.setEnabled(false);
+					selectedProductUnitPrice = null;
 					addProductButton.setEnabled(false);
 					resetDefaultValues();
 				} else {
@@ -309,6 +338,7 @@ public class ProductSelectionView extends ViewPart {
 						public void run() {
 							productQuantitySpinner.setEnabled(false);
 							unitPriceText.setEnabled(false);
+							selectedProductUnitPrice = null;
 							addProductButton.setEnabled(false);
 							resetDefaultValues();
 						}
@@ -346,6 +376,7 @@ public class ProductSelectionView extends ViewPart {
 		selectedProduct = null;
 		productQuantitySpinner.setSelection(0);
 		unitPriceText.setText("0");
+		selectedProductUnitPrice = null;
 //		productQuantitySpinner.setEnabled(false);
 //		addProductButton.setEnabled(false);
 	}
