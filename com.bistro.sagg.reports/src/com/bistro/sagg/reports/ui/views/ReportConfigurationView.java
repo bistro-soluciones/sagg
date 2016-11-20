@@ -163,6 +163,21 @@ public class ReportConfigurationView extends ViewPart {
 		reportsLabel.setAlignment(SWT.RIGHT);
 		
 		reportsCombo = new Combo(reportsSelectionGroup, SWT.NONE);
+		reportsCombo.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				if (SALES_REPORT.equals(reportsCombo.getText()) || DTAILED_SALES_REPORT.equals(reportsCombo.getText())
+						|| SUPPLIES_BY_SUPPLIER_REPORT.equals(reportsCombo.getText())
+						|| PURCHASE_ORDERS_REPORT.equals(reportsCombo.getText())
+						|| DTAILED_PURCHASE_ORDERS_REPORT.equals(reportsCombo.getText())) {
+					createReportCommand();
+					enableReportFilters(reportsCombo.getText());
+					cancelButton.setEnabled(true);
+					generateReportButton.setEnabled(true);
+				} else {
+					resetDefaultValues();
+				}
+			}
+		});
 		reportsCombo.add(SALES_REPORT);
 		reportsCombo.add(DTAILED_SALES_REPORT);
 		reportsCombo.add(SUPPLIES_BY_SUPPLIER_REPORT);
@@ -383,6 +398,7 @@ public class ReportConfigurationView extends ViewPart {
 		cancelButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				reportsCombo.setText("");
 				resetDefaultValues();
 			}
 		});
@@ -487,7 +503,7 @@ public class ReportConfigurationView extends ViewPart {
 	}
 	
 	private void resetDefaultValues() {
-		reportsCombo.setText("");
+		// reportsCombo.setText("");
 		resetFiltersDefaultValues();
 		cancelButton.setEnabled(false);
 		generateReportButton.setEnabled(false);
