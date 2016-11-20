@@ -291,7 +291,6 @@ public class SupplierDetailView extends ViewPart {
 		saveButton.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD));
 		saveButton.setText("Guardar");
 		
-		
 		makeActions();
 		hookContextMenu();
 		hookDoubleClickAction();
