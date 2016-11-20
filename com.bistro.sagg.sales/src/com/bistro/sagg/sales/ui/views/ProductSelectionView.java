@@ -140,6 +140,7 @@ public class ProductSelectionView extends ViewPart {
 				productListViewer.refresh();
 				productList.setEnabled(true);
 				productQuantitySpinner.setEnabled(false);
+				addProductButton.setEnabled(false);
 			}
 		});
 		
